@@ -1,0 +1,1 @@
+CREATE INDEX IF NOT EXISTS asset_captured_at_geohash_idx ON Asset(capturedAt, geoHash) where geoHash is not null;
