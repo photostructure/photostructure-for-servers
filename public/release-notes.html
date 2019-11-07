@@ -33,17 +33,32 @@
 <h2 id="v060">v0.6.0</h2>
 <h3 id="unreleased">Unreleased</h3>
 <p>Please note that this version will require revisiting the files in your library
-to recompute ExifUIDs and re-encode preview images as progressive JPEGs. This
-will happen automatically after you upgrade PhotoStructure.</p>
+to recompute metadata, compute image hashes, extract new lens and keyword tags,
+and re-encode preview images as progressive JPEGs. This will happen
+automatically after you upgrade PhotoStructure.</p>
+<p>Thanks for your patience while PhotoStructure upgrades your library!</p>
 <h3 id="breakingchanges">💔 Breaking changes</h3>
 <ul>
-<li>Replaced the <code>maxPreviewResolution</code> library setting with <code>previewResolutions</code>.
-See the description of the setting for more details.</li>
+<li><p><strong>macOS is now notarized</strong>. Official support for macOS 10.11-10.13 (El Capitan
+through Sierra) has been dropped (although it may still work for you). Note
+that El Capitan <a href="https://support.apple.com/en-us/HT201222">hasn't received a security update for more than a
+year</a>. 64-bit binaries are now being
+built and tested on macOS Mojave.</p></li>
+<li><p>Replaced the <code>maxPreviewResolution</code> library setting with <code>previewResolutions</code>.
+See the description of the setting for more details.</p></li>
 </ul>
 <h3 id="performanceimprovements">🚀 Performance improvements</h3>
 <ul>
+<li>✨ <code>ffmpeg</code>, if installed, is now used for frame extraction and transcoding
+instead of VLC (in preparation for PhotoStructure for Servers). You may find
+ffmpeg faster than VLC. See
+<a href="https://support.photostructure.com/vlc-installation/">https://support.photostructure.com/vlc-installation/</a> for more information.</li>
 <li>✨ Preview images are progressively encoded now (see the <code>progressive</code> library
-setting, which defaults to <code>true</code>).</li>
+setting, which defaults to <code>true</code>). This takes a bit more time, and can be
+disabled in Settings.</li>
+<li>✨ Captured-at times are stored in local-numeric-centisecond format, rather
+than an ISO string. This takes a fraction of space compared to the prior
+format.</li>
 <li>✨ Home page queries for large libraries in previous versions took upwards of
 500ms. The new <code>dbCacheSizeMb</code> system setting now defaults to 128 MB, which
 should handle large (quarter-million asset) libraries. If you have a larger
@@ -54,14 +69,34 @@ request latency on average desktop CPUs should now be 10 ms or less.</li>
 <li>✨ CSS assets are all concatenated now.</li>
 <li>✨ All static assets are now gzip'ed and transferred compressed.</li>
 <li>✨ Image lazy loading was profiled and optimized.</li>
-<li>📦/🐛 Icons in prior version used a webfont, which caused flashes of unstyled
+<li>✨ Icons in prior version used a webfont, which caused flashes of unstyled
 text. All icons were replaced with inline SVG components. At least on Firefox
 and Chrome, initial page load times are measurably faster.</li>
 <li>📦 Both frontend and backend code is now compiled to es2015 (rather than es5),
 which reduced payloads by &gt; 10%.</li>
-<li>✨ Web requests are prioritized over RPC synchronization requests, which lets
-the web UX stay performant even during sync processes.</li>
-<li>✨ Non-mutating API calls from the frontend are retried</li>
+<li>✨ Web requests are prioritized over RPC synchronization requests by the
+webserver, which allows the web UX to stay performant even during sync
+processes.</li>
+<li>✨ Non-mutating API calls from the frontend are retried (should help smooth
+over webserver restarts or glitchy networks).</li>
+<li>✨ The <code>logtail</code> command now uses non-polling filesystem notifications (via
+<code>chokidar</code>), and orders log lines chronologically.</li>
+</ul>
+<h3 id="robustdeduplication">💪 Robust de-duplication</h3>
+<ul>
+<li>✨ PhotoStructure's photo and video merging algorithm was revisited in this
+version. The prior implementation used 2 hash comparisons, which failed to
+match after some lossy image and video transforms (like from cloud backups).
+The new implementation uses 10 different hash values, including several hashes
+based on actual image contents (using rotation-invariant L<em>a</em>b* values, if
+you're interested). This (and lens and keyword tagging and better preview
+image generation and better video transcoding) is why this version requires
+prior libraries to be upgraded.</li>
+</ul>
+<h3 id="lenstagging">🎥 Lens tagging</h3>
+<ul>
+<li>✨ If a photo or video has lens metadata, that will be added as a tag, and
+is navigable via the new root tag, "Lens".</li>
 </ul>
 <h3 id="photoandvideorotation">🔄 Photo and video rotation</h3>
 <ul>
@@ -74,7 +109,9 @@ metadata is persisted. The default is to save a new sidecar, or update an
 existing sidecar, with the new orientation.</li>
 <li>📦 Asset thumbnails and preview images are now fetched with timestamp params.
 This allows the UI to stay in sync with the library database, and still cache
-images when appropriate.</li>
+images when appropriate. <em>Depending on the speed of your browser, you may see
+a flash of an incorrectly-rotated image immediately after rotating: we know,
+and we'll try to fix it in the next release.</em></li>
 </ul>
 <h3 id="zoomondesktop">🔍 Zoom on desktop</h3>
 <ul>
@@ -103,6 +140,19 @@ less pressing a feature on mobile.</li>
 </ul>
 <h3 id="generalimprovements">✨ General improvements</h3>
 <ul>
+<li>✨ PhotoStructure for Desktop now has an application menu on macOS. YAY.</li>
+<li>✨ Standard keystrokes for display zoom, copy, paste, and devtools now work.</li>
+<li>🐛 Some people reported crashes on macOS after long (&gt; 24 hour) sync runs.
+PhotoStructure now automatically restarts the sync process every 6 hours or if
+memory consumption exceeds 1GB, which should spackle over this issue.</li>
+<li>✨ PhotoStructure now uses reverse-chronological order consistently. Photo
+streams had previously been chronological order, and tags were reverse-chron.
+Fixes #42.</li>
+<li>✨ Image hashes are now used to coallesce similar assets that have had their
+metadata stripped.</li>
+<li>✨ Excluding images due to missing Make or Model is now a Setting</li>
+<li>✨ The <code>info</code> tool now reports explaining why 2 files would or wouldn't belong
+with the same asset</li>
 <li>🐛/✨ Google Takeouts sometimes provides JSON sidecars with GPS and other
 metadata. PhotoStructure now knows how to read this sidecar metadata.</li>
 <li>🐛/✨ Timeliner and other cloud storage solutions may provide edited versions
@@ -125,9 +175,8 @@ raise error dialogs.</li>
 <li>📦 Ignore <code>**/com.apple.TimeMachine.localsnapshots</code> directories</li>
 <li>📦 All third-party dependencies were updated, which pulled in several security
 patches, including SQLite 3.29.0.</li>
-<li>Child processes monitor memory usage and restart automatically if GC seems to
-be having problems. This should help prevent crash dialogs, and has mostly
-affected macOS.</li>
+<li>✨ Database backups are automatically taken before every migration set is
+applied (to allow for recovery via customer support)</li>
 </ul>
 <h3 id="customersupport">✨ Customer support</h3>
 <ul>

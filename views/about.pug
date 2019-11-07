@@ -1,0 +1,45 @@
+doctype html
+html
+  head
+    meta(charset="utf-8")
+    title= title
+    meta(name="viewport" content="width=device-width,initial-scale=1")
+    link(rel="stylesheet", href="/app/about.css")
+    script const json = `!{json}`
+
+  body
+    main
+      img(src="/images/logo-gradient-gloss-sq.svg" width=128 height=128 class="logo")
+      .title
+        h1 photo<b>structure</b>
+        h2 for desktop
+      table.versions
+        each v in versions
+          tr
+            td.dt= v.term
+            td.dd= v.defn
+        tr
+          td.dt Health checks
+          td.dd
+            ul.healthchecks
+              each fail in health.fail
+                li.fail= fail
+              each warn in health.warn
+                li.warn= warn
+              each ok in health.ok
+                li.ok= ok
+        tr
+          td.dt
+          td <a href="#" onclick="navigator.clipboard.writeText(json)">copy to clipboard</a> or <a href="!{mailto}" target="_blank">email us</a>
+
+      p <i class="emj birthday"></i> <a target="_blank" href="https://photostructure.com/release-notes.html">What's new?</a>
+
+      p <i class="emj surf"></i> Need help? <a target="_blank" href="https://support.photostructure.com/">Check the support site</a>.
+
+      p <i class="emj beetle"></i> Found something odd, confusing, or buggy? Please <a target="_blank" href="mailto:hello@photostructure.com">email</a> us!
+
+      p <i class="emj handshake"></i> <b>Use of PhotoStructure is bound by the <a  target="_blank" href="https://photostructure.com/eula.html">end-user license agreement</a>.</b>
+
+      p <i class="emj crane"></i> PhotoStructure is made possible by many <a target="_blank" href="/3rd-party-licenses.txt">open source libraries and tools</a>.
+        
+      p <i class="emj heart"></i> If you maintain or contribute to any of these projects, <b>thank you!</b> <a target="_blank" href="mailto:hello@photostructure.com?subject=Hi, I work on INSERT_YOUR_LIBRARY_NAME_HERE&body=Here's a link to my library: https://...%0D%0A%0D%0APlease send me a free personal license to PhotoStructure.%0D%0A%0D%0AThank you!">Send us an email</a> and we'll set you up with a <b>free</b> personal license of PhotoStructure.</i> 

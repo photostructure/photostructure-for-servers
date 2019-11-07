@@ -3,8 +3,12 @@
   "productName": "PhotoStructure",
   "author": "PhotoStructure, Inc. <hello@photostructure.com>",
   "license": "SEE LICENSE IN LICENSE.md",
-  "version": "0.6.0-alpha.2",
+  "version": "0.6.0-beta.10-pre",
   "description": "PhotoStructure for Servers",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/photostructure/photostructure-for-servers"
+  },
   "bin": {
     "photostructure": "./photostructure"
   },
@@ -13,25 +17,29 @@
   },
   "dependencies": {
     "@iarna/toml": "^2.2.3",
-    "@sentry/node": "^5.6.2",
-    "@sentry/types": "^5.6.1",
-    "batch-cluster": "^5.6.7",
-    "better-sqlite3": "^5.4.2",
+    "@sentry/node": "^5.7.1",
+    "@sentry/types": "^5.7.1",
+    "batch-cluster": "^5.7.1",
+    "better-sqlite3": "^5.4.3",
     "body-parser": "^1.19.0",
     "chalk": "^2.4.2",
+    "chokidar": "^3.3.0",
+    "command-line-args": "^5.1.1",
+    "command-line-usage": "^6.1.0",
     "compression": "^1.7.4",
-    "exiftool-vendored": "^8.21.1",
+    "exiftool-vendored": "^9.2.0",
     "express": "^4.17.1",
-    "file-type": "^12.2.0",
+    "file-type": "^12.4.0",
     "fs-extra": "^8.1.0",
     "he": "^1.2.0",
-    "helmet": "^3.20.0",
-    "knex": "^0.19.2",
-    "luxon": "^1.17.2",
+    "helmet": "^3.21.2",
+    "knex": "^0.20.1",
+    "luxon": "^1.21.1",
     "mime-types": "^2.1.24",
     "on-finished": "^2.3.0",
     "pug": "^2.0.4",
-    "sharp": "^0.23.0",
+    "semver": "^6.3.0",
+    "sharp": "^0.23.2",
     "tmp": "^0.1.0"
   }
 }

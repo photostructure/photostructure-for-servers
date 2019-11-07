@@ -1,6 +1,10 @@
 # PhotoStructure for Servers
 
-<img width="300" src="public/images/logo-gradient.svg" alt="PhotoStructure">
+<div style="text-align:center">
+  <img width="600" src="public/images/delight.svg" alt="PhotoStructure">
+</div>
+
+PhotoStructure is your new home for all your photos and videos.
 
 The `photostructure` npm package is made available to simplify running
 PhotoStructure on headless x64 and ARMHF linux platforms.

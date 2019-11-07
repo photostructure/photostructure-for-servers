@@ -4,32 +4,7 @@
 // Launcher for PhotoStructure for Servers
 //
 
-const { argv, exit } = require("process");
-const validCommands = ["main", "web", "sync", "sync-file", "info", "logtail"];
-const help = "See <https://support.photostructure.com/> for instructions.\n";
-
-start(argv);
-
-function start(args) {
-  if (args.includes("--help") || args.includes("-h")) {
-    console.log(help);
-    exit(0);
-  }
-
-  const a = args.slice(2);
-
-  if (a.length === 0) {
-    require("./app/main");
-    return;
-  }
-
-  for (const arg of a) {
-    if (validCommands.includes(arg)) {
-      require("./app/" + arg);
-      return;
-    }
-  }
-
-  console.log("Unknown command.\n\n" + help);
-  exit(1);
-}
+const { argv } = require("process")
+const validCommands = ["main", "web", "sync", "sync-file", "info", "logtail"]
+const cmd = argv.find(ea => validCommands.includes(ea)) || "main"
+require("./app/" + cmd)

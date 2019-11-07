@@ -1,0 +1,229 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="utf-8")
+    title= title
+    meta(name="viewport" content="width=device-width,initial-scale=1")
+    if isDev
+      link(rel="stylesheet", href="/css/settings.css")
+    else
+      link(rel="stylesheet", href="/app/settings.css")
+
+  body.reveal(class=bodyClass)
+    header.settings
+
+      img(src="/images/logo-white.svg" height=32 title="PhotoStructure")
+      b.reveal.pl1em #{welcome ? "Welcome to PhotoStructure" : "Settings"}
+
+      if isElectron && !isMac
+        .right
+          .window-controls
+            a#window-min(title="Minimize")
+              // SITS: when this page is converted to vue, replace with SvgIcon
+              <svg width="18" height="18" viewBox="0 0 24 24"><path d="M19 13H5v-2h14v2z"/></svg>
+            a#window-max(title="Maximize")
+              <svg width="18" height="18" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"/></svg>
+            a#window-close(title="Close")
+              <svg width="18" height="18" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+
+    main
+      if err
+        .error.sticky.message= err
+
+      .container.reveal
+        form(action="/settings" method="post")
+          .section
+            .hero
+              h1 Thank you for beta testing <br> <b>PhotoStructure for Desktop!</b>
+              
+              //- p Here are a couple of things to know to get started:
+
+            .pent
+              p.info
+                i.emj.computer(title="Your data shouldn't help advertising networks")
+                | PhotoStructure <br> runs on <br> <b>this computer</b>, 
+                | <br>not in the cloud. <br>
+                | <a href="https://blog.photostructure.com/metadata-what-lurks-inside-your-photos/" target="_blank">Your data stays yours</a>.
+              p.info
+                i.emj.home(title="One library to rule them all")
+                | PhotoStructure is designed to organize <b>all</b> your 
+                | photos and videos. The initial import may take a while.
+              p.info
+                i.emj.safe(title="Your files are safe")
+                | PhotoStructure  
+                | <a href="https://support.photostructure.com/why-doesnt-photostructure-move-original-files/" target="_blank">
+                | never moves or deletes</a>
+                | your photos and videos.
+              p.info
+                i.emj.starry-night(title="Finish while you're sleeping")
+                | You may want to leave your computer running 
+                | <dfn tooltip="If this is a laptop, make sure it's plugged in!">overnight</dfn>
+                | during your initial import.
+              p.info
+                i.emj.thinking
+                | Hover over <br> <dfn tooltip="This is an example of some explanatory text. You'll find more below ⬇️">underlined text</dfn>
+                | or click on links <a href="https://support.photostructure.com/tag/getting-started/" target="_blank">that look like this</a> for more information.
+
+            if (isVideoTranscodingSupported)
+              if (ffmpegVersion)
+                .info.message FFmpeg #{ffmpegVersion} is installed 
+                  i.emj.tada(title="Let's get this party started!")
+              else if (vlcInfo && vlcInfo.version)
+                .info.message VLC #{vlcInfo.version} is installed 
+                  i.emj.tada(title="Let's get this party started!")
+            
+            else
+              .warn.message 
+                p 
+                  b.fs11 Do you have videos?
+
+                p
+                  if (vlcInfo && vlcInfo.unsupportedVersion)
+                    | VLC #{vlcInfo.unsupportedVersion} is not supported. 
+
+                  | You first need to install FFmpeg or VLC. 
+                  a(href="https://support.photostructure.com/vlc-installation/" target="_blank")
+                    | Click here for installation instructions.
+
+                p After you've installed FFmpeg or VLC, 
+                  a(href="#" onclick="location.reload()") click here to continue.
+
+            h2 Where are your photos and videos?
+            p Read about <a href="https://support.photostructure.com/how-to-hide-directories/" target="_blank">PhotoStructure's file import rules</a>.
+            p
+              label(for="scanAllDrives")
+                input#scanAllDrives(name="scan" type="radio" value="scanAllDrives" checked=scanAllDrives)
+                i.emj.computer
+                | Examine 
+                dfn(tooltip="PhotoStructure automatically ignores system, program, hidden, and \".NoMedia\" directories.") all directories
+                |
+                | on 
+                dfn(tooltip="New drives, including digital camera memory cards and USB drives, will be examined when you plug them in.") all drives
+                |
+                | for photos and videos. &nbsp; <span class="recommended" title="This is the &quot;set it and forget it&quot; option.">recommended</a>
+
+            p
+              label(for="scanPictures")
+                input#scanPictures(name="scan" type="radio" value="scanPictures" checked=scanPictures)
+                i.emj.camera
+                | Examine my 
+                dfn(tooltip=picturesPath) Pictures
+                |
+                | directory.
+            label(for="scanPath")
+              input#scanPath(name="scan" type="radio" value="scanPath" checked=scanPath)
+              input#scanPathInput.select-directory-path.w80(
+                title="Note: changing this will not remove assets already in your library."
+                name="scanPath"
+                type="text"
+                placeholder="Custom path to examine for photos and videos" 
+                max=1024
+                value=scanPath
+                onfocus="document.getElementById('scanPath').checked = true"
+              )
+              button.select-directory.btn-small.hidden.only-electron(
+                type="button"
+                data-textfield="#scanPathInput"
+                data-checkonclick="#scanPath"
+                data-title="Choose a directory to examine for photos and videos")
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.17 6l2 2H20v10H4V6h5.17M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>
+                | Select
+
+            h2 May PhotoStucture organize your photos and videos?
+
+            p PhotoStructure can 
+              | <a href="https://support.photostructure.com/automatic-library-organization/" target="_blank">
+              | copy the photos and videos it finds into your
+              | PhotoStructure Library</a>. This is ideal if your photos
+              | are currently scattered across many different disk drives and memory 
+              | cards, you may or may not have more than one copy of something,
+              | but you'd really like everything to be organized into 
+              dfn(tooltip="Note that this drive needs to have enough free space to hold all your photos and videos. A Network Attached Storage (NAS) or large external hard drive with lots of free disk space are both good choices.") one, tidy place
+              | .
+            ul
+              li PhotoStructure will 
+                | <a href="https://support.photostructure.com/what-do-you-mean-by-dedupe/" target="_blank">
+                | <dfn tooltip="The same photo or video will not be copied more than once into your library.">de-duplicate</dfn></a> 
+                | photos and videos automatically
+
+              li Photos and videos already found in your library will remain in their current location
+
+              li New photos and videos will be copied into
+                | 
+                dfn(tooltip="For example, photos taken today would be copied into " + samplePath + ".") date-stamped folders
+
+            p
+              label(for="copyEnabled")
+                input#copyEnabled(name="copyAssets" type="radio" value="copyEnabled" checked=(copyAssets || welcome))
+                i.emj.thumbs-up
+                | Yes, please copy my photos and videos into my PhotoStructure Library.
+
+            p
+              label(for="copyDisabled")
+                input#copyDisabled(name="copyAssets" type="radio" value="copyDisabled" checked=(!copyAssets && !welcome))
+                i.emj.thumbs-down
+                | No thanks, I like my photos and videos where they already are. <br>
+
+            if welcome
+              h2 Where would you like your library stored?
+                p Your PhotoStructure Library holds a database of your photos and videos, and (depending on your choice above), a copy of all your original photos and videos 
+                p This directory must have 
+                  | <a href="https://support.photostructure.com/how-much-disk-space-do-i-need-for-my-photostructure-library/" target="_blank">
+                  | <dfn tooltip="Digital photo sizes vary greatly between cameras. 1 Gigabyte stores several thousand pictures from a digital camera from 10 years ago, but only 20 pictures from a new high-end dSLR, and only 1 minute of 4K 60fps video."> lots of free space</dfn></a>.
+
+              if suggestedLibraryPaths
+                h3 Suggested directories
+                each ea, index in suggestedLibraryPaths
+                  p
+                  label(for="libraryPath" + index)
+                    input(name="libraryPathRadio" type="radio" value=ea.path checked=(index == 0) id="libraryPath" + index)
+                    .wbrpath !{ea.wbrPath}
+                    .details (
+                      if ea.label
+                        | #{ea.label}, 
+                      | #{ea.free} available)
+
+              else
+                p.warning No drives were found on your computer with at least #{minFreeAvailable} free disk space.
+
+              h3 Custom directory
+              label(for="libraryPathCustom")
+                input#libraryPathCustom(name="libraryPathRadio" type="radio" value="libraryPathCustom")
+
+                input#libraryPathCustomInput.select-directory-path(
+                  name="libraryPath"
+                  type="text"
+                  placeholder="Path to your library"
+                  max=1024
+                  value=libraryPath 
+                  onfocus="document.getElementById('libraryPathCustom').checked = true"
+                )
+                button.select-directory.btn-small.hidden.only-electron(
+                  type="button"
+                  data-textfield="#libraryPathCustomInput"
+                  data-checkonclick="#libraryPathCustom"
+                  data-title="Choose a directory to store your PhotoStructure library")
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.17 6l2 2H20v10H4V6h5.17M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>
+                  | Select
+            else
+              h2 Your library
+                p Your PhotoStructure library is 
+                  tt#currentLibraryPath #{currentLibraryPath}
+                p
+                  a(href="https://support.photostructure.com/how-do-i-change-my-library/" target="_blank") Read how to change it here.
+
+            if welcome
+              h2 PhotoStructure End-User License Agreement
+              .eula
+                include eula.html
+              p
+              b By clicking #{welcome ? "START" : "Save"} you agree to the terms of this license.
+            
+            .pt
+            button.btn(type="submit" name="action") #{welcome ? "Start" : "Save"}
+
+    .modal.hidden
+      .message
+        b Saving...
+
+    script(src="/app/settings.js")

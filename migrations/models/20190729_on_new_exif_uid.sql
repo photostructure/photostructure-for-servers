@@ -1,1 +1,0 @@
--- This file will run db/Migrations.on_new_exif_uid()

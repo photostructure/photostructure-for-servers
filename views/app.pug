@@ -1,0 +1,32 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="utf-8")
+    title PhotoStructure
+    meta(name="viewport" content="width=device-width,initial-scale=1")
+    if isDev
+      link(rel="stylesheet", href="/css/roboto.css")
+      link(rel="stylesheet", href="/css/typography.css")
+      link(rel="stylesheet", href="/css/photostructure.css")
+      link(rel="stylesheet", href="/css/gallery.css")
+      link(rel="stylesheet", href="/css/tag.css")
+      link(rel="stylesheet", href="/css/progress.css")
+      link(rel="stylesheet", href="/css/asset.css")
+      link(rel="stylesheet", href="/css/crumbs.css")
+      link(rel="stylesheet", href="/css/dropdown.css")
+    else
+      link(rel="stylesheet", href="/app/app.css")
+      //- from https://realfavicongenerator.net
+      <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+      <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+      <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+      <link rel="manifest" href="/site.webmanifest">
+      <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+      <meta name="msapplication-TileColor" content="#2d89ef">
+      <meta name="theme-color" content="#ffffff">
+
+  body(class=bodyClass)
+    #app
+      router-view
+
+  script(src="/app/app.js")
