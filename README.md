@@ -1,7 +1,7 @@
 # PhotoStructure for Servers
 
 <div style="text-align:center">
-  <img width="600" src="public/images/delight.svg" alt="PhotoStructure">
+  <img width="600" src="public/images/header-1200w.jpg" alt="PhotoStructure">
 </div>
 
 PhotoStructure is your new home for all your photos and videos.
