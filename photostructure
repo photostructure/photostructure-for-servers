@@ -4,7 +4,7 @@
 // Launcher for PhotoStructure for Servers
 //
 
-const { argv } = require("process")
-const validCommands = ["main", "web", "sync", "sync-file", "info", "logtail"]
-const cmd = argv.find(ea => validCommands.includes(ea)) || "main"
-require("./app/" + cmd)
+const { argv } = require("process");
+const validCommands = ["main", "web", "sync", "sync-file", "info", "logtail"];
+const cmd = argv.find(ea => validCommands.includes(ea)) || "main";
+require("./app/" + cmd);

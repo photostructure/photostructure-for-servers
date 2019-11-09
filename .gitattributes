@@ -1,0 +1,13 @@
+tools/win-ia32/sqlite3/sqlite3.exe binary
+tools/win-ia32/jpegtran/jpegtran.exe binary
+tools/win-ia32/jpegtran/libjpeg-62.dll binary
+tools/win-ia32/dcraw/dcraw.exe binary
+tools/linux-arm/sqlite3/sqlite3 binary
+tools/linux-arm/jpegtran/jpegtran binary
+tools/linux-arm/dcraw/dcraw binary
+tools/linux-ia32/sqlite3/sqlite3 binary
+tools/linux-x64/jpegtran/jpegtran binary
+tools/linux-x64/dcraw/dcraw binary
+tools/mac-x64/sqlite3/sqlite3 binary
+tools/mac-x64/jpegtran/jpegtran binary
+tools/mac-x64/dcraw/dcraw binary

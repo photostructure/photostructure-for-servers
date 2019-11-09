@@ -164,7 +164,7 @@ html(lang="en")
                 i.emj.thumbs-down
                 | No thanks, I like my photos and videos where they already are. <br>
 
-            if welcome
+            if welcome && !isDocker
               h2 Where would you like your library stored?
                 p Your PhotoStructure Library holds a database of your photos and videos, and (depending on your choice above), a copy of all your original photos and videos 
                 p This directory must have 
@@ -209,15 +209,18 @@ html(lang="en")
               h2 Your library
                 p Your PhotoStructure library is 
                   tt#currentLibraryPath #{currentLibraryPath}
-                p
-                  a(href="https://support.photostructure.com/how-do-i-change-my-library/" target="_blank") Read how to change it here.
-
-            if welcome
-              h2 PhotoStructure End-User License Agreement
-              .eula
-                include eula.html
-              p
-              b By clicking #{welcome ? "START" : "Save"} you agree to the terms of this license.
+                if isDocker
+                  p This path is a Docker VOLUME. Map it to the directory on your host machine where you want to store your library.
+                  p
+                    a(href="https://support.photostructure.com/install-server/" target="_blank") Read more about Docker setup here.
+                else
+                  p
+                    a(href="https://support.photostructure.com/how-do-i-change-my-library/" target="_blank") Read how to change it here.
+            h2 PhotoStructure End-User License Agreement
+            .eula
+              include eula.html
+            p
+            b By clicking #{welcome ? "Start" : "Save"} you agree to the terms of this license.
             
             .pt
             button.btn(type="submit" name="action") #{welcome ? "Start" : "Save"}
