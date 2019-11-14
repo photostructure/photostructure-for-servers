@@ -1,0 +1,19 @@
+version: "3"
+services:
+  photostructure:
+    image: photostructure/server:latest
+    env_file:
+      - ./photostructure.env
+    volumes:
+      # https://docs.docker.com/compose/compose-file/#variable-substitution
+      - ${LIBRARY:?Please set LIBRARY}:/ps/library
+      - ${CONFIG:?Please set CONFIG}:/ps/config
+      - ${LOGS:?Please set LOGS}:/ps/logs
+    ports:
+      - "1787:1787"
+  watchtower:
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    # Check for updates every couple hours: (3h * 60m * 60s)
+    command: --interval 10800
