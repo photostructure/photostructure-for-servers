@@ -14,7 +14,7 @@ Your use of PhotoStructure is governed by the [End-user license agreement](./LIC
 
 ```sh
 $ sudo apt-get update && sudo apt-get upgrade
-$ sudo apt-get install ffmpeg sqlite3 dcraw libjpeg-turbo-progs perl build-essentials python2.7-dev
+$ sudo apt-get install ffmpeg sqlite3 dcraw libjpeg-turbo-progs perl build-essential python2.7-dev
 ```
 
 ## Quick install for macOS

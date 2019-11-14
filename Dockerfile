@@ -2,7 +2,7 @@ FROM node:12
 
 RUN apt-get update ;\
   apt-get upgrade -y ;\
-  apt-get install -y ffmpeg perl sqlite3 dcraw libjpeg-turbo-progs build-essentials python2.7-dev ;\
+  apt-get install -y ffmpeg perl sqlite3 dcraw libjpeg-turbo-progs build-essential python2.7-dev ;\
   apt-get autoremove -y ;\
   apt-get autoclean -y
 
