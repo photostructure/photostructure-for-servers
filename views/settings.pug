@@ -113,7 +113,7 @@ html(lang="en")
             label(for="scanPath")
               input#scanPath(name="scan" type="radio" value="scanPath" checked=scanPath)
               input#scanPathInput.select-directory-path.w80(
-                title="Note: changing this will not remove assets already in your library."
+                title="Changing this will not remove assets already in your library.\nYou can add multiple paths here by separating paths with :"
                 name="scanPath"
                 type="text"
                 placeholder="Custom path to examine for photos and videos" 
@@ -164,58 +164,59 @@ html(lang="en")
                 i.emj.thumbs-down
                 | No thanks, I like my photos and videos where they already are. <br>
 
-            if welcome && !isDocker
+            if isDocker
+              h2 Your PhotoStructure library
+              p Your library is a Docker VOLUME. Change the value in your <tt>photostructure.env</tt>. 
+                a(href="https://support.photostructure.com/install-server/" target="_blank") Read more about Docker setup here.
+          
+            else if welcome
               h2 Where would you like your library stored?
-                p Your PhotoStructure Library holds a database of your photos and videos, and (depending on your choice above), a copy of all your original photos and videos 
-                p This directory must have 
-                  | <a href="https://support.photostructure.com/how-much-disk-space-do-i-need-for-my-photostructure-library/" target="_blank">
-                  | <dfn tooltip="Digital photo sizes vary greatly between cameras. 1 Gigabyte stores several thousand pictures from a digital camera from 10 years ago, but only 20 pictures from a new high-end dSLR, and only 1 minute of 4K 60fps video."> lots of free space</dfn></a>.
-
-              if suggestedLibraryPaths
-                h3 Suggested directories
-                each ea, index in suggestedLibraryPaths
-                  p
-                  label(for="libraryPath" + index)
-                    input(name="libraryPathRadio" type="radio" value=ea.path checked=(index == 0) id="libraryPath" + index)
-                    .wbrpath !{ea.wbrPath}
-                    .details (
-                      if ea.label
-                        | #{ea.label}, 
-                      | #{ea.free} available)
-
-              else
-                p.warning No drives were found on your computer with at least #{minFreeAvailable} free disk space.
-
-              h3 Custom directory
-              label(for="libraryPathCustom")
-                input#libraryPathCustom(name="libraryPathRadio" type="radio" value="libraryPathCustom")
-
-                input#libraryPathCustomInput.select-directory-path(
-                  name="libraryPath"
-                  type="text"
-                  placeholder="Path to your library"
-                  max=1024
-                  value=libraryPath 
-                  onfocus="document.getElementById('libraryPathCustom').checked = true"
-                )
-                button.select-directory.btn-small.hidden.only-electron(
-                  type="button"
-                  data-textfield="#libraryPathCustomInput"
-                  data-checkonclick="#libraryPathCustom"
-                  data-title="Choose a directory to store your PhotoStructure library")
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.17 6l2 2H20v10H4V6h5.17M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>
-                  | Select
+              p Your PhotoStructure Library holds a database of your photos and videos, and (depending on your choice above), a copy of all your original photos and videos 
+              p This directory must have 
+                | <a href="https://support.photostructure.com/how-much-disk-space-do-i-need-for-my-photostructure-library/" target="_blank">
+                | <dfn tooltip="Digital photo sizes vary greatly between cameras. 1 Gigabyte stores several thousand pictures from a digital camera from 10 years ago, but only 20 pictures from a new high-end dSLR, and only 1 minute of 4K 60fps video."> lots of free space</dfn></a>.
             else
-              h2 Your library
-                p Your PhotoStructure library is 
-                  tt#currentLibraryPath #{currentLibraryPath}
-                if isDocker
-                  p This path is a Docker VOLUME. Map it to the directory on your host machine where you want to store your library.
-                  p
-                    a(href="https://support.photostructure.com/install-server/" target="_blank") Read more about Docker setup here.
-                else
-                  p
-                    a(href="https://support.photostructure.com/how-do-i-change-my-library/" target="_blank") Read how to change it here.
+              h2 Your PhotoStructure library
+              p Your PhotoStructure library is currently
+                tt#currentLibraryPath #{currentLibraryPath}
+
+              p Changing your library location closes your current library and either creates or opens a library in your new directory. 
+                | Prior library contents will not be copied over unless you import your prior library directory.
+
+            if suggestedLibraryPaths
+              h3 Suggested directories
+              each ea, index in suggestedLibraryPaths
+                p
+                label(for="libraryPath" + index)
+                  input(name="libraryPathRadio" type="radio" value=ea.path checked=(index == 0) id="libraryPath" + index)
+                  .wbrpath !{ea.wbrPath}
+                  .details (
+                    if ea.label
+                      | #{ea.label}, 
+                    | #{ea.free} available)
+
+            else
+              p.warning No drives were found on your computer with at least #{minFreeAvailable} free disk space.
+
+            h3 Custom directory
+            label(for="libraryPathCustom")
+              input#libraryPathCustom(name="libraryPathRadio" type="radio" value="libraryPathCustom")
+
+              input#libraryPathCustomInput.select-directory-path(
+                name="libraryPath"
+                type="text"
+                placeholder="Path to your library"
+                max=1024
+                value=libraryPath 
+                onfocus="document.getElementById('libraryPathCustom').checked = true"
+              )
+              button.select-directory.btn-small.hidden.only-electron(
+                type="button"
+                data-textfield="#libraryPathCustomInput"
+                data-checkonclick="#libraryPathCustom"
+                data-title="Choose a directory to store your PhotoStructure library")
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.17 6l2 2H20v10H4V6h5.17M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>
+                | Select
             h2 PhotoStructure End-User License Agreement
             .eula
               include eula.html
@@ -227,6 +228,10 @@ html(lang="en")
 
     .modal.hidden
       .message
-        b Saving...
+        h3 Saving...
+        .loader
+          svg.circular(viewBox="25 25 50 50")
+            circle.path(cx="50" cy="50" r="20" fill="none" stroke-width="4")
+  </div>
 
     script(src="/app/settings.js")
