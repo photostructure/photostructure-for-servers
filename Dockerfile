@@ -18,7 +18,7 @@ COPY . .
 EXPOSE 1787
 
 # These environment variables tell PhotoStructure the volume mountpoints that
-# are configured in docker-compose.yml:
+# are configured in docker-compose.yml. These ENV values should not be overridden.
 ENV XDG_CONFIG_HOME="/ps/config"
 ENV PS_LOG_DIR="/ps/logs"
 ENV PS_LIBRARY_PATH="/ps/library"
