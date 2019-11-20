@@ -24,6 +24,8 @@ html
             ul.healthchecks
               each fail in health.fail
                 li.fail= fail
+              each bad in health.bad
+                li.fail= bad
               each warn in health.warn
                 li.warn= warn
               each ok in health.ok

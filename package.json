@@ -3,7 +3,7 @@
   "productName": "PhotoStructure",
   "author": "PhotoStructure, Inc. <hello@photostructure.com>",
   "license": "SEE LICENSE IN LICENSE.md",
-  "version": "0.6.0-beta.28",
+  "version": "0.6.0",
   "description": "PhotoStructure for Servers",
   "repository": {
     "type": "git",
