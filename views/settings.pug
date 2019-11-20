@@ -16,7 +16,7 @@ html(lang="en")
       b.reveal.pl1em #{welcome ? "Welcome to PhotoStructure" : "Settings"}
 
       if isElectron && !isMac
-        .right
+        .right.no-drag
           .window-controls
             a#window-min(title="Minimize")
               // SITS: when this page is converted to vue, replace with SvgIcon
