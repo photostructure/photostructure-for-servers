@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd "$( dirname "${BASH_SOURCE[0]}" )"
+cd "$(dirname "$0")"
 
 die() {
   echo $1
@@ -19,4 +19,3 @@ git pull || die "git pull failed."
 npx yarn install || die "Dependency installation failed.\nPlease visit <https://support.photostructure.com/install-server> or\nsend an email to <support@photostructure.com> for help."
 
 ./photostructure $@
-
