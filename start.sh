@@ -2,6 +2,9 @@
 
 cd "$(dirname "$0")"
 
+# Propogate ctrl-c:
+trap 'exit 130' INT
+
 die() {
   echo $1
   exit 1

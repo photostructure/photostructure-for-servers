@@ -251,10 +251,10 @@ base@^0.11.1:
     mixin-deep "^1.2.0"
     pascalcase "^0.1.1"
 
-batch-cluster@^5.8.0:
-  version "5.8.0"
-  resolved "https://registry.yarnpkg.com/batch-cluster/-/batch-cluster-5.8.0.tgz#f2a571b4b7bf07c79fd48a11a7df6e62c238221a"
-  integrity sha512-0Fqb/A2ZN2Cdn/taAbn2ftZbqbKkSnfC4mU7jfkfaEksQpeJEhfIoB/uobTIYb1hJthZkP+UKTBVE8KVUVh7Hg==
+batch-cluster@^5.9.0:
+  version "5.9.0"
+  resolved "https://registry.yarnpkg.com/batch-cluster/-/batch-cluster-5.9.0.tgz#0e100c8915bc238991e41fa7c661c960996bc8ce"
+  integrity sha512-gZsFK/bEGfzFZxgV6bqOdBWSbT2vz2jxqJCZj/jo/lp4jz79gjP5OjpQE5MnmHe/3R7EcoiHBcpRqWZ6o/RdVA==
 
 better-sqlite3@^5.4.3:
   version "5.4.3"
@@ -768,13 +768,13 @@ exiftool-vendored.pl@^11.76.0:
   resolved "https://registry.yarnpkg.com/exiftool-vendored.pl/-/exiftool-vendored.pl-11.76.0.tgz#09b321a7e62eb44d69cc0fd3e88d1e878580ddf9"
   integrity sha512-SN90/ESD4wxcfxX581wPKlIWWsIimn9FfDpt12PiRarA2eXRuaT5nAW8skRL3l/Ac0oPZ30VNaeworLW33P6rw==
 
-exiftool-vendored@^9.3.0:
-  version "9.3.0"
-  resolved "https://registry.yarnpkg.com/exiftool-vendored/-/exiftool-vendored-9.3.0.tgz#9eeb83b0470ecab0828953e9b398a373c0cb42a6"
-  integrity sha512-wbx44rcLwjRRcEgmMvB3YoEQTwinCcK9ibqlUxnyKroC3Mz7fn62BIVQJstuaCswsxrKyjzuqEq2Tex1P02kRQ==
+exiftool-vendored@^9.3.1:
+  version "9.3.1"
+  resolved "https://registry.yarnpkg.com/exiftool-vendored/-/exiftool-vendored-9.3.1.tgz#afac9cf2c71771ac36334fdedecd7050c0a149d3"
+  integrity sha512-6MoYXOObQqJMAE9Hq80v3ykH6TelTOhmYrnOw4wjUmQIZmUGBBUBf8dsLb5cEGPN7dzW2mdMXpvsg9XonP3k5Q==
   dependencies:
-    batch-cluster "^5.8.0"
-    luxon "^1.21.1"
+    batch-cluster "^5.9.0"
+    luxon "^1.21.2"
     tz-lookup "^6.1.24"
   optionalDependencies:
     exiftool-vendored.exe "^11.76.0"
@@ -1575,7 +1575,7 @@ lru_map@^0.3.3:
   resolved "https://registry.yarnpkg.com/lru_map/-/lru_map-0.3.3.tgz#b5c8351b9464cbd750335a79650a0ec0e56118dd"
   integrity sha1-tcg1G5Rky9dQM1p5ZQoOwOVhGN0=
 
-luxon@^1.21.1, luxon@^1.21.2:
+luxon@^1.21.2:
   version "1.21.2"
   resolved "https://registry.yarnpkg.com/luxon/-/luxon-1.21.2.tgz#2df6d2bba855a12953e076e855604aa3482677a6"
   integrity sha512-yshwnlkA79WfC24/BC9Rd1n0mhorP22Sc7GYn0puRU6wD/douCgNJIzI9qQBuT9m2/bU+n9v1RflVNE4rMPPxQ==
