@@ -1,8 +1,24 @@
 <!-- markdownlint-disable MD002 MD041  -->
 
+## v0.6.2
+
+### Not released yet
+
+- 🐛 Sync restarts when settings are changed (including the library path)
+- 🐛 Errors from batch-cluster are now caught and logged.
+- 🐛 On web restart-on-error, prior library lock is released by main before
+  restarting web. This should resolve the "Library is already open" crash bug.
+- 🐛 Downgraded Electron to 7.1.1 (may avoid new SIGSEGV from 7.1.2 on mac)
+- ✨ Files that are found to be missing (and their mountpoint or parent directory
+  still exists) are removed from the db, orphaned assets are subsequently
+  removed from the library.
+- ✨ Fixed grammar in progress bars
+- ✨ Files that have been deleted are now removed from the db as well
+- ✨ Assets that no longer have files associated to them are removed
+
 ## v0.6.1
 
-### Released 2019-11-20
+### Released 2019-11-21
 
 - 🐛 Window buttons on settings work within Electron
 - 🐛 Electron updates were re-enabled for Linux AppImages
