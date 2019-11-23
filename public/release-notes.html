@@ -31,12 +31,12 @@
 <h1>PhotoStructure release notes</h1>
 <!-- markdownlint-disable MD002 MD041  -->
 <h2 id="v062">v0.6.2</h2>
-<h3 id="notreleasedyet">Not released yet</h3>
+<h3 id="released20191123">Released 2019-11-23</h3>
 <ul>
-<li>🐛 Sync restarts when settings are changed (including the library path)</li>
-<li>🐛 Errors from batch-cluster are now caught and logged.</li>
 <li>🐛 On web restart-on-error, prior library lock is released by main before
-restarting web. This should resolve the "Library is already open" crash bug.</li>
+restarting web. This resolves the "Library is already open" crash bug.</li>
+<li>🐛 Sync restarts properly when settings are changed (including the library
+path)</li>
 <li>🐛 Downgraded Electron to 7.1.1 (may avoid new SIGSEGV from 7.1.2 on mac)</li>
 <li>✨ Files that are found to be missing (and their mountpoint or parent directory
 still exists) are removed from the db, orphaned assets are subsequently
@@ -44,6 +44,8 @@ removed from the library.</li>
 <li>✨ Fixed grammar in progress bars</li>
 <li>✨ Files that have been deleted are now removed from the db as well</li>
 <li>✨ Assets that no longer have files associated to them are removed</li>
+<li>✨ <code>Download</code> and <code>Downloads</code> directories are now automatically ignored.</li>
+<li>✨ <code>.photoslibrary</code> subdirectories are now ignored, except for <code>Masters</code>.</li>
 </ul>
 <h2 id="v061">v0.6.1</h2>
 <h3 id="released20191121">Released 2019-11-21</h3>

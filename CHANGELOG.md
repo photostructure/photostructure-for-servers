@@ -2,12 +2,12 @@
 
 ## v0.6.2
 
-### Not released yet
+### Released 2019-11-23
 
-- 🐛 Sync restarts when settings are changed (including the library path)
-- 🐛 Errors from batch-cluster are now caught and logged.
 - 🐛 On web restart-on-error, prior library lock is released by main before
-  restarting web. This should resolve the "Library is already open" crash bug.
+  restarting web. This resolves the "Library is already open" crash bug.
+- 🐛 Sync restarts properly when settings are changed (including the library
+  path)
 - 🐛 Downgraded Electron to 7.1.1 (may avoid new SIGSEGV from 7.1.2 on mac)
 - ✨ Files that are found to be missing (and their mountpoint or parent directory
   still exists) are removed from the db, orphaned assets are subsequently
@@ -15,6 +15,8 @@
 - ✨ Fixed grammar in progress bars
 - ✨ Files that have been deleted are now removed from the db as well
 - ✨ Assets that no longer have files associated to them are removed
+- ✨ `Download` and `Downloads` directories are now automatically ignored.
+- ✨ `.photoslibrary` subdirectories are now ignored, except for `Masters`.
 
 ## v0.6.1
 
