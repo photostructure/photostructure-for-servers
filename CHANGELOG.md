@@ -8,7 +8,14 @@
   restarting web. This resolves the "Library is already open" crash bug.
 - 🐛 Sync restarts properly when settings are changed (including the library
   path)
+- 🐛 Under certain circumstances, library paths could be removed from system
+  settings, resulting in the welcome page being shown if PhotoStructure was
+  restarted. This has been fixed.
+- 🐛 Main process logs weren't initialized correctly, preventing log
+  persistence.
 - 🐛 Downgraded Electron to 7.1.1 (may avoid new SIGSEGV from 7.1.2 on mac)
+- 🐛 Extended filesystem timeout from 25 seconds to 35 seconds (external drives
+  can be very slow to spin up!)
 - ✨ Files that are found to be missing (and their mountpoint or parent directory
   still exists) are removed from the db, orphaned assets are subsequently
   removed from the library.
