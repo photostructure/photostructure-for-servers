@@ -30,6 +30,45 @@
 <body>
 <h1>PhotoStructure release notes</h1>
 <!-- markdownlint-disable MD002 MD041  -->
+<h2 id="v063">v0.6.3</h2>
+<h3 id="released20191130">Released 2019-11-30 🦃</h3>
+<p>If you're a PhotoStructure for Servers user, please fetch new copies of the
+<code>photostructure.env</code> and <code>start-docker.sh</code> files, as configuration has changed:</p>
+<ul>
+<li><p>✨ The <code>SCAN_PATH</code> value in <code>photostructure.env</code> used to be a colon-separated
+value, but is now a proper bash array. This change allows for paths that have
+colons in their names (like SMB mounts via GIO), but will require you to
+update your copy of <code>photostructure.env</code>.</p></li>
+<li><p>✨ The <code>PS_TMP_DIR</code> scratch directory is now configurable, and should point to
+a fast scratch disk with several gigabytes free on the host machine. This is a
+new variable in <code>photostructure.env</code>, and should be set properly to prevent
+container bloat and possible Docker crashes.</p></li>
+<li><p>✨ Other <code>PS_*</code> environment variables, other than <code>PS_LIBRARY</code>, <code>PS_LOG_DIR</code>,
+and <code>PS_TMP_DIR</code>, are now passed through to Docker.</p></li>
+</ul>
+<p>Other updates (thank you, beta testers!):</p>
+<ul>
+<li><p>🐛 Main process error handling now respects the error rate setting, which
+defaults to 10 per minute. Prior versions would shut down PhotoStructure
+completely if any subprocess threw a fatal error.</p></li>
+<li><p>🐛 The new "Starting sync…" and "Your library is currently empty" messages
+on the home page linked to the About window, but clicking that link didn't
+work correctly. The link now correctly opens the about window in a separate
+page.</p></li>
+<li><p>✨ PhotoStructure's temp directory is cleaned every 15 minutes. Some beta
+testers had disk-full warnings with the prior settings of cleaning only every
+hour.</p></li>
+<li><p>🐛/✨ Some Windows beta testers had configured their PowerShell to emit
+profiling information at startup, which prevented several systems from running
+properly. We now use both <code>-NoProfile</code> and <code>-NoLogo</code> options which should help
+PowerShell spin up faster. We also validate PowerShell's status as a health
+check on Windows, and include the PowerShell version in the About window. Note
+that PowerShell is used to copy files if native streaming methods fail, as
+well as test directories to see if they are hidden, as well as pulling
+filesystem and process table metadata.</p></li>
+<li><p>✨ All dependencies were updated. Electron was updated for PhotoStructure for
+Desktop.</p></li>
+</ul>
 <h2 id="v062">v0.6.2</h2>
 <h3 id="released20191123">Released 2019-11-23</h3>
 <ul>

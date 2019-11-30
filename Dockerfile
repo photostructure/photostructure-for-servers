@@ -19,14 +19,15 @@ EXPOSE 1787
 
 # These environment variables tell PhotoStructure the volume mountpoints that
 # are configured in docker-compose.yml. These ENV values should not be overridden.
-ENV XDG_CONFIG_HOME="/ps/config"
-ENV PS_LOG_DIR="/ps/logs"
-ENV PS_LIBRARY_PATH="/ps/library"
 ENV PS_DOCKER="1"
+ENV PS_LIBRARY_PATH="/ps/library"
+ENV PS_LOG_DIR="/ps/logs"
+ENV PS_TMP_DIR="/ps/tmp"
+ENV XDG_CONFIG_HOME="/ps/config"
 
 # These volume paths are configured in docker-compose.yml, using values set by
 # photostructure.env. 
-VOLUME ["/ps/config", "/ps/logs", "/ps/library"]
+VOLUME [ "/ps/library", "/ps/logs", "/ps/tmp", "/ps/config" ]
 
 HEALTHCHECK CMD curl -f http://localhost:1787/ping || exit 1
 

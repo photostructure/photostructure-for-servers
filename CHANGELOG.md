@@ -1,5 +1,52 @@
 <!-- markdownlint-disable MD002 MD041  -->
 
+## v0.6.3
+
+### Released 2019-11-30 🦃
+
+If you're a PhotoStructure for Servers user, please fetch new copies of the
+`photostructure.env` and `start-docker.sh` files, as configuration has changed:
+
+- ✨ The `SCAN_PATH` value in `photostructure.env` used to be a colon-separated
+  value, but is now a proper bash array. This change allows for paths that have
+  colons in their names (like SMB mounts via GIO), but will require you to
+  update your copy of `photostructure.env`.
+
+- ✨ The `PS_TMP_DIR` scratch directory is now configurable, and should point to
+  a fast scratch disk with several gigabytes free on the host machine. This is a
+  new variable in `photostructure.env`, and should be set properly to prevent
+  container bloat and possible Docker crashes.
+
+- ✨ Other `PS_*` environment variables, other than `PS_LIBRARY`, `PS_LOG_DIR`,
+  and `PS_TMP_DIR`, are now passed through to Docker.
+
+Other updates (thank you, beta testers!):
+
+- 🐛 Main process error handling now respects the error rate setting, which
+  defaults to 10 per minute. Prior versions would shut down PhotoStructure
+  completely if any subprocess threw a fatal error.
+
+- 🐛 The new "Starting sync..." and "Your library is currently empty" messages
+  on the home page linked to the About window, but clicking that link didn't
+  work correctly. The link now correctly opens the about window in a separate
+  page.
+
+- ✨ PhotoStructure's temp directory is cleaned every 15 minutes. Some beta
+  testers had disk-full warnings with the prior settings of cleaning only every
+  hour.
+
+- 🐛/✨ Some Windows beta testers had configured their PowerShell to emit
+  profiling information at startup, which prevented several systems from running
+  properly. We now use both `-NoProfile` and `-NoLogo` options which should help
+  PowerShell spin up faster. We also validate PowerShell's status as a health
+  check on Windows, and include the PowerShell version in the About window. Note
+  that PowerShell is used to copy files if native streaming methods fail, as
+  well as test directories to see if they are hidden, as well as pulling
+  filesystem and process table metadata.
+
+- ✨ All dependencies were updated. Electron was updated for PhotoStructure for
+  Desktop.
+
 ## v0.6.2
 
 ### Released 2019-11-23
