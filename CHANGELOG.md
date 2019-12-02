@@ -2,7 +2,7 @@
 
 ## v0.6.3
 
-### Released 2019-11-30 🦃
+### Released 2019-12-02 🦃
 
 If you're a PhotoStructure for Servers user, please fetch new copies of the
 `photostructure.env` and `start-docker.sh` files, as configuration has changed:
@@ -22,6 +22,15 @@ If you're a PhotoStructure for Servers user, please fetch new copies of the
 
 Other updates (thank you, beta testers!):
 
+- ✨ Tags found in filenames or parent directories that follow `--` are now added
+  automatically. If you already have a library, run a full sync to pull in these
+  new tags. Here are a couple examples:
+  
+    - All files found in `/Users/bob/Pictures/2019-02-14/--event travel/` would
+      be given `Keyword/event` and `Keyword/travel` tags.
+    - The file `/home/karen/2018-11-23/P317812--ocean.jpg` would be given the
+      `Keyword/ocean` tag.
+
 - 🐛 Main process error handling now respects the error rate setting, which
   defaults to 10 per minute. Prior versions would shut down PhotoStructure
   completely if any subprocess threw a fatal error.
@@ -30,6 +39,10 @@ Other updates (thank you, beta testers!):
   on the home page linked to the About window, but clicking that link didn't
   work correctly. The link now correctly opens the about window in a separate
   page.
+
+- 🐛 The "Restart sync" menu items were incorrectly ~~greyed (grayed?) out~~
+  disabled even after a library was set up. They are enabled after going through
+  the welcome screen, now.
 
 - ✨ PhotoStructure's temp directory is cleaned every 15 minutes. Some beta
   testers had disk-full warnings with the prior settings of cleaning only every
