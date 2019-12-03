@@ -51,5 +51,5 @@ PhotoStructure. You can use `--help` to see more detailed usage information.
 ./start.sh
 ```
 
-Please see <https://support.photostructure.com/install-server> for more
+Please see <https://support.photostructure.com/server> for more
 instructions on installation and running this software.

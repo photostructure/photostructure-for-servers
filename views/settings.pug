@@ -166,7 +166,11 @@ html(lang="en")
 
             if isDocker
               h2 Your PhotoStructure library
-              p Your library is a Docker VOLUME. Change the value in your <tt>photostructure.env</tt>. 
+              p 
+                | Your library is 
+                tt#currentLibraryPath #{currentLibraryPath}
+                | , a Docker VOLUME. 
+              p You can change the value in your <tt>photostructure.env</tt>. 
                 a(href="https://support.photostructure.com/install-server/" target="_blank") Read more about Docker setup here.
           
             else if welcome
@@ -183,40 +187,42 @@ html(lang="en")
               p Changing your library location closes your current library and either creates or opens a library in your new directory. 
                 | Prior library contents will not be copied over unless you import your prior library directory.
 
-            if suggestedLibraryPaths
-              h3 Suggested directories
-              each ea, index in suggestedLibraryPaths
-                p
-                label(for="libraryPath" + index)
-                  input(name="libraryPathRadio" type="radio" value=ea.path checked=(index == 0) id="libraryPath" + index)
-                  .wbrpath !{ea.wbrPath}
-                  .details (
-                    if ea.label
-                      | #{ea.label}, 
-                    | #{ea.free} available)
+            if !isDocker
+              if suggestedLibraryPaths
+                h3 Suggested directories
+                each ea, index in suggestedLibraryPaths
+                  p
+                  label(for="libraryPath" + index)
+                    input(name="libraryPathRadio" type="radio" value=ea.path checked=(index == 0) id="libraryPath" + index)
+                    .wbrpath !{ea.wbrPath}
+                    .details (
+                      if ea.label
+                        | #{ea.label}, 
+                      | #{ea.free} available)
 
-            else
-              p.warning No drives were found on your computer with at least #{minFreeAvailable} free disk space.
+              else
+                p.warning No drives were found on your computer with at least #{minFreeAvailable} free disk space.
 
-            h3 Custom directory
-            label(for="libraryPathCustom")
-              input#libraryPathCustom(name="libraryPathRadio" type="radio" value="libraryPathCustom")
+              h3 Custom directory
+              label(for="libraryPathCustom")
+                input#libraryPathCustom(name="libraryPathRadio" type="radio" value="libraryPathCustom")
 
-              input#libraryPathCustomInput.select-directory-path(
-                name="libraryPath"
-                type="text"
-                placeholder="Path to your library"
-                max=1024
-                value=libraryPath 
-                onfocus="document.getElementById('libraryPathCustom').checked = true"
-              )
-              button.select-directory.btn-small.hidden.only-electron(
-                type="button"
-                data-textfield="#libraryPathCustomInput"
-                data-checkonclick="#libraryPathCustom"
-                data-title="Choose a directory to store your PhotoStructure library")
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.17 6l2 2H20v10H4V6h5.17M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>
-                | Select
+                input#libraryPathCustomInput.select-directory-path(
+                  name="libraryPath"
+                  type="text"
+                  placeholder="Path to your library"
+                  max=1024
+                  value=libraryPath 
+                  onfocus="document.getElementById('libraryPathCustom').checked = true"
+                )
+                button.select-directory.btn-small.hidden.only-electron(
+                  type="button"
+                  data-textfield="#libraryPathCustomInput"
+                  data-checkonclick="#libraryPathCustom"
+                  data-title="Choose a directory to store your PhotoStructure library")
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.17 6l2 2H20v10H4V6h5.17M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>
+                  | Select
+
             h2 PhotoStructure End-User License Agreement
             .eula
               include eula.html

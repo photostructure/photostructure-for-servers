@@ -20,16 +20,20 @@ If you're a PhotoStructure for Servers user, please fetch new copies of the
 - ✨ Other `PS_*` environment variables, other than `PS_LIBRARY`, `PS_LOG_DIR`,
   and `PS_TMP_DIR`, are now passed through to Docker.
 
+- 🐛 The settings page no longer allows the library path to be changed when
+  running under docker. Instead, the library path should be changed in
+  `photostructure.env` and `start-docker.sh` should be re-run.
+
 Other updates (thank you, beta testers!):
 
 - ✨ Tags found in filenames or parent directories that follow `--` are now added
   automatically. If you already have a library, run a full sync to pull in these
   new tags. Here are a couple examples:
-  
-    - All files found in `/Users/bob/Pictures/2019-02-14/--event travel/` would
-      be given `Keyword/event` and `Keyword/travel` tags.
-    - The file `/home/karen/2018-11-23/P317812--ocean.jpg` would be given the
-      `Keyword/ocean` tag.
+
+  - All files found in `/Users/bob/Pictures/2019-02-14/--event travel/` would
+    be given `Keyword/event` and `Keyword/travel` tags.
+  - The file `/home/karen/2018-11-23/P317812--ocean.jpg` would be given the
+    `Keyword/ocean` tag.
 
 - 🐛 Main process error handling now respects the error rate setting, which
   defaults to 10 per minute. Prior versions would shut down PhotoStructure
