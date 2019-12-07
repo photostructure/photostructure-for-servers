@@ -2,29 +2,64 @@
 
 ## v0.6.3
 
-### Released 2019-12-02 🦃
+### Released 2019-12-06
 
-If you're a PhotoStructure for Servers user, please fetch new copies of the
-`photostructure.env` and `start-docker.sh` files, as configuration has changed:
+### 💔 Hopefully-not-breaking changes
+
+A number of settings were moved from the library settings file to the server
+settings file. This should happen automatically after you update your version of
+PhotoStructure (on all platforms). The affected settings are:
+
+- `copyAssetsToLibrary`
+- `scanAllDrives`
+- `scanMyPictures`
+- `scanPaths`
+
+For more insformation about PhotoStructure settings, see
+<https://support.photostructure.com/advanced-settings/>.
+
+### PhotoStructure for Servers
+
+If you're a PhotoStructure for Docker user, please fetch new copies of the
+`photostructure.env` and `start-docker.sh` files. A bunch of new stuff is in
+this version:
 
 - ✨ The `SCAN_PATH` value in `photostructure.env` used to be a colon-separated
-  value, but is now a proper bash array. This change allows for paths that have
-  colons in their names (like SMB mounts via GIO), but will require you to
-  update your copy of `photostructure.env`.
+  value, but this is now a proper bash array. This supports paths that have
+  colons in their names (like SMB mounts via GIO). Update your copy of
+  `photostructure.env` by following the instructions at
+  <https://support.photostructure.com/photostructure-for-docker/>.
+
+- ✨ The `start-docker.sh` script now automatically updates. If you already
+  started using PhotoStructure for Docker, you'll need to manually fetch a new
+  copy by following the instructions at
+  <https://support.photostructure.com/photostructure-for-docker/>.
 
 - ✨ The `PS_TMP_DIR` scratch directory is now configurable, and should point to
   a fast scratch disk with several gigabytes free on the host machine. This is a
   new variable in `photostructure.env`, and should be set properly to prevent
   container bloat and possible Docker crashes.
 
-- ✨ Other `PS_*` environment variables, other than `PS_LIBRARY`, `PS_LOG_DIR`,
-  and `PS_TMP_DIR`, are now passed through to Docker.
+- ✨ `PS_*` environment variables, set either in your `photostructure.env`
+  or set in the `env` of the shell that is calling `start-docker.sh`, are now
+  passed through to Docker.
+
+- ✨ `start-docker.sh` now accepts an argument, which is passed through to
+  `docker-compose`:
+  - To run the services in the background (and ctrl-c to stop), run `start-docker.sh start`. This is the default.
+  - To run the services in the foreground (and ctrl-c to stop), run `start-docker.sh up`.
+  - To just view the resulting `docker-compose.yml` and not start services, run `start-docker.sh config`.
+  - To stop services, run either `docker-compose stop` or `start-docker.sh stop`.
 
 - 🐛 The settings page no longer allows the library path to be changed when
   running under docker. Instead, the library path should be changed in
   `photostructure.env` and `start-docker.sh` should be re-run.
 
-Other updates (thank you, beta testers!):
+### Other updates (thank you, beta testers!)
+
+- 🐛 Thumbnails for vertical videos are now correctly oriented and scaled.
+
+- 🐛/✨ Symlink loops in filesystems are detected and skipped over (even on NAS!).
 
 - ✨ Tags found in filenames or parent directories that follow `--` are now added
   automatically. If you already have a library, run a full sync to pull in these

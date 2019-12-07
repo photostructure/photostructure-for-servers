@@ -31,26 +31,54 @@
 <h1>PhotoStructure release notes</h1>
 <!-- markdownlint-disable MD002 MD041  -->
 <h2 id="v063">v0.6.3</h2>
-<h3 id="released20191202">Released 2019-12-02 🦃</h3>
-<p>If you're a PhotoStructure for Servers user, please fetch new copies of the
-<code>photostructure.env</code> and <code>start-docker.sh</code> files, as configuration has changed:</p>
+<h3 id="released20191206">Released 2019-12-06</h3>
+<h3 id="hopefullynotbreakingchanges">💔 Hopefully-not-breaking changes</h3>
+<p>A number of settings were moved from the library settings file to the server
+settings file. This should happen automatically after you update your version of
+PhotoStructure (on all platforms). The affected settings are:</p>
+<ul>
+<li><code>copyAssetsToLibrary</code></li>
+<li><code>scanAllDrives</code></li>
+<li><code>scanMyPictures</code></li>
+<li><code>scanPaths</code></li>
+</ul>
+<p>For more insformation about PhotoStructure settings, see
+<a href="https://support.photostructure.com/advanced-settings/">https://support.photostructure.com/advanced-settings/</a>.</p>
+<h3 id="photostructureforservers">PhotoStructure for Servers</h3>
+<p>If you're a PhotoStructure for Docker user, please fetch new copies of the
+<code>photostructure.env</code> and <code>start-docker.sh</code> files. A bunch of new stuff is in
+this version:</p>
 <ul>
 <li><p>✨ The <code>SCAN_PATH</code> value in <code>photostructure.env</code> used to be a colon-separated
-value, but is now a proper bash array. This change allows for paths that have
-colons in their names (like SMB mounts via GIO), but will require you to
-update your copy of <code>photostructure.env</code>.</p></li>
+value, but this is now a proper bash array. This supports paths that have
+colons in their names (like SMB mounts via GIO). Update your copy of
+<code>photostructure.env</code> by following the instructions at
+<a href="https://support.photostructure.com/photostructure-for-docker/">https://support.photostructure.com/photostructure-for-docker/</a>.</p></li>
+<li><p>✨ The <code>start-docker.sh</code> script now automatically updates. If you already
+started using PhotoStructure for Docker, you'll need to manually fetch a new
+copy by following the instructions at
+<a href="https://support.photostructure.com/photostructure-for-docker/">https://support.photostructure.com/photostructure-for-docker/</a>.</p></li>
 <li><p>✨ The <code>PS_TMP_DIR</code> scratch directory is now configurable, and should point to
 a fast scratch disk with several gigabytes free on the host machine. This is a
 new variable in <code>photostructure.env</code>, and should be set properly to prevent
 container bloat and possible Docker crashes.</p></li>
-<li><p>✨ Other <code>PS_*</code> environment variables, other than <code>PS_LIBRARY</code>, <code>PS_LOG_DIR</code>,
-and <code>PS_TMP_DIR</code>, are now passed through to Docker.</p></li>
+<li><p>✨ <code>PS_*</code> environment variables, set either in your <code>photostructure.env</code>
+or set in the <code>env</code> of the shell that is calling <code>start-docker.sh</code>, are now
+passed through to Docker.</p></li>
+<li><p>✨ <code>start-docker.sh</code> now accepts an argument, which is passed through to
+<code>docker-compose</code>:</p></li>
+<li><p>To run the services in the background (and ctrl-c to stop), run <code>start-docker.sh start</code>. This is the default.</p></li>
+<li><p>To run the services in the foreground (and ctrl-c to stop), run <code>start-docker.sh up</code>.</p></li>
+<li><p>To just view the resulting <code>docker-compose.yml</code> and not start services, run <code>start-docker.sh config</code>.</p></li>
+<li><p>To stop services, run either <code>docker-compose stop</code> or <code>start-docker.sh stop</code>.</p></li>
 <li><p>🐛 The settings page no longer allows the library path to be changed when
 running under docker. Instead, the library path should be changed in
 <code>photostructure.env</code> and <code>start-docker.sh</code> should be re-run.</p></li>
 </ul>
-<p>Other updates (thank you, beta testers!):</p>
+<h3 id="otherupdatesthankyoubetatesters">Other updates (thank you, beta testers!)</h3>
 <ul>
+<li><p>🐛 Thumbnails for vertical videos are now correctly oriented and scaled.</p></li>
+<li><p>🐛/✨ Symlink loops in filesystems are detected and skipped over (even on NAS!).</p></li>
 <li><p>✨ Tags found in filenames or parent directories that follow <code>--</code> are now added
 automatically. If you already have a library, run a full sync to pull in these
 new tags. Here are a couple examples:</p></li>

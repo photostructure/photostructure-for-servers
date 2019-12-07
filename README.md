@@ -45,11 +45,14 @@ The `start.sh` script verifies that node and git is installed, pulls the latest
 build from `master`, asks `yarn` to install dependencies, and finally launches
 PhotoStructure. You can use `--help` to see more detailed usage information.
 
-**BY RUNNING THIS SOFTWARE, YOU ARE AGREEING TO ALL TERMS IN THE [LICENSE](./LICENSE.md)**. It's quite short. Please read it.
+**BY RUNNING THIS SOFTWARE, YOU ARE AGREEING TO ALL TERMS IN THE [LICENSE](./LICENSE.md)**. 
+
+It's quite short. Please read it.
 
 ```sh
 ./start.sh
 ```
 
-Please see <https://support.photostructure.com/server> for more
-instructions on installation and running this software.
+Please see <https://support.photostructure.com/server> for more instructions on
+installation and running this software, including instructions for running under
+Docker.

@@ -29,6 +29,8 @@ html(lang="en")
     main
       if err
         .error.sticky.message= err
+          if !isElectron
+            p See <a href="https://support.photostructure.com/server/" target="_blank">the support site</a> for instructions.
 
       .container.reveal
         form(action="/settings" method="post")
@@ -87,47 +89,70 @@ html(lang="en")
 
                 p After you've installed FFmpeg or VLC, 
                   a(href="#" onclick="location.reload()") click here to continue.
-
             h2 Where are your photos and videos?
-            p Read about <a href="https://support.photostructure.com/how-to-hide-directories/" target="_blank">PhotoStructure's file import rules</a>.
-            p
-              label(for="scanAllDrives")
-                input#scanAllDrives(name="scan" type="radio" value="scanAllDrives" checked=scanAllDrives)
-                i.emj.computer
-                | Examine 
-                dfn(tooltip="PhotoStructure automatically ignores system, program, hidden, and \".NoMedia\" directories.") all directories
-                |
-                | on 
-                dfn(tooltip="New drives, including digital camera memory cards and USB drives, will be examined when you plug them in.") all drives
-                |
-                | for photos and videos. &nbsp; <span class="recommended" title="This is the &quot;set it and forget it&quot; option.">recommended</a>
+            
+            if isDocker
+              if hostScanPaths
+                p You've already configured Docker to scan the following paths:
+                ul
+                  each ea in hostScanPaths
+                    li
+                      tt= ea
+              else if scanPaths
+                p PhotoStructure will scan these mounted volumes:
+                ul
+                  each ea in scanPaths
+                    li
+                      tt= ea
+              else
+                p PhotoStructure will scan all mounted volumes for photos and videos.
+              p If you want to change this, shut down the docker service, edit your <tt>photostructure.env</tt>, and re-run <tt>start-docker.sh</tt>.
+            else
+              p
+                label(for="scanAllDrives")
+                  input#scanAllDrives(name="scan" type="radio" value="scanAllDrives" checked=scanAllDrives)
+                  i.emj.computer
+                  | Examine 
+                  dfn(tooltip="PhotoStructure automatically ignores system, program, hidden, and \".NoMedia\" directories.") all directories
+                  |
+                  | on 
+                  dfn(tooltip="New drives, including digital camera memory cards and USB drives, will be examined when you plug them in.") all drives
+                  |
+                  | for photos and videos. &nbsp; <span class="recommended" title="This is the &quot;set it and forget it&quot; option.">recommended</a>
 
-            p
-              label(for="scanPictures")
-                input#scanPictures(name="scan" type="radio" value="scanPictures" checked=scanPictures)
-                i.emj.camera
-                | Examine my 
-                dfn(tooltip=picturesPath) Pictures
-                |
-                | directory.
-            label(for="scanPath")
-              input#scanPath(name="scan" type="radio" value="scanPath" checked=scanPath)
-              input#scanPathInput.select-directory-path.w80(
-                title="Changing this will not remove assets already in your library.\nYou can add multiple paths here by separating paths with :"
-                name="scanPath"
-                type="text"
-                placeholder="Custom path to examine for photos and videos" 
-                max=1024
-                value=scanPath
-                onfocus="document.getElementById('scanPath').checked = true"
-              )
-              button.select-directory.btn-small.hidden.only-electron(
-                type="button"
-                data-textfield="#scanPathInput"
-                data-checkonclick="#scanPath"
-                data-title="Choose a directory to examine for photos and videos")
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.17 6l2 2H20v10H4V6h5.17M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>
-                | Select
+              p
+                label(for="scanPictures")
+                  input#scanPictures(name="scan" type="radio" value="scanPictures" checked=scanPictures)
+                  i.emj.camera
+                  | Examine my 
+                  dfn(tooltip=picturesPath) Pictures
+                  |
+                  | directory.
+              label(for="scanPath")
+                input#scanPath(name="scan" type="radio" value="scanPath" checked=scanPath)
+                i.emj.books
+                span Custom path(s)
+                input#scanPathInput.select-directory-path.w80(
+                  name="scanPath"
+                  type="text"
+                  placeholder="Custom path(s) to examine for photos and videos" 
+                  max=1024
+                  value=joinedScanPaths
+                  onfocus="document.getElementById('scanPath').checked = true"
+                )
+                button.select-directory.btn-small.hidden.only-electron(
+                  type="button"
+                  data-textfield="#scanPathInput"
+                  data-checkonclick="#scanPath"
+                  data-title="Choose a directory to examine for photos and videos")
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.17 6l2 2H20v10H4V6h5.17M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>
+                  | Select
+              p Please note:
+              ul
+                li Changing this setting will not remove assets already in your library
+                li Read about <a href="https://support.photostructure.com/how-to-hide-directories/" target="_blank">how PhotoStructure determines what files and folders to ignore</a>
+                li 
+                  dfn(tooltip="For example: \"" + exampleScanPath + "\"") Multiple paths are supported. Separate the absolute paths with <tt>#{delimiter}</tt> or <tt>¦</tt>
 
             h2 May PhotoStucture organize your photos and videos?
 
@@ -166,12 +191,16 @@ html(lang="en")
 
             if isDocker
               h2 Your PhotoStructure library
-              p 
-                | Your library is 
-                tt#currentLibraryPath #{currentLibraryPath}
-                | , a Docker VOLUME. 
-              p You can change the value in your <tt>photostructure.env</tt>. 
-                a(href="https://support.photostructure.com/install-server/" target="_blank") Read more about Docker setup here.
+              if currentLibraryPath
+                p 
+                  | Your library is 
+                  tt#currentLibraryPath #{currentLibraryPath}
+                  | , a Docker VOLUME. 
+                p You can change the value in your <tt>photostructure.env</tt>. 
+                  a(href="https://support.photostructure.com/photostructure-for-docker/" target="_blank") Read more about Docker setup here.
+              else
+                p.error.message PS_LIBRARY_PATH must be set (probably to /ps/library), and exist. See 
+                  a(href="https://support.photostructure.com/photostructure-for-docker/" target="_blank") the support site for instructions.
           
             else if welcome
               h2 Where would you like your library stored?
