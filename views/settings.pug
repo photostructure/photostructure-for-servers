@@ -108,17 +108,21 @@ html(lang="en")
                 p PhotoStructure will scan all mounted volumes for photos and videos.
               p If you want to change this, shut down the docker service, edit your <tt>photostructure.env</tt>, and re-run <tt>start-docker.sh</tt>.
             else
+              ul
+                li PhotoStructure automatically ignores  
+                  a(href="https://support.photostructure.com/how-to-hide-directories/" target="_blank") all hidden files, as well as system, application, and NoMedia directories.
+                li Changing this setting does not remove assets already in your library.
+
               p
                 label(for="scanAllDrives")
                   input#scanAllDrives(name="scan" type="radio" value="scanAllDrives" checked=scanAllDrives)
                   i.emj.computer
-                  | Examine 
-                  dfn(tooltip="PhotoStructure automatically ignores system, program, hidden, and \".NoMedia\" directories.") all directories
+                  | Examine all directories
                   |
                   | on 
                   dfn(tooltip="New drives, including digital camera memory cards and USB drives, will be examined when you plug them in.") all drives
                   |
-                  | for photos and videos. &nbsp; <span class="recommended" title="This is the &quot;set it and forget it&quot; option.">recommended</a>
+                  | for photos and videos. &nbsp; <span class="recommended">recommended</a>
 
               p
                 label(for="scanPictures")
@@ -128,10 +132,11 @@ html(lang="en")
                   dfn(tooltip=picturesPath) Pictures
                   |
                   | directory.
-              label(for="scanPath")
+              label.scanPath(for="scanPath")
                 input#scanPath(name="scan" type="radio" value="scanPath" checked=scanPath)
                 i.emj.books
-                span Custom path(s)
+                dfn(tooltip="For example: \"" + exampleScanPath + "\". Separate paths with a \"¦\" if any path has a \"" + delimiter + "\" in it.") Custom path(s)
+                br
                 input#scanPathInput.select-directory-path.w80(
                   name="scanPath"
                   type="text"
@@ -144,15 +149,10 @@ html(lang="en")
                   type="button"
                   data-textfield="#scanPathInput"
                   data-checkonclick="#scanPath"
+                  data-delimiter=delimiter
                   data-title="Choose a directory to examine for photos and videos")
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.17 6l2 2H20v10H4V6h5.17M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>
                   | Select
-              p Please note:
-              ul
-                li Changing this setting will not remove assets already in your library
-                li Read about <a href="https://support.photostructure.com/how-to-hide-directories/" target="_blank">how PhotoStructure determines what files and folders to ignore</a>
-                li 
-                  dfn(tooltip="For example: \"" + exampleScanPath + "\"") Multiple paths are supported. Separate the absolute paths with <tt>#{delimiter}</tt> or <tt>¦</tt>
 
             h2 May PhotoStucture organize your photos and videos?
 
@@ -204,7 +204,7 @@ html(lang="en")
           
             else if welcome
               h2 Where would you like your library stored?
-              p Your PhotoStructure Library holds a database of your photos and videos, and (depending on your choice above), a copy of all your original photos and videos 
+              p Your PhotoStructure Library holds a database of your photos and videos, and (depending on your choice above), a copy of all your original photos and videos.
               p This directory must have 
                 | <a href="https://support.photostructure.com/how-much-disk-space-do-i-need-for-my-photostructure-library/" target="_blank">
                 | <dfn tooltip="Digital photo sizes vary greatly between cameras. 1 Gigabyte stores several thousand pictures from a digital camera from 10 years ago, but only 20 pictures from a new high-end dSLR, and only 1 minute of 4K 60fps video."> lots of free space</dfn></a>.

@@ -30,21 +30,31 @@
 <body>
 <h1>PhotoStructure release notes</h1>
 <!-- markdownlint-disable MD002 MD041  -->
-<h2 id="v063">v0.6.3</h2>
-<h3 id="released20191206">Released 2019-12-06</h3>
-<h3 id="hopefullynotbreakingchanges">💔 Hopefully-not-breaking changes</h3>
+<h2 id="v070">v0.7.0</h2>
+<h3 id="released20191211">Released 2019-12-11</h3>
+<h3 id="settingschanges">💔 Settings changes</h3>
 <p>A number of settings were moved from the library settings file to the server
-settings file. This should happen automatically after you update your version of
-PhotoStructure (on all platforms). The affected settings are:</p>
+settings file. <strong>This migration should happen automatically</strong> after you update
+your version of PhotoStructure (on all platforms). The affected settings are:</p>
 <ul>
 <li><code>copyAssetsToLibrary</code></li>
 <li><code>scanAllDrives</code></li>
 <li><code>scanMyPictures</code></li>
 <li><code>scanPaths</code></li>
 </ul>
-<p>For more insformation about PhotoStructure settings, see
-<a href="https://support.photostructure.com/advanced-settings/">https://support.photostructure.com/advanced-settings/</a>.</p>
-<h3 id="photostructureforservers">PhotoStructure for Servers</h3>
+<p>More information about <a href="https://support.photostructure.com/advanced-settings/">changing advanced settings has been added to the support
+site</a>.</p>
+<h3 id="automaticupgradesonwindowsandlinux">Automatic upgrades on Windows and Linux</h3>
+<p>Automatic upgrades were broken for some users on Windows and Linux since v0.5.</p>
+<p>Please manually download and install the newest version. You don't need to
+uninstall the previous version beforehand.</p>
+<h3 id="scanpathimprovements">Scan path improvements</h3>
+<ul>
+<li>✨ The custom scan paths field on the settings page now natively supports
+multiple paths, and both os-specific delimiters (like <code>:</code> or <code>;</code>) as well as
+<code>¦</code> may be used (in case directories include the delimiter character).</li>
+</ul>
+<h3 id="photostructureforserverstake2">PhotoStructure for Servers, take 2</h3>
 <p>If you're a PhotoStructure for Docker user, please fetch new copies of the
 <code>photostructure.env</code> and <code>start-docker.sh</code> files. A bunch of new stuff is in
 this version:</p>
@@ -75,17 +85,20 @@ passed through to Docker.</p></li>
 running under docker. Instead, the library path should be changed in
 <code>photostructure.env</code> and <code>start-docker.sh</code> should be re-run.</p></li>
 </ul>
-<h3 id="otherupdatesthankyoubetatesters">Other updates (thank you, beta testers!)</h3>
+<h3 id="additionalkeywordextractors">Additional keyword extractors</h3>
+<p>✨ Tags found in filenames or parent directories that follow <code>--</code> are now added
+automatically. If you already have a library, run a full sync to pull in these
+new tags. Here are a couple examples:</p>
+<ul>
+<li>All files found in <code>/Users/bob/Pictures/2019-02-14/--event travel/</code> would
+be given <code>Keyword/event</code> and <code>Keyword/travel</code> tags.</li>
+<li>The file <code>/home/karen/2018-11-23/P317812--ocean.jpg</code> would be given the
+<code>Keyword/ocean</code> tag.</li>
+</ul>
+<h3 id="bugfixes">Bug fixes</h3>
 <ul>
 <li><p>🐛 Thumbnails for vertical videos are now correctly oriented and scaled.</p></li>
 <li><p>🐛/✨ Symlink loops in filesystems are detected and skipped over (even on NAS!).</p></li>
-<li><p>✨ Tags found in filenames or parent directories that follow <code>--</code> are now added
-automatically. If you already have a library, run a full sync to pull in these
-new tags. Here are a couple examples:</p></li>
-<li><p>All files found in <code>/Users/bob/Pictures/2019-02-14/--event travel/</code> would
-be given <code>Keyword/event</code> and <code>Keyword/travel</code> tags.</p></li>
-<li><p>The file <code>/home/karen/2018-11-23/P317812--ocean.jpg</code> would be given the
-<code>Keyword/ocean</code> tag.</p></li>
 <li><p>🐛 Main process error handling now respects the error rate setting, which
 defaults to 10 per minute. Prior versions would shut down PhotoStructure
 completely if any subprocess threw a fatal error.</p></li>

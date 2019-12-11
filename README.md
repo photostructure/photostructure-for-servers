@@ -36,7 +36,7 @@ $ sudo xcode-select --reset
    brew-installed packages:
 
 ```sh
-$ brew upgrade outdated
+$ brew update ; brew upgrade
 ```
 
 ## Start PhotoStructure

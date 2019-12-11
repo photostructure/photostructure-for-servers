@@ -1,24 +1,37 @@
 <!-- markdownlint-disable MD002 MD041  -->
 
-## v0.6.3
+## v0.7.0
 
-### Released 2019-12-06
+### Released 2019-12-11
 
-### 💔 Hopefully-not-breaking changes
+### 💔 Settings changes
 
 A number of settings were moved from the library settings file to the server
-settings file. This should happen automatically after you update your version of
-PhotoStructure (on all platforms). The affected settings are:
+settings file. **This migration should happen automatically** after you update
+your version of PhotoStructure (on all platforms). The affected settings are:
 
 - `copyAssetsToLibrary`
 - `scanAllDrives`
 - `scanMyPictures`
 - `scanPaths`
 
-For more insformation about PhotoStructure settings, see
-<https://support.photostructure.com/advanced-settings/>.
+More information about [changing advanced settings has been added to the support
+site](https://support.photostructure.com/advanced-settings/).
 
-### PhotoStructure for Servers
+### Automatic upgrades on Windows and Linux
+
+Automatic upgrades were broken for some users on Windows and Linux since v0.5.
+
+Please manually download and install the newest version. You don't need to
+uninstall the previous version beforehand.
+
+### Scan path improvements
+
+- ✨ The custom scan paths field on the settings page now natively supports
+  multiple paths, and both os-specific delimiters (like `:` or `;`) as well as
+  `¦` may be used (in case directories include the delimiter character).
+
+### PhotoStructure for Servers, take 2
 
 If you're a PhotoStructure for Docker user, please fetch new copies of the
 `photostructure.env` and `start-docker.sh` files. A bunch of new stuff is in
@@ -46,6 +59,7 @@ this version:
 
 - ✨ `start-docker.sh` now accepts an argument, which is passed through to
   `docker-compose`:
+
   - To run the services in the background (and ctrl-c to stop), run `start-docker.sh start`. This is the default.
   - To run the services in the foreground (and ctrl-c to stop), run `start-docker.sh up`.
   - To just view the resulting `docker-compose.yml` and not start services, run `start-docker.sh config`.
@@ -55,20 +69,22 @@ this version:
   running under docker. Instead, the library path should be changed in
   `photostructure.env` and `start-docker.sh` should be re-run.
 
-### Other updates (thank you, beta testers!)
+### Additional keyword extractors
+
+✨ Tags found in filenames or parent directories that follow `--` are now added
+automatically. If you already have a library, run a full sync to pull in these
+new tags. Here are a couple examples:
+
+- All files found in `/Users/bob/Pictures/2019-02-14/--event travel/` would
+  be given `Keyword/event` and `Keyword/travel` tags.
+- The file `/home/karen/2018-11-23/P317812--ocean.jpg` would be given the
+  `Keyword/ocean` tag.
+
+### Bug fixes
 
 - 🐛 Thumbnails for vertical videos are now correctly oriented and scaled.
 
 - 🐛/✨ Symlink loops in filesystems are detected and skipped over (even on NAS!).
-
-- ✨ Tags found in filenames or parent directories that follow `--` are now added
-  automatically. If you already have a library, run a full sync to pull in these
-  new tags. Here are a couple examples:
-
-  - All files found in `/Users/bob/Pictures/2019-02-14/--event travel/` would
-    be given `Keyword/event` and `Keyword/travel` tags.
-  - The file `/home/karen/2018-11-23/P317812--ocean.jpg` would be given the
-    `Keyword/ocean` tag.
 
 - 🐛 Main process error handling now respects the error rate setting, which
   defaults to 10 per minute. Prior versions would shut down PhotoStructure
