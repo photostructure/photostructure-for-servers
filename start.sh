@@ -22,7 +22,7 @@ for i in git npx dcraw jpegtran sqlite3 ffmpeg ; do
 done
 
 # Make sure we're always running the latest version:
-git add . ; git stash --quiet
+git stash --quiet --include-untracked
 git pull https://github.com/photostructure/photostructure-for-servers.git || die "git pull failed."
 
 argv=("$@")
