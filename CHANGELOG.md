@@ -1,6 +1,6 @@
 <!-- markdownlint-disable MD002 MD041  -->
 
-## v0.7.1
+## v0.7.2
 
 ### Released 2019-12-12
 
@@ -16,6 +16,11 @@
 - 🐛 library settings now correctly pass through non-default values.
 - 🐛 Browsing via Firefox would sometimes raise `SIGPIPE`s. These are
   ~~ignored~~ handled gracefully now.
+
+## v0.7.1
+
+If you automatically upgraded to this version, you'll need manually install
+v0.7.2, as this version never exits the splash screen. Apologies!
 
 ## v0.7.0
 
