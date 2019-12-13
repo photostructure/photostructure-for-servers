@@ -30,6 +30,22 @@
 <body>
 <h1>PhotoStructure release notes</h1>
 <!-- markdownlint-disable MD002 MD041  -->
+<h2 id="v071">v0.7.1</h2>
+<h3 id="released20191212">Released 2019-12-12</h3>
+<ul>
+<li>✨ Added a link to the post-install tips in the "starting up" message</li>
+<li>✨ Platform-default "back" and "forward" keystrokes now work for PhotoStructure
+for Desktops. On macOS, cmd-left and cmd-right to go back and forward, and on
+Windows and Ubuntu, alt-left and alt-right do the same.</li>
+<li>🐛 The settings page doesn't submit if the user hits the <code>enter</code> key anymore</li>
+<li>🐛 Forced scrollbar to render on the info panel</li>
+<li>🐛 Removed duplicate and bad library path suggestions in the welcome page</li>
+<li>✨ <code>photostructure web</code> now accepts a <code>--expose</code> argument. See <code>--help</code> for all
+options.</li>
+<li>🐛 library settings now correctly pass through non-default values.</li>
+<li>🐛 Browsing via Firefox would sometimes raise <code>SIGPIPE</code>s. These are
+~~ignored~~ handled gracefully now.</li>
+</ul>
 <h2 id="v070">v0.7.0</h2>
 <h3 id="released20191211">Released 2019-12-11</h3>
 <h3 id="settingschanges">💔 Settings changes</h3>
@@ -45,9 +61,9 @@ your version of PhotoStructure (on all platforms). The affected settings are:</p
 <p>More information about <a href="https://support.photostructure.com/advanced-settings/">changing advanced settings has been added to the support
 site</a>.</p>
 <h3 id="automaticupgradesonwindowsandlinux">Automatic upgrades on Windows and Linux</h3>
-<p>Automatic upgrades were broken for some users on Windows and Linux since v0.5.</p>
+<p>Automatic upgrades may have broken for some users on Windows and Linux.</p>
 <p>Please manually download and install the newest version. You don't need to
-uninstall the previous version beforehand.</p>
+uninstall the previous version beforehand. Sorry for the inconvenience!</p>
 <h3 id="scanpathimprovements">Scan path improvements</h3>
 <ul>
 <li>✨ The custom scan paths field on the settings page now natively supports

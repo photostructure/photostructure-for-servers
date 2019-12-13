@@ -1,5 +1,22 @@
 <!-- markdownlint-disable MD002 MD041  -->
 
+## v0.7.1
+
+### Released 2019-12-12
+
+- ✨ Added a link to the post-install tips in the "starting up" message
+- ✨ Platform-default "back" and "forward" keystrokes now work for PhotoStructure
+  for Desktops. On macOS, cmd-left and cmd-right to go back and forward, and on
+  Windows and Ubuntu, alt-left and alt-right do the same.
+- 🐛 The settings page doesn't submit if the user hits the `enter` key anymore
+- 🐛 Forced scrollbar to render on the info panel
+- 🐛 Removed duplicate and bad library path suggestions in the welcome page
+- ✨ `photostructure web` now accepts a `--expose` argument. See `--help` for all
+  options.
+- 🐛 library settings now correctly pass through non-default values.
+- 🐛 Browsing via Firefox would sometimes raise `SIGPIPE`s. These are
+  ~~ignored~~ handled gracefully now.
+
 ## v0.7.0
 
 ### Released 2019-12-11
@@ -20,10 +37,10 @@ site](https://support.photostructure.com/advanced-settings/).
 
 ### Automatic upgrades on Windows and Linux
 
-Automatic upgrades were broken for some users on Windows and Linux since v0.5.
+Automatic upgrades may have broken for some users on Windows and Linux.
 
 Please manually download and install the newest version. You don't need to
-uninstall the previous version beforehand.
+uninstall the previous version beforehand. Sorry for the inconvenience!
 
 ### Scan path improvements
 

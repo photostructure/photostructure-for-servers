@@ -61,8 +61,9 @@ The Product will periodically and automatically download and install updates.
 These updates may include bug fixes, security updates, and new features.
 
 The Product may send crash reports and usage telemetry to us via a third party
-(such as sentry.io). These may contain your PhotoStructure account, system
-metadata, and recent product log messages.
+(such as sentry.io). These may contain <a
+href="https://support.photostructure.com/error-reports/" target="_blank">your
+PhotoStructure account, system metadata, and recent log messages</a>.
 
 ### Termination of use
 
