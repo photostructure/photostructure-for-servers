@@ -22,7 +22,7 @@ EXPOSE 1787
 ENV PS_DOCKER="1"
 ENV PS_LIBRARY_PATH="/ps/library"
 ENV PS_LOG_DIR="/ps/logs"
-ENV PS_TMP_DIR="/ps/tmp"
+ENV PS_CACHE_DIR="/ps/tmp"
 ENV XDG_CONFIG_HOME="/ps/config"
 
 # These volume paths are configured in docker-compose.yml, using values set by

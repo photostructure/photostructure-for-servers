@@ -1,8 +1,130 @@
-<!-- markdownlint-disable MD002 MD041  -->
+
+## v0.8.0 _(work in progress)_
+
+_Not yet released_
+
+#### General updates
+
+✨ 🚅💨 **Faster sync**
+
+[TL;DR](https://en.wiktionary.org/wiki/too_long;_didn%27t_read#English): Library
+synchronization runs much faster now.
+
+In prior versions, PhotoStructure watched CPU utilization and only scheduled new
+work when your system was "idle enough." In practice, this resulted in
+under-scheduling. On slower or busier systems, imports ran so slowly that they
+didn't complete.
+
+PhotoStructure now runs all child processes with a
+[nice](https://en.wikipedia.org/wiki/Nice_%28Unix%29) or
+[BelowNormal](https://docs.microsoft.com/en-us/dotnet/api/system.diagnostics.processpriorityclass?view=netframework-4.8)
+priority level. This allows your operating system schedule work much more
+efficiently. Your system should remain responsive while simultaneously running
+synchronization tasks substantially faster, especially on multi-core systems.
+
+The new `maxConcurrent` and `processPriority` settings allow for tuning this behavior.
+Please email us (hello@photostructure.com) if you need to tweak the defaults for
+your system.
+
+✨ 📹 **Video support improvements**
+
+Video duration is now shown in the Asset Info panel. Duration will need to be
+backfilled for all videos in your library, and will happen automatically after
+you upgrade to this version.
+
+Transcoding is (by far!) the most expensive operation that PhotoStructure has to
+do during the import process, and has been refined in this new released. Previous
+versions transcoded all videos not in `video/mp4` format.
+
+PhotoStructure now provides a setting, `doNotTranscodeMimetypes`, which adds
+three more commonly-supported video types to avoid transcoding (as most browsers
+on most OSes can natively render them).
+
+✨ 🏷️ **Hierarchical keyword support**
+
+PhotoStructure now extracts hierarchical keywords from `Categories`, `TagsList`,
+`LastKeywordXMP`, `HierarchicalSubject`, `CatalogSets`, and `Subject` tags.
+
+For non-hierarchical keyword sources, like pathnames, PhotoStructure splits by
+commas and semicolons. For example, `car, blue, tree` will be interpreted as
+having the keywords `car`, `blue`, and `tree`. This is configurable via the
+`keywordDelimiters` setting.
+
+PhotoStructure interprets keywords as “heirarchies”, or “paths”, when a keyword
+includes one or more of the characters `/`,`|`,`>`,`≻`,`⊃`, or `⸧`. Note that on
+windows, there can be issues with filenames that have forward slashes, vertical
+bars, or greater-than characters, so use the alternatives. This allows for tags
+like `Family|Einstein|Albert`, `Flora ⊃ Fruit ⊃ Orange`, or
+`Fauna > Oceanic > Pelican`. This is configurable via the new
+`keywordPathSeparators` setting.
+
+✨ 🌍🌏🌎 **Better unicode support**
+
+Filenames and directories with non-latin characters should now be supported
+properly.
+
+#### Frontend updates
+
+- ✨ **See your dupes**: You can now view all Asset variants on both mobile and
+  desktop views. Open the Asset info panel, and click on the pathname to view
+  that file's image. If the image is RAW, it will be converted to JPG so your
+  browser can render it.
+- ✨ **Better Asset info on mobile and desktop**: The Asset Info panel no longer
+  overlays on top of the current photo, but shoves the asset to the left (on
+  larger screens) or below the info (on mobile screens).
+- ✨ Thumbnails now use
+  [`loading="lazy"`](https://developer.mozilla.org/en-US/docs/Web/Performance/Lazy_loading)
+  to speed up initial page rendering on newer desktop and mobile browsers.
+- 🐛 On some mobile browsers, child tags and assets didn't always lazy-load. A
+  `Load More ...` button now shows when needed.
+- ✨/💔 Mousewheel no longer controls zoom level, as we need it to scroll down to
+  the streams. See [our documentation on how to use the new zoom](/zoom)!
+- ✨ The Asset Streams panel on the bottom no longer overlays on the current
+  photo.
+- 🐛 When visiting unloadable assets (due to being hidden or otherwise
+  unavailable), the browser is now redirected to the nearest chronological
+  asset.
+
+#### Backend updates
+
+- ✨ New `Type` tag, so you can view all videos, or all images of a specific type.
+- ✨ Date tags can include day now. See the [library
+  settings](https://photostructure.com/getting-started/advanced-settings/#library-settings)
+  file.
+- ✨ All taggers can be enabled or disabled via new library settings.
+- ✨/💔 sidecar files use the full filename now, so image "pairs" (like JPG +
+  RAW) can have differing metadata values. For example, for `IMG_123.JPG`, both
+  `IMG_123.XMP` and `IMG_123.JPG.XMP` will be considered relevant sidecars for
+  that file, and the enclosed metadata tags will be overlayed on the original
+  image in order of newest-written-file-wins.
+- 🐛 RAW image dimensions and rotations should be more accurate now.
+- 🐛 Paths can now have non-latin characters.
+- 🐛 Unicode keywords (both in ICMP/EXIF headers and in pathnames) are now
+  supported.
+- 🐛 Prior versions could persist settings that were set by command-line
+  arguments or environment variables making it the new “default” value. If you
+  had problems with the settings page not saving your values, this should fix
+  that.
+- 🐛 If an asset doesn't have a metadata-encoded captured-at, we now infer the
+  captured-at from the basename (if the file is named something like YYYYMMDD),
+  and if no date is found in the basename, we examine the parent directory path.
+- ✨ OnePlus model numbers are now decoded (“7 Pro” instead of “GM1917”).
+- ✨ Image hashing has been sped up dramatically for images that have embedded
+  thumbnails. Most original JPEG and RAW images have these thumbnails.
+- ✨ Dominant color extraction is faster, more accurate, and dominant color
+  comparisons now use more accurate color perception correlation.
+
+#### PhotoStructure for Servers update
+
+- ✨ Instructions for building `libvips` (required to support `.heic`) were added
+  to the README. Note that the docker image does _not_ support `.heic`/HEVC, due
+  to licensing and patent restrictions. **Tell Apple to switch to AV1!**
+- 📦 If the version of Node.js changes between runs, `./start.sh` automatically
+  rebuilds `node_modules` as required.
 
 ## v0.7.2
 
-### Released 2019-12-12
+**Released 2019-12-12**
 
 - ✨ Added a link to the post-install tips in the "starting up" message
 - ✨ Platform-default "back" and "forward" keystrokes now work for PhotoStructure
@@ -14,19 +136,20 @@
 - ✨ `photostructure web` now accepts a `--expose` argument. See `--help` for all
   options.
 - 🐛 library settings now correctly pass through non-default values.
-- 🐛 Browsing via Firefox would sometimes raise `SIGPIPE`s. These are
-  ~~ignored~~ handled gracefully now.
+- 🐛 Browsing via Firefox would sometimes raise `SIGPIPE`s. These are handled
+  gracefully now.
 
 ## v0.7.1
 
 If you automatically upgraded to this version, you'll need manually install
-v0.7.2, as this version never exits the splash screen. Apologies!
+v0.7.2, as this version never exits the splash screen.
+[Apologies](https://twitter.com/PhotoStructure/status/1205335353210441729)!
 
 ## v0.7.0
 
-### Released 2019-12-11
+**Released 2019-12-11**
 
-### 💔 Settings changes
+#### 💔 Settings changes
 
 A number of settings were moved from the library settings file to the server
 settings file. **This migration should happen automatically** after you update
@@ -40,20 +163,20 @@ your version of PhotoStructure (on all platforms). The affected settings are:
 More information about [changing advanced settings has been added to the support
 site](https://support.photostructure.com/advanced-settings/).
 
-### Automatic upgrades on Windows and Linux
+#### Automatic upgrades on Windows and Linux
 
 Automatic upgrades may have broken for some users on Windows and Linux.
 
 Please manually download and install the newest version. You don't need to
 uninstall the previous version beforehand. Sorry for the inconvenience!
 
-### Scan path improvements
+#### Scan path improvements
 
 - ✨ The custom scan paths field on the settings page now natively supports
   multiple paths, and both os-specific delimiters (like `:` or `;`) as well as
   `¦` may be used (in case directories include the delimiter character).
 
-### PhotoStructure for Servers, take 2
+#### PhotoStructure for Servers, take 2
 
 If you're a PhotoStructure for Docker user, please fetch new copies of the
 `photostructure.env` and `start-docker.sh` files. A bunch of new stuff is in
@@ -91,18 +214,21 @@ this version:
   running under docker. Instead, the library path should be changed in
   `photostructure.env` and `start-docker.sh` should be re-run.
 
-### Additional keyword extractors
+#### Additional keyword extractors
 
 ✨ Tags found in filenames or parent directories that follow `--` are now added
 automatically. If you already have a library, run a full sync to pull in these
 new tags. Here are a couple examples:
 
-- All files found in `/Users/bob/Pictures/2019-02-14/--event travel/` would
-  be given `Keyword/event` and `Keyword/travel` tags.
-- The file `/home/karen/2018-11-23/P317812--ocean.jpg` would be given the
-  `Keyword/ocean` tag.
+- All files found in the `/Users/bob/Pictures/2019-02-14/--event travel/`
+  directory would be tagged with `Keyword/event` and `Keyword/travel`.
+- The file `/home/karen/2018-11-23/P317812--ocean.jpg` would be tagged with
+  `Keyword/ocean`.
+- Filename tags can be hierarchical by using the `keywordPathSeparators`
+  setting: for example, `/home/alice/Pictures/--event>wedding,/example.jpg`
+  would be tagged with `Keyword/event/wedding`.
 
-### Bug fixes
+**Bug fixes**
 
 - 🐛 Thumbnails for vertical videos are now correctly oriented and scaled.
 
@@ -139,7 +265,7 @@ new tags. Here are a couple examples:
 
 ## v0.6.2
 
-### Released 2019-11-23
+**Released 2019-11-23**
 
 - 🐛 On web restart-on-error, prior library lock is released by main before
   restarting web. This resolves the "Library is already open" crash bug.
@@ -164,14 +290,14 @@ new tags. Here are a couple examples:
 
 ## v0.6.1
 
-### Released 2019-11-21
+**Released 2019-11-21**
 
 - 🐛 Window buttons on settings work within Electron
 - 🐛 Electron updates were re-enabled for Linux AppImages
 
 ## v0.6.0
 
-### Released 2019-11-20
+**Released 2019-11-20**
 
 Please note that this version will require revisiting the files in your library
 to recompute metadata, compute image hashes, extract new lens and keyword tags,
@@ -180,7 +306,7 @@ automatically after you upgrade PhotoStructure.
 
 Thanks for your patience while PhotoStructure upgrades your library!
 
-### 💔 Breaking changes
+**💔 Breaking changes**
 
 - **macOS is now notarized**. Official support for macOS 10.11-10.13 (El Capitan
   through Sierra) has been dropped (although it may still work for you). Note
@@ -191,7 +317,7 @@ Thanks for your patience while PhotoStructure upgrades your library!
 - Replaced the `maxPreviewResolution` library setting with `previewResolutions`.
   See the description of the setting for more details.
 
-### 🚀 Performance improvements
+**🚀 Performance improvements**
 
 - ✨ `ffmpeg`, if installed, is now used for frame extraction and transcoding
   instead of VLC (in preparation for PhotoStructure for Servers). You may find
@@ -226,7 +352,7 @@ Thanks for your patience while PhotoStructure upgrades your library!
 - ✨ The `logtail` command now uses non-polling filesystem notifications (via
   `chokidar`), and orders log lines chronologically.
 
-### 💪 Robust de-duplication
+**💪 Robust de-duplication**
 
 - ✨ PhotoStructure's photo and video merging algorithm was revisited in this
   version. The prior implementation used 2 hash comparisons, which failed to
@@ -237,12 +363,12 @@ Thanks for your patience while PhotoStructure upgrades your library!
   image generation and better video transcoding) is why this version requires
   prior libraries to be upgraded.
 
-### 🎥 Lens tagging
+**🎥 Lens tagging**
 
 - ✨ If a photo or video has lens metadata, that will be added as a tag, and
   is navigable via the new root tag, "Lens".
 
-### 🔄 Photo and video rotation
+**🔄 Photo and video rotation**
 
 - ✨ Added support for photo and video rotation. Click on an asset, and hit `r`
   (or the rotate icon in the header) to rotate counter-clockwise 90 degrees. Hit
@@ -257,7 +383,7 @@ Thanks for your patience while PhotoStructure upgrades your library!
   a flash of an incorrectly-rotated image immediately after rotating: we know,
   and we'll try to fix it in the next release._
 
-### 🔍 Zoom on desktop
+**🔍 Zoom on desktop**
 
 - ✨ When viewing an image full-screen, you can now type 'z', or single-click in
   the middle of the photo, click the new zoom icon in the upper right corner, or
@@ -266,13 +392,13 @@ Thanks for your patience while PhotoStructure upgrades your library!
   'esc' key, clicking in the middle of the screen, or clicking the zoom icon
   will return to normal mode.
 
-### 🔍 Zoom on mobile
+**🔍 Zoom on mobile**
 
 - ✨ To zoom into an image or video on a tablet or phone, just pinch out on the
   image. As you zoom in, higher resolution images will be loaded in-place of the
   current image to ensure the highest quality pixel peeping experience.
 
-### 📱 Responsive UI
+**📱 Responsive UI**
 
 - ✨ The welcome/settings page is now responsive and usable from an iPhone SE to
   a 4k display.
@@ -282,7 +408,7 @@ Thanks for your patience while PhotoStructure upgrades your library!
   that don't seem to have nice workarounds, and the new hiding header makes this
   less pressing a feature on mobile.
 
-### ✨ General improvements
+**✨ General improvements**
 
 - ✨ PhotoStructure for Desktop now has an application menu on macOS. YAY.
 - ✨ Standard keystrokes for display zoom, copy, paste, and devtools now work.
@@ -292,7 +418,7 @@ Thanks for your patience while PhotoStructure upgrades your library!
 - ✨ PhotoStructure now uses reverse-chronological order consistently. Photo
   streams had previously been chronological order, and tags were reverse-chron.
   Fixes #42.
-- ✨ Image hashes are now used to coallesce similar assets that have had their
+- ✨ Image hashes are now used to coalesce similar assets that have had their
   metadata stripped.
 - ✨ Excluding images due to missing Make or Model is now a Setting
 - ✨ The `info` tool now reports explaining why 2 files would or wouldn't belong
@@ -322,7 +448,7 @@ Thanks for your patience while PhotoStructure upgrades your library!
 - ✨ Database backups are automatically taken before every migration set is
   applied (to allow for recovery via customer support)
 
-### ✨ Customer support
+**✨ Customer support**
 
 - ✨ The `about` window now supports copying system metadata to the clipboard,
   or emailing to support via a `mailto:`.
@@ -331,7 +457,7 @@ Thanks for your patience while PhotoStructure upgrades your library!
 
 ## v0.5.1
 
-### Released 2019-06-06
+**Released 2019-06-06**
 
 - 📦 Directory iteration uses a new, much smaller (non-cached) class to track
   filesystem metadata. This should help reduce memory consumption while scanning
@@ -347,12 +473,12 @@ Thanks for your patience while PhotoStructure upgrades your library!
 
 ## v0.5.0
 
-### Released 2019-06-01
+**Released 2019-06-01**
 
 Please note that this version will require a sync to revisit the files in your
 library. This will happen automatically.
 
-### ✨ Synchronization improvements
+**✨ Synchronization improvements**
 
 - ✨ **Sync runs periodically now**. After `sync` completes importing all
   available volumes, it waits for `syncIntervalHours` (configurable as a library
@@ -420,9 +546,9 @@ library. This will happen automatically.
   of order or more than once. Now, they don't duplicate themselves! And they
   maintain order! That was an ugly bug, sorry about that. See #121.
 
-## v0.4.0
+#### v0.4.0
 
-### Released 2019-05-07
+**Released 2019-05-07**
 
 - ✨ **Open item in folder**: When browsing on the computer that is running
   PhotoStructure, you may now click the photo or video icon by a pathname in the
@@ -433,7 +559,7 @@ library. This will happen automatically.
 - ✨ WVGA was added as a smaller `maxPreviewResolution` for users only serving
   low resolution browsers.
 
-- 🐛 Settings were rewritten unneccessarily due to a version parsing bug.
+- 🐛 Settings were rewritten unnecessarily due to a version parsing bug.
 
 - 🐛 If the library directory goes away while PhotoStructure is running (for
   example, when the volume is unmounted or the NAS is shut down), the main
@@ -443,9 +569,9 @@ library. This will happen automatically.
 - 🐛 Error reporting throttles across processes and services now. Note that
   error reporting can be disabled in the system settings.
 
-## v0.3.8
+#### v0.3.8
 
-### Released 2019-05-02
+**Released 2019-05-02**
 
 - ✨ All asset file originals are now directly downloadable via the asset info
   panel
@@ -473,9 +599,9 @@ library. This will happen automatically.
   their JPG counterpart. PhotoStructure now handles these "features" properly,
   and will merge the image pairs.
 
-## v0.3.7
+#### v0.3.7
 
-### Released 2019-04-27
+**Released 2019-04-27**
 
 - 🐛 Only support VLC `v3.0.x`, as `v2.x` doesn't support our transcoding
   options, and `v4.0.0-dev` has bugs with window handling on Windows.
@@ -497,17 +623,17 @@ library. This will happen automatically.
 
 - 📦 DB SHAs were reduced from 224 to 192 bits to reduce index memory consumption
 
-## v0.3.4
+#### v0.3.4
 
-### Released 2019-04-20
+**Released 2019-04-20**
 
 - 🐛 Force VLC to ignore existing system configuration to prevent terminal
   flashes. See
   [#126](https://gitlab.com/photostructure/photostructure/issues/126).
 
-## v0.3.3
+#### v0.3.3
 
-### Released 2019-04-19
+**Released 2019-04-19**
 
 🥂 Welcome, second wave of beta users! ✨
 
@@ -519,9 +645,9 @@ library. This will happen automatically.
 - 🐛 Stream UX avoids video controls. See
   [#57](https://gitlab.com/photostructure/photostructure/issues/57).
 
-## v0.3.0
+#### v0.3.0
 
-### Released 2019-04-15 11:24:47
+**Released 2019-04-15 11:24:47**
 
 - ✨ Page titles (only visible on browsers) now reflect the page content
 - ✨ added another timezone/date parsing heuristic for videos. See
@@ -544,9 +670,9 @@ library. This will happen automatically.
 - 📦 support spawning `ceil` sync-file processes, which should allow for more
   CPU saturation during sync.
 
-## v0.2.17
+#### v0.2.17
 
-### Released 2019-03-26 10am
+**Released 2019-03-26 10am**
 
 - 🐛 CPU scheduling should match maxCpuPercent closer now (the prior formula
   underscheduled work)
@@ -555,15 +681,15 @@ library. This will happen automatically.
   `statTimeoutSeconds` setting.
 - 📦 Settings I/O was updated with more help in the intro.
 
-## v0.2.16
+#### v0.2.16
 
-### Released 2019-03-25
+**Released 2019-03-25**
 
 - 🐛 Fix metadata date parsing error from Luxon
 
-## v0.2.15
+#### v0.2.15
 
-### Released 2019-03-24
+**Released 2019-03-24**
 
 - ✨ CPU utilization had been by "max CPUs," but that proved difficult to
   explain. The new `maxCpuPercent` setting is a "CPU utilization goal" that
@@ -571,23 +697,23 @@ library. This will happen automatically.
 - 📦 Rebuilt and hand-validated new CpuUsage.
 - 📦 All dependencies are scanned for vulnerabilities after updates
 
-## v0.2.12-alpha, v0.2.14
+#### v0.2.12-alpha, v0.2.14
 
-### Released 2019-03-21
+**Released 2019-03-21**
 
 - 🐛 Error handling doesn't crash subprocesses
 - 📦 Heap allocation errors with Electron 4. Back to Electron 3.
 
-## v0.2.11-alpha
+#### v0.2.11-alpha
 
-### Released 2019-03-20
+**Released 2019-03-20**
 
 - 🐛 Fix [Windows PowerShell
   parsing](https://gitlab.com/mceachen/photostructure/issues/88)
 
-## v0.2.10-alpha
+#### v0.2.10-alpha
 
-### Released 2019-03-19
+**Released 2019-03-19**
 
 - 🐛 Fix [Ubuntu upgrade results in 2 tray
   icons](https://gitlab.com/mceachen/photostructure/issues/74)
@@ -598,9 +724,9 @@ library. This will happen automatically.
   [#36](https://gitlab.com/mceachen/photostructure/issues/36)
 - 📦 New sharp and Electron 4. We'll see how that goes.
 
-## v0.2.9-alpha
+#### v0.2.9-alpha
 
-### Released 2019-03-15
+**Released 2019-03-15**
 
 - ✨ Mac's TextEdit defaults to saving text files with smartquotes, which
   corrupts the `settings.toml` files. PhotoStructure straightens out quotes for
@@ -613,9 +739,9 @@ library. This will happen automatically.
   before to update the progress bar, but it made scanning expensive, especially
   to NASes). See [#80](https://gitlab.com/mceachen/photostructure/issues/80).
 
-## v0.2.8-alpha
+#### v0.2.8-alpha
 
-### Released 2019-03-09
+**Released 2019-03-09**
 
 - ✨ all processes spawned by PhotoStructure are tracked by pidfiles now, which
   lets cleanup happen both while PhotoStructure is running, as well as on
@@ -623,9 +749,9 @@ library. This will happen automatically.
 - 🐛 rebuilt file import timeout calculations, which incorrectly prevented some
   larger raw image and video files from being imported.
 
-## v0.2.7-alpha
+#### v0.2.7-alpha
 
-### Released 2019-03-01
+**Released 2019-03-01**
 
 - ✨ added PullProgressObserver to video and raw image transcode ops
 - ✨ long operations (like file copies, SHA, and video transcoding) now show up
@@ -634,9 +760,9 @@ library. This will happen automatically.
   already multithreaded). If other CPUs are available, they will import pending
   images.
 
-## v0.2.6-alpha
+#### v0.2.6-alpha
 
-### Released 2019-02-24
+**Released 2019-02-24**
 
 setting. Video streaming in the UI now autoplays instantly.
 
@@ -647,9 +773,9 @@ setting. Video streaming in the UI now autoplays instantly.
 - ✨ files and folders can be dragged onto the PhotoStructure icon, or on Mac,
   onto the menu bar icon, and the contents will be imported.
 
-## v0.2.0-alpha
+#### v0.2.0-alpha
 
-### Released 2019-02-13
+**Released 2019-02-13**
 
 - 💔 **Users must manually install VLC.** See
   <https://support.photostructure.com/vlc-installation/>
@@ -682,25 +808,25 @@ setting. Video streaming in the UI now autoplays instantly.
 - ✨ PhotoStructure work scheduling was restructured, which should result in
   faster Asset processing, and should fix "stuck" synchronization.
 
-## v0.1.15
+#### v0.1.15
 
-### Released 2019-01-26 20:30
+**Released 2019-01-26 20:30**
 
 - 🐛 Library settings are properly read on re-launch
 - 🐛 Fixed empty terminal shell spawning on windows
 
-## v0.1.14
+#### v0.1.14
 
-### Released 2019-01-26 14:00
+**Released 2019-01-26 14:00**
 
 - 🐛 Reverted back to Electron 3, as the system tray under linux was broken in
   Electron 4.
 
 - 🐛 Fixed nslookup error in remote mountpoint name resolutions
 
-## v0.1.12
+#### v0.1.12
 
-### Released 2019-01-26 12:02
+**Released 2019-01-26 12:02**
 
 - ✨ Support for persisted system and library settings. Any external edits must be
   done while PhotoStructure is shut down.
@@ -722,16 +848,16 @@ setting. Video streaming in the UI now autoplays instantly.
 - A number of other system settings are exposed as well, including resolution of
   [#53](https://gitlab.com/mceachen/photostructure/issues/53).
 
-## v0.1.11
+#### v0.1.11
 
-### Released 2019-01-15 21:01
+**Released 2019-01-15 21:01**
 
 - Fixed [ABI issue](https://github.com/lovell/sharp/issues/1522) caused by
   Electron 4
 
-## v0.1.10
+#### v0.1.10
 
-### Released 2019-01-15 19:00
+**Released 2019-01-15 19:00**
 
 - Rewrote volume detection to be async on Mac and Linux. This should help
   prevent volumes "disappearing" and causing PhotoStructure to pause
@@ -747,9 +873,9 @@ setting. Video streaming in the UI now autoplays instantly.
   disappear (according to `df`), which cancels synchronization on larger
   volumes.
 
-## v0.1.8
+#### v0.1.8
 
-### Released 2018-12-19
+**Released 2018-12-19**
 
 - First external beta test on Mac OS 10.13
 - Concurrent transcoding is serialized
@@ -759,16 +885,16 @@ setting. Video streaming in the UI now autoplays instantly.
   criteria has been dropped to allow these ~1MP images.
 - Progress per volume is isolated by separate message queues now.
 
-## v0.1.5
+#### v0.1.5
 
-Released 2018-12-08
+**Released 2018-12-08**
 
 - Sync process can be paused and resumed via the tray/menu bar icon
 - videos are validated by ffmpeg before importing
 
-## v0.1.4
+#### v0.1.4
 
-Released 2018-12-07
+**Released 2018-12-07**
 
 - Automatic update support for Mac and Windows
 - Automatic on-the-fly video transcoding for non-mp4 videos
@@ -778,7 +904,7 @@ Released 2018-12-07
   multi-cpu hosts
 - Special characters in metadata fields are now supported
 
-## v0.0.46 - 50
+#### v0.0.46 - 50
 
 Performance improvements:
 
@@ -806,17 +932,17 @@ Bug fixes:
 - Thumbnails for any given asset is generated from a single asset file version.
 - Internal RPC was rebuilt to support retries and error backpropogation
 
-## v0.0.45
+#### v0.0.45
 
-Released 2018-09-07
+**Released 2018-09-07**
 
 - Added support for fullscreen video streaming
 - Added web health check
 - Fixed sometimes-missing video thumbnails
 
-## v0.0.41 - 44
+#### v0.0.41 - 44
 
-Released 2018-09-05
+**Released 2018-09-05**
 
 - Dropped max filesize filter from 3gb to 1gb, given the asset processor timeout
   is currently static, and large videos were making the asset importer hang
@@ -826,13 +952,13 @@ Released 2018-09-05
   files).
 - `psvol`, `psnet`, and `pslib` URI protocols now handle root directories
 
-## v0.0.20 - 40
+#### v0.0.20 - 40
 
 - Work on auto-updating
 
-## v0.0.19
+#### v0.0.19
 
-Released 2018-08-27
+**Released 2018-08-27**
 
 - Auto-update available through the Tray
 - Only half the system CPUs will be spawned for `sync-file` to reduce memory

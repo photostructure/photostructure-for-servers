@@ -1,3 +1,4 @@
+
 ### PLEASE READ CAREFULLY BEFORE USING THIS PRODUCT
 
 This End-User License Agreement ("EULA") is a legal agreement between (a) You
@@ -18,7 +19,7 @@ intellectual property rights in the Product.
 ### License
 
 You may not separately publish, sell, market, distribute, lend, lease, rent, or
-sublicense the software code, including license keys. The Product is licensed,
+sublicense the Product, software code, or license keys. The Product is licensed,
 not sold.
 
 ### Limitation of liability
@@ -42,16 +43,16 @@ copyright holders be liable for any claim, damages or other liability, whether
 in an action of contract, tort or otherwise, arising from, out of or in
 connection with the Product or the use or other dealings in the Product.**
 
-### Limitation on reverse engineering and derivative works
+### Limitation on derivative works
 
 Except to the extent that such restriction is not permitted under applicable
-law, you are not permitted (and you agree not to) reverse engineer, decompile,
-disassemble or create derivative works of or modify the Product.
+law, you are not permitted (and you agree not to) create or redistribute
+derivative works of the Product.
 
 ### Privacy and consent to use data
 
-**The Product will not share your photos and videos to any outside entity
-without your explicit consent.**
+**The Product will not share your photos and videos to any outside
+entity without your explicit consent.**
 
 PhotoStructure Customer Support may request access to problematic images or
 videos, but will only access those assets that you explicitly consent to
@@ -61,9 +62,11 @@ The Product will periodically and automatically download and install updates.
 These updates may include bug fixes, security updates, and new features.
 
 The Product may send crash reports and usage telemetry to us via a third party
-(such as sentry.io). These may contain <a
-href="https://support.photostructure.com/error-reports/" target="_blank">your
+(such as Sentry). These reports contain <a
+href="https://photostructure.com/error-reports/" target="_blank">your
 PhotoStructure account, system metadata, and recent log messages</a>.
+
+[//]: # "The URL above must be fully-qualified, as the EULA is included in the welcome page."
 
 ### Termination of use
 

@@ -4,16 +4,14 @@ html(lang="en")
     meta(charset="utf-8")
     title= title
     meta(name="viewport" content="width=device-width,initial-scale=1")
-    if isDev
-      link(rel="stylesheet", href="/css/settings.css")
-    else
-      link(rel="stylesheet", href="/app/settings.css")
+    link(rel="stylesheet", href="/app/settings.css")
 
   body.reveal(class=bodyClass)
     header.settings
 
-      img(src="/images/logo-white.svg" height=32 title="PhotoStructure")
-      b.reveal.pl1em #{welcome ? "Welcome to PhotoStructure" : "Settings"}
+      .title
+        img(src="/images/logo-white.svg" height=32 title="PhotoStructure")
+        b.reveal.pl1em #{welcome ? "Welcome to PhotoStructure" : "Settings"}
 
       if isElectron && !isMac
         .right.no-drag

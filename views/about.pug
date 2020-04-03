@@ -9,10 +9,10 @@ html
 
   body.grid-center
     main.reveal
-      img(src="/images/logo-gradient-gloss-sq.svg" width=128 height=128 class="logo")
       .title
+        img(src="/images/logo-gradient-gloss.svg" class="logo")
         h1 photo<b>structure</b>
-        h2 for desktop
+        h2 #{forFlavor}
       table.versions
         each v in versions
           tr
