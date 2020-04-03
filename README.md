@@ -1,3 +1,4 @@
+![PhotoStructure Logo](https://photostructure.com/img/2019/08/bokeh-logo-2048w.jpg)
 # PhotoStructure™ for Servers
 
 PhotoStructure is your new home for all your photos and videos. Installation
