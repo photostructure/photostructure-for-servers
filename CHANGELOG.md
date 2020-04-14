@@ -1,9 +1,24 @@
 
 ## v0.8.0 _(work in progress)_
 
-_Not yet released_
+_Expected release: April 2020_
 
 #### General updates
+
+✨ 🧭 **Easier navigation**
+
+Click the new top-left navigation button for access to
+
+- Root tags, like "When," "Camera," and "File Type"
+- The about and settings pages
+- Links to control the sync process and shut down PhotoStructure
+- The getting started and support pages on photostructure.com
+
+PhotoStructure for Servers users: this gets you to feature parity with Desktop
+users that have enjoyed these links in their system tray menu.
+
+PhotoStructure for Desktop users on Linux and Windows: hit the `alt` key to see
+your new menu bar.
 
 ✨ 🚅💨 **Faster sync**
 
@@ -26,6 +41,19 @@ The new `maxConcurrent` and `processPriority` settings allow for tuning this beh
 Please email us (hello@photostructure.com) if you need to tweak the defaults for
 your system.
 
+✨ 💪 **More robust error handling**
+
+While browsing, if an asset is found that can't be rendered due to an incomplete
+import, unmounted filesystem, or any other error, PhotoStructure will redirect
+you to the nearest valid asset as you browse while it runs a background repair
+job to try to fix the asset.
+
+✨ 📨 **More download options**
+
+The asset info panel now lets you download the original, large, medium, and
+small resized versions of your images. These smaller versions are handy for emails or
+texts, and are available on the first asset file's `⋮` button.
+
 ✨ 📹 **Video support improvements**
 
 Video duration is now shown in the Asset Info panel. Duration will need to be
@@ -39,6 +67,17 @@ versions transcoded all videos not in `video/mp4` format.
 PhotoStructure now provides a setting, `doNotTranscodeMimetypes`, which adds
 three more commonly-supported video types to avoid transcoding (as most browsers
 on most OSes can natively render them).
+
+✨ 🔄 **More robust rotation support**
+
+When you rotate your photos or videos with PhotoStructure, it now applies image
+content matching to ensure **all asset file variants** for the asset you rotated
+are in the same visual orientation.
+
+Note that rotation is a non-destructive operation by writing a sidecar with the
+orientation next to your original. This behavior can be changed to edit in place
+with an [advanced library
+setting](https://photostructure.com/getting-started/advanced-settings/#library-settings).
 
 ✨ 🏷️ **Hierarchical keyword support**
 
@@ -63,30 +102,27 @@ like `Family|Einstein|Albert`, `Flora ⊃ Fruit ⊃ Orange`, or
 Filenames and directories with non-latin characters should now be supported
 properly.
 
-#### Frontend updates
+#### More frontend updates
 
+- ✨ New [zoom loupe control](/zoom)
 - ✨ **See your dupes**: You can now view all Asset variants on both mobile and
   desktop views. Open the Asset info panel, and click on the pathname to view
   that file's image. If the image is RAW, it will be converted to JPG so your
   browser can render it.
-- ✨ **Better Asset info on mobile and desktop**: The Asset Info panel no longer
-  overlays on top of the current photo, but shoves the asset to the left (on
-  larger screens) or below the info (on mobile screens).
 - ✨ Thumbnails now use
   [`loading="lazy"`](https://developer.mozilla.org/en-US/docs/Web/Performance/Lazy_loading)
   to speed up initial page rendering on newer desktop and mobile browsers.
 - 🐛 On some mobile browsers, child tags and assets didn't always lazy-load. A
   `Load More ...` button now shows when needed.
-- ✨/💔 Mousewheel no longer controls zoom level, as we need it to scroll down to
-  the streams. See [our documentation on how to use the new zoom](/zoom)!
 - ✨ The Asset Streams panel on the bottom no longer overlays on the current
   photo.
-- 🐛 When visiting unloadable assets (due to being hidden or otherwise
-  unavailable), the browser is now redirected to the nearest chronological
-  asset.
 
-#### Backend updates
+#### More backend updates
 
+- 📦 The cache directory on linux is now `~/.cache/PhotoStructure`. It had
+  previously been in `/tmp`. This can be changed via the `PS_CACHE_DIR`
+  environment variable, or the `cacheDir` [system
+  setting](https://photostructure.com/getting-started/advanced-settings/#system-settings).
 - ✨ New `Type` tag, so you can view all videos, or all images of a specific type.
 - ✨ Date tags can include day now. See the [library
   settings](https://photostructure.com/getting-started/advanced-settings/#library-settings)
@@ -97,7 +133,7 @@ properly.
   `IMG_123.XMP` and `IMG_123.JPG.XMP` will be considered relevant sidecars for
   that file, and the enclosed metadata tags will be overlayed on the original
   image in order of newest-written-file-wins.
-- 🐛 RAW image dimensions and rotations should be more accurate now.
+- 🐛 RAW image dimensions should be more accurate now.
 - 🐛 Paths can now have non-latin characters.
 - 🐛 Unicode keywords (both in ICMP/EXIF headers and in pathnames) are now
   supported.
@@ -108,13 +144,13 @@ properly.
 - 🐛 If an asset doesn't have a metadata-encoded captured-at, we now infer the
   captured-at from the basename (if the file is named something like YYYYMMDD),
   and if no date is found in the basename, we examine the parent directory path.
-- ✨ OnePlus model numbers are now decoded (“7 Pro” instead of “GM1917”).
+- ✨ Improved make and model parsing for more cameras and smartphones.
 - ✨ Image hashing has been sped up dramatically for images that have embedded
   thumbnails. Most original JPEG and RAW images have these thumbnails.
 - ✨ Dominant color extraction is faster, more accurate, and dominant color
   comparisons now use more accurate color perception correlation.
 
-#### PhotoStructure for Servers update
+#### PhotoStructure for Servers updates
 
 - ✨ Instructions for building `libvips` (required to support `.heic`) were added
   to the README. Note that the docker image does _not_ support `.heic`/HEVC, due

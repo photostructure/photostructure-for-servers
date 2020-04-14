@@ -23,7 +23,7 @@ ENV PS_DOCKER="1"
 ENV PS_LIBRARY_PATH="/ps/library"
 ENV PS_LOG_DIR="/ps/logs"
 ENV PS_CACHE_DIR="/ps/tmp"
-ENV XDG_CONFIG_HOME="/ps/config"
+ENV PS_CONFIG_DIR="/ps/config"
 
 # These volume paths are configured in docker-compose.yml, using values set by
 # photostructure.env. 
