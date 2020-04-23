@@ -2,7 +2,7 @@ doctype html
 html(lang="en")
   head
     meta(charset="utf-8")
-    title= title
+    title #{title} - PhotoStructure
     meta(name="viewport" content="width=device-width,initial-scale=1")
     link(rel="stylesheet", href="/app/settings.css")
 
@@ -11,18 +11,7 @@ html(lang="en")
 
       .title
         img(src="/images/logo-white.svg" height=32 title="PhotoStructure")
-        b.reveal.pl1em #{welcome ? "Welcome to PhotoStructure" : "Settings"}
-
-      if isElectron && !isMac
-        .right.no-drag
-          .window-controls
-            a#window-min(title="Minimize")
-              // SITS: when this page is converted to vue, replace with SvgIcon
-              <svg width="18" height="18" viewBox="0 0 24 24"><path d="M19 13H5v-2h14v2z"/></svg>
-            a#window-max(title="Maximize")
-              <svg width="18" height="18" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"/></svg>
-            a#window-close(title="Close")
-              <svg width="18" height="18" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        b.reveal.pl1em #{title}
 
     main
       if err
@@ -35,7 +24,8 @@ html(lang="en")
         form(action="/settings" method="post" onkeydown="return event.key != 'Enter';")  
           .section
             .hero
-              h1 Thank you for beta testing <br> <b>PhotoStructure for Desktop!</b>
+              h1 Thank you for beta testing <br> 
+                b PhotoStructure for #{isElectron ? "Desktops" : isDocker ? "Docker" : "Servers"}
               
               //- p Here are a couple of things to know to get started:
 
@@ -217,12 +207,17 @@ html(lang="en")
 
             if !isDocker
               if suggestedLibraryPaths
-                h3 Suggested directories
+                h3 Suggested library directories
                 each ea, index in suggestedLibraryPaths
                   p
                   label(for="libraryPath" + index)
                     input(name="libraryPathRadio" type="radio" value=ea.path checked=(index == 0) id="libraryPath" + index)
                     .wbrpath !{ea.wbrPath}
+
+                    if ea.isLibrary
+                      .details
+                        i.emj.smol.logo-dark
+                        b This is already a PhotoStructure library
                     .details (
                       if ea.label
                         | #{ea.label}, 
@@ -231,7 +226,7 @@ html(lang="en")
               else
                 p.warning No drives were found on your computer with at least #{minFreeAvailable} free disk space.
 
-              h3 Custom directory
+              h3 Custom library directory
               label(for="libraryPathCustom")
                 input#libraryPathCustom(name="libraryPathRadio" type="radio" value="libraryPathCustom")
 
@@ -261,6 +256,7 @@ html(lang="en")
             button.btn(type="submit" name="action") #{welcome ? "Start" : "Save"}
 
     .modal.hidden
+      .scrim
       .message
         h3 Saving...
         .loader
@@ -269,3 +265,4 @@ html(lang="en")
   </div>
 
     script(src="/app/settings.js")
+    include _chat.pug

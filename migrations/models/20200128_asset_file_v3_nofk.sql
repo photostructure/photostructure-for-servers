@@ -25,6 +25,7 @@ CREATE TABLE "new_AssetFile" (
   imageId varchar (64),
   lensId varchar (64),
   durationMs bigint,
+  fps integer,
   geohash integer,
   meanHash varchar (64),
   rightHash varchar (64),
@@ -74,6 +75,8 @@ SELECT
   imageId,
   lensId,
   durationMs,
+  NULL,
+  -- fps
   geohash,
   meanHash,
   rightHash,

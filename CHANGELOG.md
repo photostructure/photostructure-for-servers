@@ -3,6 +3,8 @@
 
 _Expected release: April 2020_
 
+[**See our v0.8 version announcement**](https://photostructure.com/about/v-0-8/)
+
 #### General updates
 
 ✨ 🧭 **Easier navigation**
@@ -17,7 +19,7 @@ Click the new top-left navigation button for access to
 PhotoStructure for Servers users: this gets you to feature parity with Desktop
 users that have enjoyed these links in their system tray menu.
 
-PhotoStructure for Desktop users on Linux and Windows: hit the `alt` key to see
+PhotoStructure for Desktop users on Linux and Windows: hit the <key>alt</key> key to see
 your new menu bar.
 
 ✨ 🚅💨 **Faster sync**
@@ -41,6 +43,8 @@ The new `maxConcurrent` and `processPriority` settings allow for tuning this beh
 Please email us (hello@photostructure.com) if you need to tweak the defaults for
 your system.
 
+Note that if you're importing videos, and you're using FFmpeg, we now import videos in parallel, which can substantially improve import speeds. Note that VLC does not support parallel imports. See our [video installation instructions](https://photostructure.com/getting-started/video-support/) for more details.
+
 ✨ 💪 **More robust error handling**
 
 While browsing, if an asset is found that can't be rendered due to an incomplete
@@ -56,17 +60,18 @@ texts, and are available on the first asset file's `⋮` button.
 
 ✨ 📹 **Video support improvements**
 
-Video duration is now shown in the Asset Info panel. Duration will need to be
-backfilled for all videos in your library, and will happen automatically after
-you upgrade to this version.
+Video duration and FPS, if available, are now shown in the Asset Info panel.
+Duration and FPS will need to be backfilled for all videos in your library, and
+will happen automatically after you upgrade to this version.
 
 Transcoding is (by far!) the most expensive operation that PhotoStructure has to
 do during the import process, and has been refined in this new released. Previous
 versions transcoded all videos not in `video/mp4` format.
 
-PhotoStructure now provides a setting, `doNotTranscodeMimetypes`, which adds
-three more commonly-supported video types to avoid transcoding (as most browsers
-on most OSes can natively render them).
+PhotoStructure now provides a
+[setting](https://photostructure.com/getting-started/advanced-settings/#library-settings),
+`doNotTranscodeMimetypes`, which adds three more commonly-supported video types
+to avoid transcoding (as most browsers on most OSes can natively render them).
 
 ✨ 🔄 **More robust rotation support**
 
@@ -90,7 +95,7 @@ having the keywords `car`, `blue`, and `tree`. This is configurable via the
 `keywordDelimiters` setting.
 
 PhotoStructure interprets keywords as “heirarchies”, or “paths”, when a keyword
-includes one or more of the characters `/`,`|`,`>`,`≻`,`⊃`, or `⸧`. Note that on
+includes one or more of the characters `/`,`|`,`>`,`≻`, or `⊃`. Note that on
 windows, there can be issues with filenames that have forward slashes, vertical
 bars, or greater-than characters, so use the alternatives. This allows for tags
 like `Family|Einstein|Albert`, `Flora ⊃ Fruit ⊃ Orange`, or
@@ -104,7 +109,10 @@ properly.
 
 #### More frontend updates
 
-- ✨ New [zoom loupe control](/zoom)
+- ✨ 🔎 New [zoom loupe control](/zoom)
+- ✨ 💬 Chat widget on the settings and about pages, to get just-in-time help
+  from our global team of friendly customer service agents (ok, it's just me)
+- ✨ The settings page now shows which suggested library paths are already PhotoStructure libraries.
 - ✨ **See your dupes**: You can now view all Asset variants on both mobile and
   desktop views. Open the Asset info panel, and click on the pathname to view
   that file's image. If the image is RAW, it will be converted to JPG so your
@@ -119,6 +127,7 @@ properly.
 
 #### More backend updates
 
+- ✨ New "Rebuild library" option from the navigation menu.
 - 📦 The cache directory on linux is now `~/.cache/PhotoStructure`. It had
   previously been in `/tmp`. This can be changed via the `PS_CACHE_DIR`
   environment variable, or the `cacheDir` [system
@@ -149,6 +158,8 @@ properly.
   thumbnails. Most original JPEG and RAW images have these thumbnails.
 - ✨ Dominant color extraction is faster, more accurate, and dominant color
   comparisons now use more accurate color perception correlation.
+- ✨ Idle background tasks, like `exiftool` and `sync-file` are shut down
+  automatically when they are idle to reduce system resource consumption.
 
 #### PhotoStructure for Servers updates
 
