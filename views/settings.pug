@@ -8,16 +8,14 @@ html(lang="en")
 
   body.reveal(class=bodyClass)
     header.settings
-
       .title
         img(src="/images/logo-white.svg" height=32 title="PhotoStructure")
         b.reveal.pl1em #{title}
 
     main
       if err
-        .error.sticky.message= err
-          if !isElectron
-            p See <a href="https://support.photostructure.com/server/" target="_blank">the support site</a> for instructions.
+        .error.sticky.message
+          p= err
 
       .container.reveal
         // the onkeydown prevents enter from submitting the form:
@@ -27,62 +25,65 @@ html(lang="en")
               h1 Thank you for beta testing <br> 
                 b PhotoStructure for #{isElectron ? "Desktops" : isDocker ? "Docker" : "Servers"}
               
-              //- p Here are a couple of things to know to get started:
-
             .pent
               p.info
-                i.emj.computer(title="Your data shouldn't help advertising networks")
-                | PhotoStructure <br> runs on <br> <b>this computer</b>, 
-                | <br>not in the cloud. <br>
-                | <a href="https://blog.photostructure.com/metadata-what-lurks-inside-your-photos/" target="_blank">Your data stays yours</a>.
+                i.emj.crane(title="Thanks for your help!")
+                | This beta is free in exchange for your feedback. <br/>
+                | Please <b><a href="mailto:hello@photostructure.com">email us</a></b> if you find anything odd, buggy, or missing!
+
+              p.info
+                i.emj.computer(title="Your data shouldn’t help advertising networks")
+                | PhotoStructure runs on <b>this computer</b>, 
+                | not in the cloud. <br>
+                | <b><a href="https://blog.photostructure.com/metadata-what-lurks-inside-your-photos/" target="_blank">Your data stays yours</a></b>.
+
               p.info
                 i.emj.home(title="One library to rule them all")
                 | PhotoStructure is designed to organize <b>all</b> your 
                 | photos and videos. The initial import may take a while.
+
               p.info
                 i.emj.safe(title="Your files are safe")
                 | PhotoStructure  
                 | <a href="https://support.photostructure.com/why-doesnt-photostructure-move-original-files/" target="_blank">
                 | never moves or deletes</a>
                 | your photos and videos.
-              p.info
-                i.emj.starry-night(title="Finish while you're sleeping")
-                | You may want to leave your computer running 
-                | <dfn tooltip="If this is a laptop, make sure it's plugged in!">overnight</dfn>
-                | during your initial import.
-              p.info
-                i.emj.thinking
-                | Hover over <br> <dfn tooltip="This is an example of some explanatory text. You'll find more below ⬇️">underlined text</dfn>
-                | or click on links <a href="https://support.photostructure.com/tag/getting-started/" target="_blank">that look like this</a> for more information.
+
+              //- p.info
+              //-   i.emj.starry-night(title="Finish while you’re sleeping")
+              //-   | You may want to leave your computer running 
+              //-   | <dfn tooltip="If this is a laptop, make sure it’s plugged in!">overnight</dfn>
+              //-   | during your initial import.
+              //- p.info
+              //-   i.emj.thinking
+              //-   | Hover over <br> <dfn tooltip="This is an example of some explanatory text. You’ll find more below ⬇️">underlined text</dfn>
+              //-   | or click on links <a href="https://support.photostructure.com/tag/getting-started/" target="_blank">that look like this</a> for more information.
 
             if (isVideoTranscodingSupported)
-              if (ffmpegVersion)
-                .info.message FFmpeg #{ffmpegVersion} is installed 
-                  i.emj.tada(title="Let's get this party started!")
-              else if (vlcInfo && vlcInfo.version)
-                .info.message VLC #{vlcInfo.version} is installed 
-                  i.emj.tada(title="Let's get this party started!")
+              #videoSupported.info.message
+                p
+                  i.emj.check
+                  | You’re all set to 
+                  dfn(tooltip="using " + videoToolDetails) import videos!
             
             else
-              .warn.message 
+              #videoSupported.warn.message 
                 p 
-                  b.fs11 Do you have videos?
-
+                  b.fs11  🎥 Do you have videos?
                 p
                   if (vlcInfo && vlcInfo.unsupportedVersion)
                     | VLC #{vlcInfo.unsupportedVersion} is not supported. 
 
-                  | You first need to install FFmpeg or VLC. 
-                  a(href="https://support.photostructure.com/vlc-installation/" target="_blank")
-                    | Click here for installation instructions.
+                  | Before continuing, please 
+                  a(href="https://photostructure.com/getting-started/video-support/" target="_blank") follow these steps
+                  | . It’ll only take a minute.
+                  //- we don’t have the "reload" step here so people (like Jim L) don’t lose their form entries.
 
-                p After you've installed FFmpeg or VLC, 
-                  a(href="#" onclick="location.reload()") click here to continue.
             h2 Where are your photos and videos?
             
             if isDocker
               if hostScanPaths
-                p You've already configured Docker to scan the following paths:
+                p You’ve already configured Docker to scan the following paths:
                 ul
                   each ea in hostScanPaths
                     li
@@ -99,7 +100,7 @@ html(lang="en")
             else
               ul
                 li PhotoStructure automatically ignores  
-                  a(href="https://support.photostructure.com/how-to-hide-directories/" target="_blank") all hidden files, as well as system, application, and NoMedia directories.
+                  a(href="https://photostructure.com/faq/how-to-hide-directories/" target="_blank") all hidden files, as well as system, application, and NoMedia directories.
                 li Changing this setting does not remove assets already in your library.
 
               p
@@ -143,22 +144,22 @@ html(lang="en")
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.17 6l2 2H20v10H4V6h5.17M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>
                   | Select
 
-            h2 May PhotoStucture organize your photos and videos?
+            h2 May PhotoStructure organize your photos and videos?
 
             p PhotoStructure can 
-              | <a href="https://support.photostructure.com/automatic-library-organization/" target="_blank">
+              | <a href="https://photostructure.com/getting-started/automatic-library-organization/" target="_blank">
               | copy the photos and videos it finds into your
               | PhotoStructure Library</a>. This is ideal if your photos
               | are currently scattered across many different disk drives and memory 
               | cards, you may or may not have more than one copy of something,
-              | but you'd really like everything to be organized into 
+              | but you’d really like everything to be organized into 
               dfn(tooltip="Note that this drive needs to have enough free space to hold all your photos and videos. A Network Attached Storage (NAS) or large external hard drive with lots of free disk space are both good choices.") one, tidy place
               | .
             ul
               li PhotoStructure will 
-                | <a href="https://support.photostructure.com/what-do-you-mean-by-dedupe/" target="_blank">
-                | <dfn tooltip="The same photo or video will not be copied more than once into your library.">de-duplicate</dfn></a> 
-                | photos and videos automatically
+                | <dfn tooltip="The same photo or video will not be copied more than once into your library.">de-duplicate</dfn> 
+                | photos and videos automatically 
+                | (<a href="https://photostructure.com/faq/what-do-you-mean-by-dedupe/" target="_blank">learn more</a>).
 
               li Photos and videos already found in your library will remain in their current location
 
@@ -186,20 +187,20 @@ html(lang="en")
                   tt#currentLibraryPath #{currentLibraryPath}
                   | , a Docker VOLUME. 
                 p You can change the value in your <tt>photostructure.env</tt>. 
-                  a(href="https://support.photostructure.com/photostructure-for-docker/" target="_blank") Read more about Docker setup here.
+                  a(href="https://photostructure.com/server/photostructure-for-docker/" target="_blank") Read more about Docker setup here.
               else
                 p.error.message PS_LIBRARY_PATH must be set (probably to /ps/library), and exist. See 
-                  a(href="https://support.photostructure.com/photostructure-for-docker/" target="_blank") the support site for instructions.
+                  a(href="https://photostructure.com/server/photostructure-for-docker/" target="_blank") the support site for instructions.
           
             else if welcome
               h2 Where would you like your library stored?
-              p Your <a href="https://support.photostructure.com/library/" target="_blank">PhotoStructure Library</a> holds a database of your photos and videos, web-sized previews of your images and videos, and (depending on your choice above), a copy of all your original photos and videos.
+              p Your <a href="https://photostructure.com/faq/library/" target="_blank">PhotoStructure Library</a> holds a database of your photos and videos, web-sized previews of your images and videos, and (depending on your choice above), a copy of all your original photos and videos.
               p This directory must have 
-                | <a href="https://support.photostructure.com/how-much-disk-space-do-i-need-for-my-photostructure-library/" target="_blank">
-                | <dfn tooltip="Digital photo sizes vary greatly between cameras. 1 Gigabyte stores several thousand pictures from a digital camera from 10 years ago, but only 20 pictures from a new high-end dSLR, and only 1 minute of 4K 60fps video.">lots of free space</dfn></a>.
+                | <dfn tooltip="Digital photo sizes vary greatly between cameras. 1 Gigabyte stores several thousand pictures from a digital camera from 10 years ago, but only 20 pictures from a new high-end dSLR, and only 1 minute of 4K 60fps video.">lots of free space</dfn> 
+                | (<a href="https://photostructure.com/getting-started/how-much-disk-space-do-i-need-for-my-photostructure-library/" target="_blank">learn more</a>).
             else
               h2 Your PhotoStructure library
-              p Your <a href="https://support.photostructure.com/library/" target="_blank">PhotoStructure Library</a> is currently
+              p Your <a href="https://photostructure.com/faq/library/" target="_blank">PhotoStructure Library</a> is currently
                 tt#currentLibraryPath #{currentLibraryPath}
 
               p Changing your library location closes your current library and either creates or opens a library in your new directory. 
@@ -213,11 +214,10 @@ html(lang="en")
                   label(for="libraryPath" + index)
                     input(name="libraryPathRadio" type="radio" value=ea.path checked=(index == 0) id="libraryPath" + index)
                     .wbrpath !{ea.wbrPath}
-
-                    if ea.isLibrary
-                      .details
-                        i.emj.smol.logo-dark
-                        b This is already a PhotoStructure library
+                    if ea.isCurrentLibrary
+                      .details This is your current PhotoStructure library.
+                    else if ea.isLibrary
+                      .details This is a PhotoStructure library.
                     .details (
                       if ea.label
                         | #{ea.label}, 
@@ -246,7 +246,7 @@ html(lang="en")
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.17 6l2 2H20v10H4V6h5.17M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>
                   | Select
 
-            h2 PhotoStructure End-User License Agreement
+            h2 PhotoStructure license
             .eula
               include eula.html
             p

@@ -9,7 +9,7 @@
 
 function die {
   printf "%s\n" "$1"
-  printf "See <https://support.photostructure.com/photostructure-for-node> or\nsend an email to <support@photostructure.com> for help."
+  printf "See <https://photostructure.com/server/photostructure-for-node/> or\nsend an email to <support@photostructure.com> for help."
   exit 1
 }
 
@@ -18,9 +18,15 @@ cd "$(dirname "$0")" || die "failed to cd"
 # Propogate ctrl-c:
 trap 'exit 130' INT
 
-for i in node git npx dcraw jpegtran sqlite3 ffmpeg ; do
-  command -v $i >/dev/null || die "Please install $i."
+missingCommands=()
+
+for i in node git dcraw jpegtran sqlite3 ffmpeg ; do
+  command -v $i >/dev/null || missingCommands+=("$i")
 done
+
+if [ ${#missingCommands[@]} -gt 0 ] ; then
+  die "Please install the system prerequisites. (missing commands: ${missingCommands[*]})"
+fi
 
 # Make sure we're always running the latest version:
 git stash --quiet --include-untracked
@@ -30,36 +36,23 @@ CFGDIR=~/.config/PhotoStructure
 mkdir -p "$CFGDIR"
 
 function clean {
-  # this is safe, no need to prompt:
-  rm -rf node_modules
-  # eh, let's ask them about these:
-  rm -rfI ~/.electron ~/.electron-gyp ~/.npm/_libvips ~/.node-gyp ~/.cache/yarn/*/*sharp*
+  rm -rfI node_modules ~/.electron ~/.electron-gyp ~/.npm/_libvips ~/.node-gyp ~/.cache/yarn/*/*sharp*
 }
 
 # We can't put this in the current directory, because we always clean it out
 # with git stash.
-PRIOR_NODE="$CFGDIR/last-node-version.txt"
-if [ -r "$PRIOR_NODE" ] && [ "$(cat "$PRIOR_NODE")" != "$(node -v)" ] ; then
-  echo "Node has updated. Automatically rebuilding..."
+PRIOR_VERSION="$CFGDIR/prior-version.json"
+EXPECTED_VERSION="{ \"node\": \"$(node -v)\", \"photostructure\": $(cat VERSION.json) }"
+if [ ! -r "$PRIOR_VERSION" ] || [ "$(cat "$PRIOR_VERSION")" != "$EXPECTED_VERSION" ] ; then
+  echo "Cleaning up prior builds before recompiling..."
   clean
-  node -v > "$PRIOR_NODE"
-fi
-
-PRIOR_VERSION="$CFGDIR/last-VERSION.json"
-# If the version of node changed (or we're doing this the first time), rebuild:
-if [ -r "$PRIOR_VERSION" ] ; then
-  prior=$(cat "$PRIOR_VERSION")
-  if [ "$prior" != "$(cat VERSION.json)" ] ; then
-    echo "New version of PhotoStructure. Automatically rebuilding..."
-    clean
-    cp VERSION.json "$PRIOR_VERSION"
-  fi
+  echo "$EXPECTED_VERSION" > "$PRIOR_VERSION"
 fi
 
 argv=("$@")
 
 # We run `npx yarn install` because `npm install` provides no way to silence
-# all the dependency compilation warnings and spam.
+# all the dependency compilation warnings and other console spam.
 npx yarn install || die "Dependency installation failed."
 
 ./photostructure "${argv[@]}" 2>&1 | tee start.log

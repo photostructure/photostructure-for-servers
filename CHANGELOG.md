@@ -1,9 +1,9 @@
 
 ## v0.8.0 _(work in progress)_
 
-_Expected release: April 2020_
+_Expected release: May 2020_
 
-[**See our v0.8 version announcement**](https://photostructure.com/about/v-0-8/)
+[**See our v0.8 version announcement**](/about/v-0-8/)
 
 #### General updates
 
@@ -11,7 +11,7 @@ _Expected release: April 2020_
 
 Click the new top-left navigation button for access to
 
-- Root tags, like "When," "Camera," and "File Type"
+- Root tags, like "When," "Camera," "Keywords," and "File Type"
 - The about and settings pages
 - Links to control the sync process and shut down PhotoStructure
 - The getting started and support pages on photostructure.com
@@ -39,13 +39,25 @@ priority level. This allows your operating system schedule work much more
 efficiently. Your system should remain responsive while simultaneously running
 synchronization tasks substantially faster, especially on multi-core systems.
 
-The new `maxConcurrent` and `processPriority` settings allow for tuning this behavior.
+The new `cpuLoadPercent` and `processPriority` settings allow for tuning this behavior.
 Please email us (hello@photostructure.com) if you need to tweak the defaults for
 your system.
 
-Note that if you're importing videos, and you're using FFmpeg, we now import videos in parallel, which can substantially improve import speeds. Note that VLC does not support parallel imports. See our [video installation instructions](https://photostructure.com/getting-started/video-support/) for more details.
+✨ 💽💨 **Faster writes**
 
-✨ 💪 **More robust error handling**
+Prior versions serialized all database writes through the web process. This
+could make the UI lag during imports. PhotoStructure now uses the new SQLite WAL
+mode to allow all processes to write directly to the database.
+
+✨ 📹💨 **Faster video transcodes**
+
+If you're importing videos, and you're using FFmpeg, we now import videos in
+parallel, which can substantially improve import speeds. Note that VLC does not
+support parallel imports. See our [video installation
+instructions](/getting-started/video-support/) for
+more details.
+
+✨ 💪 **More robust error handling in the UI**
 
 While browsing, if an asset is found that can't be rendered due to an incomplete
 import, unmounted filesystem, or any other error, PhotoStructure will redirect
@@ -69,7 +81,7 @@ do during the import process, and has been refined in this new released. Previou
 versions transcoded all videos not in `video/mp4` format.
 
 PhotoStructure now provides a
-[setting](https://photostructure.com/getting-started/advanced-settings/#library-settings),
+[setting](/getting-started/advanced-settings/#library-settings),
 `doNotTranscodeMimetypes`, which adds three more commonly-supported video types
 to avoid transcoding (as most browsers on most OSes can natively render them).
 
@@ -82,7 +94,7 @@ are in the same visual orientation.
 Note that rotation is a non-destructive operation by writing a sidecar with the
 orientation next to your original. This behavior can be changed to edit in place
 with an [advanced library
-setting](https://photostructure.com/getting-started/advanced-settings/#library-settings).
+setting](/getting-started/advanced-settings/#library-settings).
 
 ✨ 🏷️ **Hierarchical keyword support**
 
@@ -117,9 +129,7 @@ properly.
   desktop views. Open the Asset info panel, and click on the pathname to view
   that file's image. If the image is RAW, it will be converted to JPG so your
   browser can render it.
-- ✨ Thumbnails now use
-  [`loading="lazy"`](https://developer.mozilla.org/en-US/docs/Web/Performance/Lazy_loading)
-  to speed up initial page rendering on newer desktop and mobile browsers.
+- ✨ Asset streams are centered around the current asset now.
 - 🐛 On some mobile browsers, child tags and assets didn't always lazy-load. A
   `Load More ...` button now shows when needed.
 - ✨ The Asset Streams panel on the bottom no longer overlays on the current
@@ -131,10 +141,10 @@ properly.
 - 📦 The cache directory on linux is now `~/.cache/PhotoStructure`. It had
   previously been in `/tmp`. This can be changed via the `PS_CACHE_DIR`
   environment variable, or the `cacheDir` [system
-  setting](https://photostructure.com/getting-started/advanced-settings/#system-settings).
+  setting](/getting-started/advanced-settings/#system-settings).
 - ✨ New `Type` tag, so you can view all videos, or all images of a specific type.
 - ✨ Date tags can include day now. See the [library
-  settings](https://photostructure.com/getting-started/advanced-settings/#library-settings)
+  settings](/getting-started/advanced-settings/#library-settings)
   file.
 - ✨ All taggers can be enabled or disabled via new library settings.
 - ✨/💔 sidecar files use the full filename now, so image "pairs" (like JPG +

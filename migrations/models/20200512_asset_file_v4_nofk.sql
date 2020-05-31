@@ -1,3 +1,4 @@
+-- remove the rightHash and searchHash (which didn't improve asset aggregations):
 CREATE TABLE "new_AssetFile" (
   id integer NOT NULL PRIMARY KEY,
   assetId integer NOT NULL,
@@ -28,7 +29,6 @@ CREATE TABLE "new_AssetFile" (
   fps integer,
   geohash integer,
   meanHash varchar (64),
-  rightHash varchar (64),
   mode0 integer,
   mode1 integer,
   mode2 integer,
@@ -36,7 +36,6 @@ CREATE TABLE "new_AssetFile" (
   mode4 integer,
   mode5 integer,
   mode6 integer,
-  searchHash integer,
   version integer NOT NULL DEFAULT 0,
   createdAt bigint NOT NULL,
   updatedAt bigint NOT NULL,
@@ -44,8 +43,6 @@ CREATE TABLE "new_AssetFile" (
   FOREIGN KEY(assetId) REFERENCES Asset(id)
 );
 
--- Moves the durationMs and mode5b10 before the version/createdAt/updatedAt, and
--- drops the mode8b6 column (which was migrated by the 20200127 migration)
 INSERT INTO
   new_AssetFile
 SELECT
@@ -75,11 +72,9 @@ SELECT
   imageId,
   lensId,
   durationMs,
-  NULL,
-  -- fps
+  fps,
   geohash,
   meanHash,
-  rightHash,
   mode0,
   mode1,
   mode2,
@@ -87,19 +82,19 @@ SELECT
   mode4,
   mode5,
   mode6,
-  NULL,
-  -- searchHash
   version,
   createdAt,
   updatedAt,
-  0 -- updateCount
+  updateCount
 FROM
   AssetFile;
 
 -- Drop prior indexes:
 DROP INDEX IF EXISTS assetfile_capturedAtLocal_idx;
 
-DROP INDEX IF EXISTS assetfile_imghash_idx;
+DROP INDEX IF EXISTS assetfile_meanHash_idx;
+
+DROP INDEX IF EXISTS assetfile_rightHash_idx;
 
 DROP INDEX IF EXISTS assetfile_recent_idx;
 
@@ -109,9 +104,17 @@ DROP INDEX IF EXISTS assetfile_shown_udx;
 
 DROP INDEX IF EXISTS assetfile_uri_udx;
 
+DROP INDEX IF EXISTS assetfile_mode0_idx;
+
+DROP INDEX IF EXISTS assetfile_mode1_idx;
+
+DROP INDEX IF EXISTS assetfile_mode2_idx;
+
+DROP INDEX IF EXISTS assetfile_mode3_idx;
+
 -- Replace the old with the new:
 ALTER TABLE
-  AssetFile RENAME TO AssetFile_20200128;
+  AssetFile RENAME TO AssetFile_20200512;
 
 ALTER TABLE
   new_AssetFile RENAME TO AssetFile;
@@ -122,10 +125,6 @@ CREATE INDEX assetfile_capturedAtLocal_idx ON AssetFile (capturedAtLocal, captur
 CREATE INDEX assetfile_meanHash_idx ON AssetFile (meanHash)
 WHERE
   meanHash <> NULL;
-
-CREATE INDEX assetfile_rightHash_idx ON AssetFile (rightHash)
-WHERE
-  rightHash <> NULL;
 
 CREATE INDEX assetfile_recent_idx ON AssetFile (updatedAt, mountpoint);
 
@@ -143,7 +142,5 @@ CREATE INDEX assetfile_mode1_idx ON AssetFile (mode1);
 
 CREATE INDEX assetfile_mode2_idx ON AssetFile (mode2);
 
-CREATE INDEX assetfile_mode3_idx ON AssetFile (mode3);
-
 -- yay, everything worked. drop the old table:
-DROP TABLE IF EXISTS AssetFile_20200128;
+DROP TABLE IF EXISTS AssetFile_20200512;
