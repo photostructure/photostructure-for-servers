@@ -253,7 +253,10 @@ html(lang="en")
             b By clicking #{welcome ? "Start" : "Save"} you agree to the terms of this license.
             
             .pt
-            button.btn(type="submit" name="action") #{welcome ? "Start" : "Save"}
+            button.btn(type="submit" name="action" title="Accept the EULA and save settings") #{welcome ? "Start" : "Save"}
+            
+            unless welcome
+              a.btn.cancel(href="/" title="Don't save any changes made on this page and return home") Cancel
 
     .modal.hidden
       .scrim

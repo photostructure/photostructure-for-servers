@@ -25,7 +25,6 @@ CREATE TABLE "new_AssetFile" (
   imageId varchar (64),
   lensId varchar (64),
   durationMs bigint,
-  fps integer,
   geohash integer,
   meanHash varchar (64),
   rightHash varchar (64),
@@ -36,11 +35,11 @@ CREATE TABLE "new_AssetFile" (
   mode4 integer,
   mode5 integer,
   mode6 integer,
-  searchHash integer,
+  searchHash integer, -- new
   version integer NOT NULL DEFAULT 0,
   createdAt bigint NOT NULL,
   updatedAt bigint NOT NULL,
-  updateCount integer NOT NULL DEFAULT 0,
+  updateCount integer NOT NULL DEFAULT 0, --new
   FOREIGN KEY(assetId) REFERENCES Asset(id)
 );
 
@@ -75,8 +74,6 @@ SELECT
   imageId,
   lensId,
   durationMs,
-  NULL,
-  -- fps
   geohash,
   meanHash,
   rightHash,
@@ -88,11 +85,10 @@ SELECT
   mode5,
   mode6,
   NULL,
-  -- searchHash
   version,
   createdAt,
   updatedAt,
-  0 -- updateCount
+  0
 FROM
   AssetFile;
 

@@ -1,4 +1,5 @@
--- remove the rightHash and searchHash (which didn't improve asset aggregations):
+-- remove the rightHash and searchHash (which didn't improve asset
+-- aggregations), and add FPS:
 CREATE TABLE "new_AssetFile" (
   id integer NOT NULL PRIMARY KEY,
   assetId integer NOT NULL,
@@ -72,7 +73,7 @@ SELECT
   imageId,
   lensId,
   durationMs,
-  fps,
+  NULL,
   geohash,
   meanHash,
   mode0,
