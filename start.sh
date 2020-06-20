@@ -29,8 +29,8 @@ if [ ${#missingCommands[@]} -gt 0 ] ; then
 fi
 
 # Make sure we're always running the latest version:
-git stash --quiet --include-untracked
-git pull https://github.com/photostructure/photostructure-for-servers.git || die "git pull failed."
+git stash --include-untracked
+git pull || die "git pull failed."
 
 CFGDIR=~/.config/PhotoStructure
 mkdir -p "$CFGDIR"

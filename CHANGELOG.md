@@ -1,7 +1,7 @@
 
 ## v0.8.0 _(work in progress)_
 
-_Expected release: May 2020_
+_Expected release: June 2020_
 
 [**See our v0.8 version announcement**](/about/v-0-8/)
 
@@ -173,11 +173,17 @@ properly.
 
 #### PhotoStructure for Servers updates
 
+- ✨ Node.js version 12 and version 14 are now supported.
+- ✨/📦 PhotoStructure for docker now uses Node.js v14 and Alpine. This dropped
+  the image size from 1.5GB to 300M.
+- 🐛 Alpha, beta, and release builds post to different git branches and
+  different docker tags now. Previously, PhotoStructure for Servers users pulled
+  in the latest build, which might have been an alpha or beta pre-release.
 - ✨ Instructions for building `libvips` (required to support `.heic`) were added
   to the README. Note that the docker image does _not_ support `.heic`/HEVC, due
   to licensing and patent restrictions. **Tell Apple to switch to AV1!**
-- 📦 If the version of Node.js changes between runs, `./start.sh` automatically
-  rebuilds `node_modules` as required.
+- 📦 For PhotoStructure for Node, if the version of Node.js changes between
+  runs, `./start.sh` automatically rebuilds `node_modules` as required.
 
 ## v0.7.2
 
