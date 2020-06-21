@@ -28,12 +28,12 @@ if [ ${#missingCommands[@]} -gt 0 ] ; then
   die "Please install the system prerequisites. (missing commands: ${missingCommands[*]})"
 fi
 
-# Make sure we're always running the latest version:
+# Make sure we're always running the latest version of our branch
 git stash --include-untracked
 git pull || die "git pull failed."
 
-CFGDIR=~/.config/PhotoStructure
-mkdir -p "$CFGDIR"
+PS_CONFIG_DIR=${PS_CONFIG_DIR:-$HOME/.config/PhotoStructure}
+mkdir -p "$PS_CONFIG_DIR"
 
 function clean {
   rm -rfI node_modules ~/.electron ~/.electron-gyp ~/.npm/_libvips ~/.node-gyp ~/.cache/yarn/*/*sharp*
@@ -41,7 +41,7 @@ function clean {
 
 # We can't put this in the current directory, because we always clean it out
 # with git stash.
-PRIOR_VERSION="$CFGDIR/prior-version.json"
+PRIOR_VERSION="$PS_CONFIG_DIR/prior-version.json"
 EXPECTED_VERSION="{ \"node\": \"$(node -v)\", \"photostructure\": $(cat VERSION.json) }"
 if [ ! -r "$PRIOR_VERSION" ] || [ "$(cat "$PRIOR_VERSION")" != "$EXPECTED_VERSION" ] ; then
   echo "Cleaning up prior builds before recompiling..."
