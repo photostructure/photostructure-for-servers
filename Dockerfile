@@ -45,6 +45,7 @@ RUN apk update ; apk upgrade ;\
   apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/v3.12/community musl-locales ;\
   apk add --no-cache \
   coreutils \
+  curl \
   ffmpeg \
   libjpeg-turbo-utils \
   perl \
