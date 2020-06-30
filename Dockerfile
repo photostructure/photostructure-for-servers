@@ -35,6 +35,7 @@ FROM node:14-alpine
 # Busybox's commands are a bit too bare-bones:
 # procps provides a working `ps -o lstart`
 # coreutils provides a working `df -kPl`
+# glib is for gio (for mountpoint monitoring  b)
 # util-linux (which should be there already) provides `renice` and `lsblk`
 # musl-locales provides `locale`
 # perl is required for exiftool.
@@ -47,6 +48,7 @@ RUN apk update ; apk upgrade ;\
   coreutils \
   curl \
   ffmpeg \
+  glib \
   libjpeg-turbo-utils \
   perl \
   procps \

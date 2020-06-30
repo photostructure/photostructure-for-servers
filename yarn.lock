@@ -77,7 +77,7 @@
     "@sentry/types" "5.18.1"
     tslib "^1.9.3"
 
-"@sentry/node@^5.18.0":
+"@sentry/node@^5.18.1":
   version "5.18.1"
   resolved "https://registry.yarnpkg.com/@sentry/node/-/node-5.18.1.tgz#9c126735e7a27a9353ff9ecc71059e8781657f8c"
   integrity sha512-faIKb/1i0MYKkWL6crtnIuw1WTwvnQZFaOX4zjZeqZ+z7Q72YfnLWMTaJMe8Q38P/obWf75YRffIJrezkT9lXw==
@@ -1012,7 +1012,7 @@ helmet-csp@2.10.0:
     content-security-policy-builder "2.1.0"
     dasherize "2.0.0"
 
-helmet@^3.23.2:
+helmet@^3.23.3:
   version "3.23.3"
   resolved "https://registry.yarnpkg.com/helmet/-/helmet-3.23.3.tgz#5ba30209c5f73ded4ab65746a3a11bedd4579ab7"
   integrity sha512-U3MeYdzPJQhtvqAVBPntVgAvNSOJyagwZwyKsFdyRa8TV3pOKVFljalPOCxbw5Wwf2kncGhmP0qHjyazIdNdSA==
