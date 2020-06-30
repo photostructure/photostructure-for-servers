@@ -23,8 +23,8 @@ WORKDIR /tmp
 RUN wget https://photostructure.com/src/dcraw.c ;\
   gcc -o dcraw -O4 dcraw.c -lm -DNODEPS ;\
   mkdir -p /ps/app/bin ;\
-  cp dcraw /ps/app/bin/dcraw ;\
-  chmod 755 /ps/app/bin/dcraw
+  cp dcraw /ps/tools/dcraw ;\
+  chmod 755 /ps/tools/dcraw
 
 #
 # Stage 2: the final image:
@@ -35,7 +35,7 @@ FROM node:14-alpine
 # Busybox's commands are a bit too bare-bones:
 # procps provides a working `ps -o lstart`
 # coreutils provides a working `df -kPl`
-# glib is for gio (for mountpoint monitoring  b)
+# glib is for gio (for mountpoint monitoring)
 # util-linux (which should be there already) provides `renice` and `lsblk`
 # musl-locales provides `locale`
 # perl is required for exiftool.
@@ -46,7 +46,6 @@ RUN apk update ; apk upgrade ;\
   apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/v3.12/community musl-locales ;\
   apk add --no-cache \
   coreutils \
-  curl \
   ffmpeg \
   glib \
   libjpeg-turbo-utils \
@@ -68,7 +67,7 @@ EXPOSE 1787
 ENV PS_DOCKER="1"
 
 # This is the path to the library in the docker image. You'll mount a directory
-# from the host machine via the volume: 
+# from the host machine via VOLUME: 
 ENV PS_LIBRARY_PATH="/ps/library"
 
 # Log directory. No automatic deletion is done, and if PS_LOG_LEVEL is set to
@@ -87,7 +86,7 @@ ENV PS_CONFIG_DIR="/ps/config"
 # photostructure.env. 
 VOLUME [ "/ps/library", "/ps/logs", "/ps/tmp", "/ps/config" ]
 
-HEALTHCHECK CMD curl -f http://localhost:1787/ping || exit 1
+HEALTHCHECK CMD wget --quiet http://localhost:1787/ping
 
 # https://docs.docker.com/engine/reference/builder/#understand-how-cmd-and-entrypoint-interact
 ENTRYPOINT [ "node", "/ps/app/photostructure" ]

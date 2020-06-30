@@ -176,11 +176,11 @@ html(lang="en")
             if isDocker
               h2 Your PhotoStructure library
               if currentLibraryPath
-                p 
+                p
                   | Your library is 
                   tt#currentLibraryPath #{currentLibraryPath}
-                  | , a Docker VOLUME. 
-                p You can change the value in your <tt>photostructure.env</tt>. 
+                  | . 
+                p
                   a(href="https://photostructure.com/server/photostructure-for-docker/" target="_blank") Read more about Docker setup here.
               else
                 p.error.message PS_LIBRARY_PATH must be set (probably to /ps/library), and exist. See 
