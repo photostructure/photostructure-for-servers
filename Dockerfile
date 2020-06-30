@@ -54,9 +54,9 @@ RUN apk update ; apk upgrade ;\
   sqlite \
   util-linux
 
-WORKDIR /ps/app
+WORKDIR /ps
 
-COPY --from=builder /ps/app ./
+COPY --from=builder /ps ./
 
 EXPOSE 1787
 
