@@ -86,7 +86,7 @@ ENV PS_CONFIG_DIR="/ps/config"
 # photostructure.env. 
 VOLUME [ "/ps/library", "/ps/logs", "/ps/tmp", "/ps/config" ]
 
-HEALTHCHECK CMD wget --quiet http://localhost:1787/ping
+HEALTHCHECK CMD wget --quiet --output-document - http://localhost:1787/ping
 
 # https://docs.docker.com/engine/reference/builder/#understand-how-cmd-and-entrypoint-interact
 ENTRYPOINT [ "node", "/ps/app/photostructure" ]

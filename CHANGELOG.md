@@ -1,20 +1,18 @@
 
 ## v0.8.0 _(work in progress)_
 
-_Expected release: June 2020_
-
 [**See our v0.8 version announcement**](/about/v-0-8/)
 
 #### General updates
 
 ✨ 🧭 **Easier navigation**
 
-Click the new top-left navigation button for access to
+Click the new navigation button in the top-left part of the screen for access to
 
 - Root tags, like "When," "Camera," "Keywords," and "File Type"
-- The about and settings pages
+- The About and Settings pages
 - Links to control the sync process and shut down PhotoStructure
-- The getting started and support pages on photostructure.com
+- The getting started and support pages on <PhotoStructure.com>
 
 PhotoStructure for Servers users: this gets you to feature parity with Desktop
 users that have enjoyed these links in their system tray menu.
@@ -24,8 +22,7 @@ your new menu bar.
 
 ✨ 🚅💨 **Faster sync**
 
-[TL;DR](https://en.wiktionary.org/wiki/too_long;_didn%27t_read#English): Library
-synchronization runs much faster now.
+Library synchronization is much faster in this release.
 
 In prior versions, PhotoStructure watched CPU utilization and only scheduled new
 work when your system was "idle enough." In practice, this resulted in
@@ -46,16 +43,18 @@ your system.
 ✨ 💽💨 **Faster writes**
 
 Prior versions serialized all database writes through the web process. This
-could make the UI lag during imports. PhotoStructure now uses the new SQLite WAL
-mode to allow all processes to write directly to the database.
+slowed down writes, and could make the UI less responsive during imports.
+
+PhotoStructure now uses SQLite's WAL mode to allow all processes to write
+directly to the database. This speeds up writes as well as allows the web UI to
+stay responsive, even during imports.
 
 ✨ 📹💨 **Faster video transcodes**
 
 If you're importing videos, and you're using FFmpeg, we now import videos in
-parallel, which can substantially improve import speeds. Note that VLC does not
-support parallel imports. See our [video installation
-instructions](/getting-started/video-support/) for
-more details.
+parallel, which can substantially improve import speeds. VLC does not support
+parallel imports. See our [video installation
+instructions](/getting-started/video-support/) for more details.
 
 ✨ 💪 **More robust error handling in the UI**
 
@@ -135,19 +134,27 @@ properly.
 - ✨ The Asset Streams panel on the bottom no longer overlays on the current
   photo.
 
-#### More backend updates
+#### Tagging improvements
 
-- ✨ New "Rebuild library" option from the navigation menu.
 - 📦 The cache directory on linux is now `~/.cache/PhotoStructure`. It had
   previously been in `/tmp`. This can be changed via the `PS_CACHE_DIR`
   environment variable, or the `cacheDir` [system
   setting](/getting-started/advanced-settings/#system-settings).
-- ✨ New `Type` tag, so you can view all videos, or all images of a specific type.
-- ✨ Date tags can include day now. See the [library
-  settings](/getting-started/advanced-settings/#library-settings)
-  file.
 - ✨ All taggers can be enabled or disabled via new library settings.
-- ✨/💔 sidecar files use the full filename now, so image "pairs" (like JPG +
+- ✨ New `Type` tag, so you can view all videos, or all images of a specific type
+  (see `tagType`).
+- ✨ Date tagging can be "year", "year/month", or "year/month/day" (see
+  `tagYMD`).
+- ✨ Date tagging can be limited to only non-`stat` values (see
+  `tagDateFromStat`).
+- ✨ Lens tagging can use the full lens model (like "Canon EF-M 15-45mm f/3.5-6.3
+  IS STM") or a just the lens information ("15-45mm f/3.5-6.3") (see
+  `tagFullLensModel`).
+
+#### Backend improvements
+
+- ✨ New "Rebuild library" option from the navigation menu.
+- ✨ sidecar files use the full filename now, so image "pairs" (like JPG +
   RAW) can have differing metadata values. For example, for `IMG_123.JPG`, both
   `IMG_123.XMP` and `IMG_123.JPG.XMP` will be considered relevant sidecars for
   that file, and the enclosed metadata tags will be overlayed on the original
@@ -173,17 +180,28 @@ properly.
 
 #### PhotoStructure for Servers updates
 
-- ✨ Node.js version 12 and version 14 are now supported.
+- 💔 The `start-docker.sh` and `photostructure.env` scripts have been deleted.
+  No beta users (to my knowledge) used them, `docker-compose` changed their
+  configuration format arbitrarily and had a questionable installation
+  procedure, so it felt like it was just more moving pieces just to support
+  upgrades. (If you want easy image upgrades, try <https://www.portainer.io/>!).
+  The instructions for Docker have been rewritten and are much simpler to follow.
+- 💔 The `PS_CONFIG_DIR` is now directly written to. Prior versions would write
+  to `$PS_CONFIG_DIR/PhotoStructure`, which was surprising to several beta
+  users. Please `mv $PS_CONFIG_DIR/PhotoStructure $PS_CONFIG_DIR` before
+  upgrading your image.
+- ✨ Node.js version 12 and version 14 are now supported. 12 is now the minimum.
 - ✨/📦 PhotoStructure for docker now uses Node.js v14 and Alpine. This dropped
   the image size from 1.5GB to 300M.
-- 🐛 Alpha, beta, and release builds post to different git branches and
+- 🐛/💔 Alpha, beta, and release builds post to different git branches and
   different docker tags now. Previously, PhotoStructure for Servers users pulled
   in the latest build, which might have been an alpha or beta pre-release.
 - ✨ Instructions for building `libvips` (required to support `.heic`) were added
   to the README. Note that the docker image does _not_ support `.heic`/HEVC, due
   to licensing and patent restrictions. **Tell Apple to switch to AV1!**
-- 📦 For PhotoStructure for Node, if the version of Node.js changes between
-  runs, `./start.sh` automatically rebuilds `node_modules` as required.
+- 📦 For PhotoStructure for Node users, if the version of PhotoStructure or
+  Node.js changes between runs, `./start.sh` automatically rebuilds
+  `node_modules` as required.
 
 ## v0.7.2
 
