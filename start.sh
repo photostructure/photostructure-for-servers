@@ -36,7 +36,7 @@ PS_CONFIG_DIR=${PS_CONFIG_DIR:-$HOME/.config/PhotoStructure}
 mkdir -p "$PS_CONFIG_DIR"
 
 function clean {
-  rm -rf node_modules $HOME/.electron $HOME/.electron-gyp $HOME/.npm/_libvips $HOME/.node-gyp $HOME/.cache/yarn/*/*sharp*
+  rm -rf node_modules "$HOME/.electron" "$HOME/.electron-gyp" "$HOME/.npm/_libvips" "$HOME/.node-gyp" "$HOME/.cache/yarn/*/*sharp*"
 }
 
 # We can't put this in the current directory, because we always clean it out
