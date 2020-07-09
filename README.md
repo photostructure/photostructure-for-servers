@@ -24,7 +24,7 @@ PhotoStructure for Servers requires:
 
 ## Installation instructions
 
-See <https://photostructure.com/server/photostructure-for-node/>
+See <https://photostructure.com/server/photostructure-for-servers/>
 
 ## Feedback and support
 

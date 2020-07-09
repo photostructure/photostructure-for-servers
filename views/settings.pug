@@ -82,13 +82,7 @@ html(lang="en")
             h2 Where are your photos and videos?
             
             if isDocker
-              if hostScanPaths
-                p You’ve already configured Docker to scan the following paths:
-                ul
-                  each ea in hostScanPaths
-                    li
-                      tt= ea
-              else if scanPaths
+              if scanPaths
                 p PhotoStructure will scan these mounted volumes:
                 ul
                   each ea in scanPaths
@@ -96,7 +90,7 @@ html(lang="en")
                       tt= ea
               else
                 p PhotoStructure will scan all mounted volumes for photos and videos.
-              p If you want to change this, shut down the docker service, edit your <tt>photostructure.env</tt>, and re-run <tt>start-docker.sh</tt>.
+              p If you want to change this, shut down the container and update the mounted volumes.
             else
               ul
                 li PhotoStructure automatically ignores  
@@ -182,11 +176,11 @@ html(lang="en")
             if isDocker
               h2 Your PhotoStructure library
               if currentLibraryPath
-                p 
+                p
                   | Your library is 
                   tt#currentLibraryPath #{currentLibraryPath}
-                  | , a Docker VOLUME. 
-                p You can change the value in your <tt>photostructure.env</tt>. 
+                  | . 
+                p
                   a(href="https://photostructure.com/server/photostructure-for-docker/" target="_blank") Read more about Docker setup here.
               else
                 p.error.message PS_LIBRARY_PATH must be set (probably to /ps/library), and exist. See 
