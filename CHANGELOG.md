@@ -1,5 +1,7 @@
 
-## v0.8.0 _(work in progress)_
+## v0.8.1
+
+**Released 2020-07-09**
 
 [**See our v0.8 version announcement**](/about/v-0-8/)
 
