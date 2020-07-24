@@ -240,11 +240,15 @@ html(lang="en")
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.17 6l2 2H20v10H4V6h5.17M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>
                   | Select
 
-            h2 PhotoStructure license
-            .eula
-              include eula.html
-            p
-            b By clicking #{welcome ? "Start" : "Save"} you agree to the terms of this license.
+            if welcome
+              h2 PhotoStructure license
+              .eula
+                include eula.html
+              p
+              b By clicking Start you agree to all terms of this license.
+            else
+              .pt
+              b By clicking Save you agree to all terms of the <a href="https://photostructure.com/legal/eula/" target="_blank">PhotoStructure End-User License Agreement</a>.
             
             .pt
             button.btn(type="submit" name="action" title="Accept the EULA and save settings") #{welcome ? "Start" : "Save"}

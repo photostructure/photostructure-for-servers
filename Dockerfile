@@ -3,8 +3,11 @@
 FROM node:14-alpine as builder
 
 # Build requirements for native node libraries:
+
+# coreutils for sha256sum
 RUN apk update ; apk upgrade ; apk add --no-cache \
   build-base \
+  coreutils \
   lcms2-dev \
   libjpeg-turbo-dev \
   python3-dev
@@ -12,7 +15,7 @@ RUN apk update ; apk upgrade ; apk add --no-cache \
 # https://docs.docker.com/engine/reference/builder/#workdir
 WORKDIR /ps/app
 
-COPY . ./
+COPY package.json ./
 
 RUN yarn install
 
@@ -20,11 +23,16 @@ RUN yarn install
 WORKDIR /tmp
 
 # busybox has `wget` but not `curl`.
-RUN wget https://photostructure.com/src/dcraw.c ;\
+
+# The version hosted on PhotoStructure.com is verbatim v9.28 (I didn't want
+# CI builds to hammer his website)
+
+RUN set -e ; wget https://photostructure.com/src/dcraw.c ;\
+  echo "d18d9e43a096eea04eee2148e53068f8fa45ce95395d97128b1aa37b477eab43 dcraw.c" | sha256sum --check --status ;\
   gcc -o dcraw -O4 dcraw.c -lm -DNODEPS ;\
-  mkdir -p /ps/tools ;\
-  cp dcraw /ps/tools/dcraw ;\
-  chmod 755 /ps/tools/dcraw
+  mkdir -p /ps/app/bin ;\
+  cp dcraw /ps/app/bin/dcraw ;\
+  chmod 755 /ps/app/bin/dcraw
 
 #
 # Stage 2: the final image:
@@ -54,10 +62,14 @@ RUN apk update ; apk upgrade ;\
   sqlite \
   util-linux
 
-WORKDIR /ps
+# Sets the default path to be inside app when running `docker exec -it`
+WORKDIR /ps/app
 
-COPY --from=builder /ps ./
+COPY  . ./
+COPY --from=builder /ps/app ./
 
+# Your library is exposed by default to <http://localhost:1787>
+# This can be changed by setting the PS_HTTP_PORT environment variable.
 EXPOSE 1787
 
 # These environment variables tell PhotoStructure the volume mountpoints that
@@ -89,4 +101,6 @@ VOLUME [ "/ps/library", "/ps/logs", "/ps/tmp", "/ps/config" ]
 HEALTHCHECK CMD wget --quiet --output-document - http://localhost:1787/ping
 
 # https://docs.docker.com/engine/reference/builder/#understand-how-cmd-and-entrypoint-interact
-ENTRYPOINT [ "node", "/ps/app/photostructure" ]
+CMD [ "node", "/ps/app/photostructure" ]
+
+# Don't use ENTRYPOINT: we want users to be able to spin up interactive shells.
