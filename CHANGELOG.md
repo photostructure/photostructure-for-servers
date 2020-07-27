@@ -6,12 +6,30 @@
 Every feature and bug fix in this release is directly due to beta users'
 suggestions or their assistance. Thank you!
 
+- 💔 The `PS_REQUIRE_MAKE_MODEL` setting is now **disabled by default**. This
+  filter, when enabled, prevents PhotoStructure from importing files that don't
+  have a Make or Model tag, which prevents images like screenshots from filling
+  up your library. Unfortunately, this also prevents images downloaded from
+  Facebook/Instagram, and SMS. So far **no** beta users have wanted this enabled
+  once they learned of the setting, which might be a good clue that the default
+  was bad.
+
 - ✨/🐛 Improved the reliability of date extraction for photos and videos that
   have no dates in their metadata. Two new settings were added,
-  `usePathsToInferDates`, and `fuzzyDateParsing`, which can be used to disable
-  PhotoStructure's default behavior.
+  `PS_USE_PATHS_TO_INFER_DATES`, and `PS_FUZZY_DATE_PARSING`, which can be used
+  to disable PhotoStructure's default behavior that attempts to extract
+  captured-at times from paths when metadata is missing from the asset, and to
+  use more relaxed date parsing.
 
-- ✨ Added new `strictDeduping` library setting. Set to true if you don't want
+- ✨ De-duping greyscale images has been improved. If you have a number of
+  greyscale photos in your library, please run `rebuild` to regroup your
+  library's assets.
+
+- ✨ De-duping of files without precise dates has been improved by requiring more
+  stringent image correlation. This is controlled by the
+  `PS_FUZZY_DATE_IMAGE_CORR_WEIGHT` setting.
+
+- ✨ Added new `PS_STRICT_DEDUPING` library setting. Set to true if you don't want
   image edits to be grouped together with raw images. NOTE: This will most
   likely cause RAW and JPEG pairs to not always merge to the same asset,
   especially if your camera uses extensive computational imagery.
@@ -22,7 +40,15 @@ suggestions or their assistance. Thank you!
 
 - ✨ Library rebuilds now report on the files that are being processed.
 
+- 🐛 Zombie prevention within Docker: The Dockerfile now use `tini` as the default `ENDPOINT`,
+  which reaps zombie processes properly. The docker image is a bit larger now,
+  but we don't have to rely on users using `--init` (only available on more
+  recent versions of Docker or Docker Compose).
+
 - 🐛 System settings are now written on startup if outdated or missing
+
+- 🐛 Non-default array settings (like `PS_PREVIEW_RESOLUTIONS`) are now
+  correctly handled
 
 - ✨/🐛 Suggested library directories are removed if they are not writable
 
@@ -33,7 +59,13 @@ suggestions or their assistance. Thank you!
   (prior versions would interpret an image with no metadata named "1958.jpg" as
   coming from the year 1958 (!!)).
 
-- ✨/🐛 Renamed the `ls` tool to `list`. Added new `--dirname` and `--orderby` parameters.
+- ✨/🐛 Logging errors in v0.8.2 would cause the prior only-held-in-RAM logs to
+  get flushed to disk (to help debug issues later). Unfortunately, several
+  fairly common things were being logged as errors (rather than warnings), which
+  caused logs to get big quickly. These have been addressed.
+
+- ✨/🐛 Renamed the `ls` tool to `list`. This tool now has `--dirname` and
+  `--orderby` parameters.
 
 - 📦 Added [documentation for tools](/server/tools/).
 
@@ -55,8 +87,10 @@ suggestions or their assistance. Thank you!
 
 - 🐛 `logcat` handles very large inputs now.
 
-- 🐛 Fixed several file caching issues that resulted in spurious error logs
-  (which could cause log files to grow quickly)
+- 🐛 The cache directory wasn't clearing fast enough in v0.8.2. The "vacuum"
+  process would eventually run, but caches could grow to 20gb on a fast enough
+  machine under prior default settings. The cache time has been reduced by 3/4
+  and the vacuum is scheduled to run more often.
 
 ## v0.8.2
 

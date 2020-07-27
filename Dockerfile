@@ -60,6 +60,7 @@ RUN apk update ; apk upgrade ;\
   perl \
   procps \
   sqlite \
+  tini \
   util-linux
 
 # Sets the default path to be inside app when running `docker exec -it`
@@ -100,7 +101,8 @@ VOLUME [ "/ps/library", "/ps/logs", "/ps/tmp", "/ps/config" ]
 
 HEALTHCHECK CMD wget --quiet --output-document - http://localhost:1787/ping
 
+# Rather than hoping people use `docker run --init`, let's just do it for them by default:
+ENTRYPOINT [ "/sbin/tini", "--" ]
+
 # https://docs.docker.com/engine/reference/builder/#understand-how-cmd-and-entrypoint-interact
 CMD [ "node", "/ps/app/photostructure" ]
-
-# Don't use ENTRYPOINT: we want users to be able to spin up interactive shells.
