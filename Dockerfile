@@ -95,10 +95,14 @@ ENV PS_CACHE_DIR="/ps/tmp"
 # System configuration directory.
 ENV PS_CONFIG_DIR="/ps/config"
 
+# Make it easier to run photostructure commands via `docker exec`:
+ENV PATH="${PATH}:/ps/app:/ps/app/bin"
+
 # These volume paths are configured in docker-compose.yml, using values set by
 # photostructure.env. 
 VOLUME [ "/ps/library", "/ps/logs", "/ps/tmp", "/ps/config" ]
 
+# We're not installing curl, but busybox has a wget workalike:
 HEALTHCHECK CMD wget --quiet --output-document - http://localhost:1787/ping
 
 # Rather than hoping people use `docker run --init`, let's just do it for them by default:

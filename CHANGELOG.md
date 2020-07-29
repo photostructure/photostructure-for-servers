@@ -47,6 +47,13 @@ suggestions or their assistance. Thank you!
 
 - 🐛 System settings are now written on startup if outdated or missing
 
+- 🐛 If PhotoStructure rebuilt a portion of your library every time you
+  restarted, this should be fixed now. We were trying to rebuild missing files,
+  but we'll update those files when they re-appear.
+
+- 🐛 A race condition in the image cache that could prevent assets from being
+  imported was fixed.
+
 - 🐛 Non-default array settings (like `PS_PREVIEW_RESOLUTIONS`) are now
   correctly handled
 
