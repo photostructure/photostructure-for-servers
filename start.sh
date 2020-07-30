@@ -20,6 +20,10 @@ trap 'exit 130' INT
 
 missingCommands=()
 
+if [[ $(uname -o) = "Msys" ]] ; then
+  PATH="$PATH:$(pwd)/tools/win-ia32/dcraw"
+fi
+
 for i in node git dcraw jpegtran sqlite3 ffmpeg ; do
   command -v $i >/dev/null || missingCommands+=("$i")
 done

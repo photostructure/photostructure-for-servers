@@ -19,7 +19,7 @@ html
           tr
             td.dt= v.term
             if v.term == "Video support" && v.defn == "-"
-              td.dd Tools are missing. <b><a href="https://photostructure.com/getting-started/video-support/" target="_blank">Learn more</a></b>.
+              td.dd Tools are missing. <b><a target="_blank" href="https://photostructure.com/getting-started/video-support/">Learn more</a></b>.
             else
               td.dd= v.defn
         tr
@@ -36,13 +36,13 @@ html
                 li.ok= ok
         tr
           td.dt
-          td <a href="#" onclick="navigator.clipboard.writeText(json)">copy to clipboard</a> or <a href="!{mailto}" target="_blank">email us</a>
+          td <a href="#" onclick="navigator.clipboard.writeText(json)">copy to clipboard</a> or <a target="_blank" href="!{mailto}">email us</a>
 
       .emojis
         
         i.emj.handshake
         p 
-          b Use of PhotoStructure is bound by the <a  target="_blank" href="https://photostructure.com/terms/eula/">end-user license agreement</a>.
+          b Use of PhotoStructure is bound by the <a target="_blank" href="https://photostructure.com/legal/eula/">end-user license agreement</a>.
         
         i.emj.birthday
         p 
@@ -58,7 +58,7 @@ html
         p PhotoStructure is made possible by many <a target="_blank" href="https://photostructure.com/legal/3rd-party-licenses.txt">open source libraries and tools</a>.
           
         i.emj.heart
-        p If you maintain or contribute to any of these projects, <b>thank you!</b> <a href="mailto:hello@photostructure.com?subject=Hi, I work on INSERT_YOUR_LIBRARY_NAME_HERE&body=Here's a link to my library: https://...%0D%0A%0D%0APlease send me a free personal license to PhotoStructure.%0D%0A%0D%0AThank you!">Send us an email</a> and we’ll set you up with a <b>free</b> personal license of PhotoStructure.</i> 
+        p If you maintain or contribute to any of these projects, <b>thank you!</b> <a target="_blank" href="mailto:hello@photostructure.com?subject=Hi, I work on INSERT_YOUR_LIBRARY_NAME_HERE&body=Here's a link to my library: https://...%0D%0A%0D%0APlease send me a free personal license to PhotoStructure.%0D%0A%0D%0AThank you!">Send us an email</a> and we’ll set you up with a <b>free</b> personal license of PhotoStructure.</i> 
     
     if volumes
       .volumes
@@ -68,14 +68,14 @@ html
             th.mountpoint mount
             th.size size
             th.free free
-            th.volsha volume id
+            th.volsha <a href="https://photostructure.com/faq/what-is-a-volume" target="_blank">volume id</a>
             th.label label
           each vol in volumes
             tr
               td.mountpoint= vol.mountpoint
               td.size= vol.size
               if vol.full
-                td.free.full(title="This disk is almost full")= vol.free
+                td.free.full(title="This disk is full")= vol.free
               else
                 td.free= vol.free
               td.volsha= vol.volsha
