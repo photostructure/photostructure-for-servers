@@ -4,7 +4,7 @@ html(lang="en")
     meta(charset="utf-8")
     title #{title} - PhotoStructure
     meta(name="viewport" content="width=device-width,initial-scale=1")
-    link(rel="stylesheet", href="/app/settings.css")
+    link(rel="stylesheet" href="/app/settings.css" nonce=nonce)
 
   body.reveal(class=bodyClass)
     header.settings
@@ -18,8 +18,7 @@ html(lang="en")
           p= err
 
       .container.reveal
-        // the onkeydown prevents enter from submitting the form:
-        form(action="/settings" method="post" onkeydown="return event.key != 'Enter';")  
+        form(action="/settings" method="post")  
           .section
             .hero
               h1 Thank you for beta testing <br> 
@@ -35,7 +34,7 @@ html(lang="en")
                 i.emj.computer(title="Your data shouldn’t help advertising networks")
                 | PhotoStructure runs on <b>this computer</b>, 
                 | not in the cloud. <br>
-                | <b><a href="https://blog.photostructure.com/metadata-what-lurks-inside-your-photos/" target="_blank">Your data stays yours</a></b>.
+                | <b><a href="https://photostructure.com/faq/metadata-what-lurks-inside-your-photos/">Your data stays yours</a></b>.
 
               p.info
                 i.emj.home(title="One library to rule them all")
@@ -45,7 +44,7 @@ html(lang="en")
               p.info
                 i.emj.safe(title="Your files are safe")
                 | PhotoStructure  
-                | <a href="https://support.photostructure.com/why-doesnt-photostructure-move-original-files/" target="_blank">
+                | <a href="https://photostructure.com/faq/why-doesnt-photostructure-move-original-files/">
                 | never moves or deletes</a>
                 | your photos and videos.
 
@@ -57,7 +56,7 @@ html(lang="en")
               //- p.info
               //-   i.emj.thinking
               //-   | Hover over <br> <dfn tooltip="This is an example of some explanatory text. You’ll find more below ⬇️">underlined text</dfn>
-              //-   | or click on links <a href="https://support.photostructure.com/tag/getting-started/" target="_blank">that look like this</a> for more information.
+              //-   | or click on links <a href="https://support.photostructure.com/tag/getting-started/">that look like this</a> for more information.
 
             if (isVideoTranscodingSupported)
               #videoSupported.info.message
@@ -75,7 +74,7 @@ html(lang="en")
                     | VLC #{vlcInfo.unsupportedVersion} is not supported. 
 
                   | Before continuing, please 
-                  a(href="https://photostructure.com/getting-started/video-support/" target="_blank") follow these steps
+                  a(href="https://photostructure.com/getting-started/video-support/") follow these steps
                   | . It’ll only take a minute.
                   //- we don’t have the "reload" step here so people (like Jim L) don’t lose their form entries.
 
@@ -94,7 +93,7 @@ html(lang="en")
             else
               ul
                 li PhotoStructure automatically ignores  
-                  a(href="https://photostructure.com/faq/how-to-hide-directories/" target="_blank") all hidden files, as well as system, application, and NoMedia directories.
+                  a(href="https://photostructure.com/faq/how-to-hide-directories/") all hidden files, as well as system, application, and NoMedia directories.
                 li Changing this setting does not remove assets already in your library.
 
               p
@@ -127,7 +126,7 @@ html(lang="en")
                   placeholder="Custom path(s) to examine for photos and videos" 
                   max=1024
                   value=joinedScanPaths
-                  onfocus="document.getElementById('scanPath').checked = true"
+                  data-onfocuscheck="#scanPath"
                 )
                 button.select-directory.btn-small.hidden.only-electron(
                   type="button"
@@ -141,7 +140,7 @@ html(lang="en")
             h2 May PhotoStructure organize your photos and videos?
 
             p PhotoStructure can 
-              | <a href="https://photostructure.com/getting-started/automatic-library-organization/" target="_blank">
+              | <a href="https://photostructure.com/getting-started/automatic-library-organization/">
               | copy the photos and videos it finds into your
               | PhotoStructure Library</a>. This is ideal if your photos
               | are currently scattered across many different disk drives and memory 
@@ -153,7 +152,7 @@ html(lang="en")
               li PhotoStructure will 
                 | <dfn tooltip="The same photo or video will not be copied more than once into your library.">de-duplicate</dfn> 
                 | photos and videos automatically 
-                | (<a href="https://photostructure.com/faq/what-do-you-mean-by-dedupe/" target="_blank">learn more</a>).
+                | (<a href="https://photostructure.com/faq/what-do-you-mean-by-dedupe/">learn more</a>).
 
               li Photos and videos already found in your library will remain in their current location
 
@@ -181,20 +180,20 @@ html(lang="en")
                   tt#currentLibraryPath #{currentLibraryPath}
                   | . 
                 p
-                  a(href="https://photostructure.com/server/photostructure-for-docker/" target="_blank") Read more about Docker setup here.
+                  a(href="https://photostructure.com/server/photostructure-for-docker/") Read more about Docker setup here.
               else
                 p.error.message PS_LIBRARY_PATH must be set (probably to /ps/library), and exist. See 
-                  a(href="https://photostructure.com/server/photostructure-for-docker/" target="_blank") the support site for instructions.
+                  a(href="https://photostructure.com/server/photostructure-for-docker/") the support site for instructions.
           
             else if welcome
               h2 Where would you like your library stored?
-              p Your <a href="https://photostructure.com/faq/library/" target="_blank">PhotoStructure Library</a> holds a database of your photos and videos, web-sized previews of your images and videos, and (depending on your choice above), a copy of all your original photos and videos.
+              p Your <a href="https://photostructure.com/faq/library/">PhotoStructure Library</a> holds a database of your photos and videos, web-sized previews of your images and videos, and (depending on your choice above), a copy of all your original photos and videos.
               p This directory must have 
                 | <dfn tooltip="Digital photo sizes vary greatly between cameras. 1 Gigabyte stores several thousand pictures from a digital camera from 10 years ago, but only 20 pictures from a new high-end dSLR, and only 1 minute of 4K 60fps video.">lots of free space</dfn> 
-                | (<a href="https://photostructure.com/getting-started/how-much-disk-space-do-i-need-for-my-photostructure-library/" target="_blank">learn more</a>).
+                | (<a href="https://photostructure.com/getting-started/how-much-disk-space-do-i-need-for-my-photostructure-library/">learn more</a>).
             else
               h2 Your PhotoStructure library
-              p Your <a href="https://photostructure.com/faq/library/" target="_blank">PhotoStructure Library</a> is currently
+              p Your <a href="https://photostructure.com/faq/library/">PhotoStructure Library</a> is currently
                 tt#currentLibraryPath #{currentLibraryPath}
 
               p Changing your library location closes your current library and either creates or opens a library in your new directory. 
@@ -230,7 +229,7 @@ html(lang="en")
                   placeholder="Path to your library"
                   max=1024
                   value=libraryPath 
-                  onfocus="document.getElementById('libraryPathCustom').checked = true"
+                  data-onfocuscheck="#libraryPathCustom"
                 )
                 button.select-directory.btn-small.hidden.only-electron(
                   type="button"
@@ -248,7 +247,7 @@ html(lang="en")
               b By clicking Start you agree to all terms of this license.
             else
               .pt
-              b By clicking Save you agree to all terms of the <a href="https://photostructure.com/legal/eula/" target="_blank">PhotoStructure End-User License Agreement</a>.
+              b By clicking Save you agree to all terms of the <a href="https://photostructure.com/legal/eula/">PhotoStructure End-User License Agreement</a>.
             
             .pt
             button.btn(type="submit" name="action" title="Accept the EULA and save settings") #{welcome ? "Start" : "Save"}
@@ -265,5 +264,4 @@ html(lang="en")
             circle.path(cx="50" cy="50" r="20" fill="none" stroke-width="4")
   </div>
 
-    script(src="/app/settings.js")
-    include _chat.pug
+    script(src="/app/settings.js" nonce=nonce)

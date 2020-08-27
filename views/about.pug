@@ -82,10 +82,5 @@ html
               td.label= vol.label
               if vol.remote
                 td.remote(class=vol.remote.ok ? "ok" : "notok")= vol.remote.share + "@" + vol.remote.host
-  //- Add titles to all the anchor tags:
-  script.
-    document.querySelectorAll("a[target]").forEach(ea => 
-      ea.setAttribute("title", `Click to open ${ea.getAttribute("href")} in a new window`)
-    )
 
-  include _chat.pug
+  script(src="/app/about.js" nonce=nonce)

@@ -1,16 +1,2 @@
 if chatWidget
-  a#chat(onclick="setup()" title="Click to chat with support\n\n(we don't enable chat automatically to increase your privacy)")
-
-  script.
-    "use strict";
-    function setup() {
-      const chat = document.getElementById("chat")
-      chat.classList.add("busy");
-      window.$crisp = [];
-      window.CRISP_WEBSITE_ID = "bbd3ae50-0c3d-48ff-894d-895ae99de754";
-      const s = document.createElement("script");
-      s.src = "https://client.crisp.chat/l.js";
-      s.async = 1;
-      document.getElementsByTagName("head")[0].appendChild(s);
-      setTimeout(() => chat.remove(), 2000);
-    }
+  a#chat(title="Click to chat with support\n\n(we don't enable chat automatically to increase your privacy)")

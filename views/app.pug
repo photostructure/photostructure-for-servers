@@ -2,12 +2,10 @@ doctype html
 html(lang="en")
   head
     meta(charset="utf-8")
-    style
-      //- minimize white background flashing:
-      body { min-height: 100vh ; background-color: #333; }
+    style(nonce=nonce) body { min-height: 100vh ; background-color: #333; }
     title PhotoStructure
     meta(name="viewport" content="width=device-width,initial-scale=1")
-    link(rel="stylesheet", href="/app/app.css")
+    link(rel="stylesheet", href="/app/app.css" nonce=nonce)
     //- from https://realfavicongenerator.net
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -17,8 +15,9 @@ html(lang="en")
     <meta name="msapplication-TileColor" content="#2d89ef">
     <meta name="theme-color" content="#ffffff">
 
+  //- minimize white background flashing:
   body.reveal(class=bodyClass)
     #app
-      router-view
+      #mount
 
-  script(src="/app/app.js")
+  script(src="/app/app.js" nonce=nonce)

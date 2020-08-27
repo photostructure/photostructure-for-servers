@@ -1,7 +1,92 @@
 
+Please note that this is a fairly exhaustive list of changes per version.
+
+- Major releases have more expository posts that describe new features, like our
+  [**version 0.8**](/about/v-0-8/) post.
+
+- Visit [**what's next**](https://photostructure.com/about/whats-next/) to get a
+  sneak-peak into what we're going to be working on next (and don't forget to
+  share your feedback with us!)
+
+## v0.8.4
+
+_Not released yet_
+
+#### Features & enhancements
+
+- ✨ First step towards retroactive [NoMedia](/nomedia) file exclusions: a new
+  `PS_EXCLUDE_NO_MEDIA_ASSETS_ON_REBUILD` library setting (that defaults to
+  `true`) allows assets to be "excluded" from your library if _any_ file that
+  was already imported is found to be in a [NoMedia](/nomedia) directory.
+
+- ✨ UNC paths (`\\server\share\path\to\file.jpg`) are now supported both for
+  libraries and for scan paths.
+
+- ✨ The "show streams" button on the asset page is now iconic (rather than just
+  a down arrow), with busy and close states (which should help discoverability
+  of asset streams)
+
+- ✨ Transcoded video encoded max bitrates are now configurable via
+  `PS_TRANSCODE_BITRATE_QVGA` and `PS_TRANSCODE_BITRATE_UHD`. Videos with
+  resolutions between QVGA and UHD will lerp between these values.
+
+- ✨ For MacPorts users: a new `PS_TOOL_PATHS` setting is now configurable, and
+  now includes `/opt/local/bin` on Linux and macOS.
+
+- 💔 The `PS_FORCE_LOCAL_DB_REPLICA` setting is now on by default for Docker
+  users. This caused issues with a bunch of beta users, and having it on when
+  not needed only makes shutdown a bit slower (as the database needs to be
+  copied back into the library).
+
+- ✨ Volume UUID reading and writing is now configurable via Settings.
+
+- ✨/🐛 The default value of `PS_FUZZY_DATE_IMAGE_CORR_WEIGHT` was changed from
+  1.2 to 1.5. This makes PhotoStructure much more discriminating when it
+  de-duplicates photos that don't have a precise date (like from scanned
+  images).
+
+- 📦 Header components are removed or reduced on mobile to prevent title
+  overlaps
+
+- 📦 Release notes are now available from the main navigation menu from
+  within PhotoStructure, as well as the footer on photostructure.com pages.
+
+#### Bug fixes
+
+- 🐛 **Non-English locale support**: Users whose system locale was not
+  "`POSIX`" may have seen a number of different bugs, including failure to
+  launch. PhotoStructure now forces locale on forked tools to `C` which should
+  address this issue.
+
+- 🐛 Fixed AssetFile URI encoding errors for paths that had special characters
+
+- 🐛 Filenames with certain non-latin or characters may have been importable
+  before due to URI parsing bugs. This should now be addressed: run "sync" if
+  you think you may have been impacted.
+
+- 🐛 string comparisons are now locale-sensitive.
+
+- 🐛 Fixed system icon tooltip text (it said `function () { ...`)
+
+- 🐛 The [`info` tool](/server/tools/) no longer elides deep object fields
+
+- 🐛 Added more robust race-condition handling for file caches (this mostly
+  impacted high-cpu-count systems)
+
+- 🐛 Binary keyword fields are now properly ignored (instead of interpreting
+  `(Binary data 32 bytes, use -b option to extract)` as a _keyword_, oops!).
+
+#### Performance enhancements
+
+- ✨/🐛 More types of unhealthy volumes are now ignored, rather than preventing
+  PhotoStructure from starting.
+
+- ✨ Several new binary thumbnail variants are now inspected, which can speed up
+  imports of certain RAW images.
+
 ## v0.8.3
 
-**In development**
+**Released 2020-07-29**
 
 Every feature and bug fix in this release is directly due to beta users'
 suggestions or their assistance. Thank you!
