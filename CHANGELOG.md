@@ -1,23 +1,75 @@
 
-Please note that this is a fairly exhaustive list of changes per version.
+This is a detailed list of changes per version.
 
-- Major releases have more expository posts that describe new features, like our
-  [**version 0.8**](/about/v-0-8/) post.
+- Releases sometimes have separate posts that describe new features, like
+  [**this one**](/about/v-0-8/).
 
-- Visit [**what's next**](https://photostructure.com/about/whats-next/) to get a
+- Visit [**what's next**](/about/whats-next/) to get a
   sneak-peak into what we're going to be working on next (and don't forget to
   share your feedback with us!)
 
-## v0.8.4
+## v0.9.0
 
-_Not released yet_
+_Currently in alpha testing. We hope to ship by September 15._
 
-#### Features & enhancements
+### Your feedback is requested!
 
-- ✨ First step towards retroactive [NoMedia](/nomedia) file exclusions: a new
-  `PS_EXCLUDE_NO_MEDIA_ASSETS_ON_REBUILD` library setting (that defaults to
-  `true`) allows assets to be "excluded" from your library if _any_ file that
-  was already imported is found to be in a [NoMedia](/nomedia) directory.
+🙏🏾 Every feature and bug fix in this release is directly due to beta users'
+suggestions, or via their assistance. Thank you!
+
+🛡️ This version includes several new security enhancements, updates to several
+major dependencies, and hundreds of other changes, both visible and behind the
+scenes.
+
+🍜 This version _really will_ be the last beta release before we introduce free
+and premium tiers. We are giving discounts to the beta users that give us
+feedback (both positive and negative), and help debug any issues they find.
+[Please see this post for more details about subscriptions and
+pricing](/about/v-0-8/#-thanks-to-our-testers-this-will-be-our-last-beta-version).
+
+🐞 As always, **if things don't seem to work correctly, or you find anything odd or
+confusing or buggy, please [email us](support@photostructure.com)**.
+
+### Settings changes
+
+- ✨ We've updated the "Where are your photos and videos?" section:
+
+{{< figure src="/img/2020/09/old-scan-paths.png" caption="Prior settings from version 0.8.3 and earlier" >}}
+
+{{< figure src="/img/2020/09/new-scan-paths.png" caption="New settings from version 0.9.0" >}}
+
+- The scanning options are now just "automatic" or "manual".
+
+- To examine your Pictures directory just click the "Add My Pictures directory"
+  button.
+
+- PhotoStructure for Desktop users have an "Add" button to browse and add local
+  directories. You can click it multiple times to add additional paths.
+
+- PhotoStructure scans paths in the order you specify in this list (even if
+  you're in "automatic" mode).
+
+- This isn't available on PhotoStructure for Docker users, as PhotoStructure
+  scans all bind-mounted volumes automatically.
+
+### Features & enhancements
+
+- 🛡️ Strict [CSP](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP) with
+  nonces are now enabled. **If you experience page loading errors or see problems in
+  your console, please report them to support@photostructure.com.** You can
+  disable CSP enforcement by setting `cspReportOnly` to `true`. Also see the new
+  `cspDirective` system setting for reverse-proxy users.
+
+- ✨ First step towards retroactive [NoMedia](/nomedia) file exclusions: assets
+  are now "excluded" from your library if _any_ file that was already imported
+  is found to be in a [NoMedia](/nomedia) directory. Set
+  `excludeNoMediaAssetsOnRebuild` to `false` to retain prior behavior.
+
+- ✨ The complete set of [settings](/getting-started/advanced-settings/) is now
+  published to github and included in Docker images as a `defaults.env` file.
+  See the new [environment
+  variables](/faq/environment-variables)
+  documentation for more information.
 
 - ✨ UNC paths (`\\server\share\path\to\file.jpg`) are now supported both for
   libraries and for scan paths.
@@ -26,45 +78,92 @@ _Not released yet_
   a down arrow), with busy and close states (which should help discoverability
   of asset streams)
 
+- ✨ Tags are now sorted and stored case-insensitively.
+
 - ✨ Transcoded video encoded max bitrates are now configurable via
-  `PS_TRANSCODE_BITRATE_QVGA` and `PS_TRANSCODE_BITRATE_UHD`. Videos with
+  `transcodeBitrateQVGA` and `transcodeBitrateUHD`. Videos with
   resolutions between QVGA and UHD will lerp between these values.
 
-- ✨ For MacPorts users: a new `PS_TOOL_PATHS` setting is now configurable, and
+- ✨ For MacPorts users: a new `toolPaths` setting is now configurable, and
   now includes `/opt/local/bin` on Linux and macOS.
 
-- 💔 The `PS_FORCE_LOCAL_DB_REPLICA` setting is now on by default for Docker
+- 💔 The `forceLocalDbReplica` setting is now on by default for Docker
   users. This caused issues with a bunch of beta users, and having it on when
   not needed only makes shutdown a bit slower (as the database needs to be
   copied back into the library).
 
-- ✨ Volume UUID reading and writing is now configurable via Settings.
+- ✨ Volume UUID reading and writing is now disableable via Settings.
 
-- ✨/🐛 The default value of `PS_FUZZY_DATE_IMAGE_CORR_WEIGHT` was changed from
+- ✨ On startup, and periodically while running, PhotoStructure will validate the
+  library database. If it is found to have inconsistencies, the database is
+  rebuilt automatically (via SQLite's `.dump` or `.recover`). If this process
+  fails, though, please [follow these instructions](/faq/restore-db-from-backup/).
+
+- ✨ PhotoStructure will refuse to start if it detects that a library is from a
+  newer version of PhotoStructure. Newer versions of PhotoStructure can open and
+  upgrade older libraries, however, and the upgrade process is automatic.
+
+- ✨ You can now prevent PhotoStructure from running a sync on startup with the
+  new `--pause-sync` option added to `main`, or by setting the `PS_START_PAUSED`
+  environment variable to `true`.
+
+- 📦 The default value of `fuzzyDateImageCorrWeight` was changed from
   1.2 to 1.5. This makes PhotoStructure much more discriminating when it
   de-duplicates photos that don't have a precise date (like from scanned
   images).
 
-- 📦 Header components are removed or reduced on mobile to prevent title
-  overlaps
+- 📦 Header components are removed or reduced on mobile to prevent titles from
+  overlapping.
 
 - 📦 Release notes are now available from the main navigation menu from
   within PhotoStructure, as well as the footer on photostructure.com pages.
 
-#### Bug fixes
+- 📦 PhotoStructure for Desktops is now running [Electron
+  10.x](https://www.electronjs.org/releases/stable#release-notes-for-v1000),
+  which includes a raft of security and performance updates.
+
+- 📦 Docker `:beta` tags now automatically pull in the last build from either
+  `beta` or `main` branches.
+
+- 🛡️ We're now using Electron's `contextBridge` for the render process, and
+  pass all [Electronegativity](https://github.com/doyensec/electronegativity)
+  security audits.
+
+- 📦 Localhost is now configurable (so users can try binding to either
+  `127.0.0.1` or `localhost` if they are fighting [firewall
+  issues](/faq/troubleshooting/#windows-firewall-issues))
+
+- ✨/🐛 More types of unhealthy volumes are now ignored, rather than preventing
+  PhotoStructure from starting.
+
+- ✨ Several new binary thumbnail variants are now inspected, which can speed up
+  imports of certain RAW images.
+
+- ✨ [Samples](/about/introducing-photostructure/#samples-to-keep-you-interested)
+  are now ordered with a simpler yet more robust formula.
+
+- ✨ Captured-at times are extracted from several more tags now. Rather than
+  using "first-one-in-wins," PhotoStructure now picks the earliest time with the
+  highest resolution.
+
+### Bug fixes
+
+- 🐛 Assets on the home page are automatically refreshed during sync/import
+  (this used to work but broke 2 versions ago).
 
 - 🐛 **Non-English locale support**: Users whose system locale was not
   "`POSIX`" may have seen a number of different bugs, including failure to
   launch. PhotoStructure now forces locale on forked tools to `C` which should
   address this issue.
 
-- 🐛 Fixed AssetFile URI encoding errors for paths that had special characters
+- 🐛 Sync/import progress reconnects automatically on service restarts.
 
-- 🐛 Filenames with certain non-latin or characters may have been importable
-  before due to URI parsing bugs. This should now be addressed: run "sync" if
-  you think you may have been impacted.
+- 🐛 Fixed AssetFile URI encoding errors for paths that had special characters.
+  This could prevent prior versions of PhotoStructure from successfully
+  importing files that had "special" characters. Please run "sync" if you think
+  you may have been impacted.
 
-- 🐛 string comparisons are now locale-sensitive.
+- 🐛 String comparisons are now locale-sensitive.
 
 - 🐛 Fixed system icon tooltip text (it said `function () { ...`)
 
@@ -73,16 +172,12 @@ _Not released yet_
 - 🐛 Added more robust race-condition handling for file caches (this mostly
   impacted high-cpu-count systems)
 
-- 🐛 Binary keyword fields are now properly ignored (instead of interpreting
-  `(Binary data 32 bytes, use -b option to extract)` as a _keyword_, oops!).
+- 🐛 Binary keyword fields are now properly ignored. (PhotoStructure previously
+  interpreted ExifTool's `(Binary data 32 bytes, use -b option to extract)` as a
+  _keyword_, oops!).
 
-#### Performance enhancements
-
-- ✨/🐛 More types of unhealthy volumes are now ignored, rather than preventing
-  PhotoStructure from starting.
-
-- ✨ Several new binary thumbnail variants are now inspected, which can speed up
-  imports of certain RAW images.
+_(note that this release had been called v0.8.4, but as several new
+features and 💔 were added, incrementing the minor version was warranted)_
 
 ## v0.8.3
 
@@ -219,7 +314,7 @@ Click the new navigation button in the top-left part of the screen for access to
 - Root tags, like "When," "Camera," "Keywords," and "File Type"
 - The About and Settings pages
 - Links to control the sync process and shut down PhotoStructure
-- The getting started and support pages on <PhotoStructure.com>
+- The getting started and support pages on <https://photostructure.com/>
 
 PhotoStructure for Servers users: this gets you to feature parity with Desktop
 users that have enjoyed these links in their system tray menu.

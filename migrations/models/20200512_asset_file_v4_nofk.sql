@@ -114,8 +114,7 @@ DROP INDEX IF EXISTS assetfile_mode2_idx;
 DROP INDEX IF EXISTS assetfile_mode3_idx;
 
 -- Replace the old with the new:
-ALTER TABLE
-  AssetFile RENAME TO AssetFile_20200512;
+DROP TABLE IF EXISTS AssetFile;
 
 ALTER TABLE
   new_AssetFile RENAME TO AssetFile;
@@ -142,6 +141,3 @@ CREATE INDEX assetfile_mode0_idx ON AssetFile (mode0);
 CREATE INDEX assetfile_mode1_idx ON AssetFile (mode1);
 
 CREATE INDEX assetfile_mode2_idx ON AssetFile (mode2);
-
--- yay, everything worked. drop the old table:
-DROP TABLE IF EXISTS AssetFile_20200512;

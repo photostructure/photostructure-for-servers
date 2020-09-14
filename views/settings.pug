@@ -27,7 +27,7 @@ html(lang="en")
             .pent
               p.info
                 i.emj.crane(title="Thanks for your help!")
-                | This beta is free in exchange for your feedback. <br/>
+                | <b>This beta is free in exchange for your feedback.</b> <br/>
                 | Please <b><a href="mailto:hello@photostructure.com">email us</a></b> if you find anything odd, buggy, or missing!
 
               p.info
@@ -79,63 +79,49 @@ html(lang="en")
                   //- we don’t have the "reload" step here so people (like Jim L) don’t lose their form entries.
 
             h2 Where are your photos and videos?
-            
-            if isDocker
-              if scanPaths
-                p PhotoStructure will scan these mounted volumes:
-                ul
-                  each ea in scanPaths
-                    li
-                      tt= ea
-              else
-                p PhotoStructure will scan all mounted volumes for photos and videos.
-              p If you want to change this, shut down the container and update the mounted volumes.
-            else
-              ul
-                li PhotoStructure automatically ignores  
-                  a(href="https://photostructure.com/faq/how-to-hide-directories/") all hidden files, as well as system, application, and NoMedia directories.
-                li Changing this setting does not remove assets already in your library.
+            ul
+              li PhotoStructure automatically ignores  
+                a(href="https://photostructure.com/faq/how-to-hide-directories/") all hidden files, as well as system, application, and NoMedia directories.
+              li Changing this setting does not remove assets already in your library.
 
+            if isDocker
+              p PhotoStructure will scan all <a href="https://photostructure.com/server/photostructure-for-docker/#docker-volume-setup">mounted volumes for photos and videos</a>.
+              p If you want to change this, shut down the docker container and update the mounted volumes.
+            else
               p
                 label(for="scanAllDrives")
                   input#scanAllDrives(name="scan" type="radio" value="scanAllDrives" checked=scanAllDrives)
-                  i.emj.computer
-                  | Examine all directories
+                  span.pill.green.mr1em automatic
+                  | Scan all directories
                   |
                   | on 
-                  dfn(tooltip="New drives, including digital camera memory cards and USB drives, will be examined when you plug them in.") all drives
+                  dfn(tooltip="New drives, including digital camera memory cards and USB drives, will be scanned when you plug them in.") all drives
                   |
-                  | for photos and videos. &nbsp; <span class="recommended">recommended</a>
+                  | for photos and videos 
 
               p
-                label(for="scanPictures")
-                  input#scanPictures(name="scan" type="radio" value="scanPictures" checked=scanPictures)
-                  i.emj.camera
-                  | Examine my 
-                  dfn(tooltip=picturesPath) Pictures
-                  |
-                  | directory.
-              label.scanPath(for="scanPath")
-                input#scanPath(name="scan" type="radio" value="scanPath" checked=scanPath)
-                i.emj.books
-                dfn(tooltip="For example: \"" + exampleScanPath + "\". Separate paths with a \"¦\" if any path has a \"" + delimiter + "\" in it.") Custom path(s)
-                br
-                input#scanPathInput.select-directory-path.w80(
-                  name="scanPath"
-                  type="text"
-                  placeholder="Custom path(s) to examine for photos and videos" 
-                  max=1024
-                  value=joinedScanPaths
-                  data-onfocuscheck="#scanPath"
-                )
+                
+              label(for="scanPath")
+                input#scanPath(name="scan" type="radio" value="scanPath" checked=!scanAllDrives)
+                span.pill.purple.mr1em manual
+                dfn(tooltip="Add as many paths as you want. PhotoStructure will scan them in this order. Your library directory is always scanned.") Scan these paths:
+                p
+                  #scanPaths(data-paths=jsonScanPaths)
+  
+                button.btn-small#scanMyPictures(
+                  type="button"
+                  title="Click to add " + picturesPath
+                  data-path=picturesPath) 
+                  | <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18"><path d="M0 0h24v24H0z" fill="none"/><path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM5 17l4.5-6 3.5 4.51 2.5-3.01L19 17z"/></svg>
+                  | Add My Pictures directory
                 button.select-directory.btn-small.hidden.only-electron(
                   type="button"
-                  data-textfield="#scanPathInput"
-                  data-checkonclick="#scanPath"
-                  data-delimiter=delimiter
-                  data-title="Choose a directory to examine for photos and videos")
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.17 6l2 2H20v10H4V6h5.17M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>
-                  | Select
+                  title="Click to add a directory toscan for photos and videos"
+                  data-input-container="#scanPaths"
+                  data-name="scanPath"
+                  data-placeholder="Custom path to scan for photos and videos") 
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M20 6h-8l-2-2H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-1 8h-3v3h-2v-3h-3v-2h3V9h2v3h3v2z"/></svg> Add
+  
 
             h2 May PhotoStructure organize your photos and videos?
 
@@ -229,15 +215,11 @@ html(lang="en")
                   placeholder="Path to your library"
                   max=1024
                   value=libraryPath 
-                  data-onfocuscheck="#libraryPathCustom"
                 )
                 button.select-directory.btn-small.hidden.only-electron(
                   type="button"
-                  data-textfield="#libraryPathCustomInput"
-                  data-checkonclick="#libraryPathCustom"
                   data-title="Choose a directory to store your PhotoStructure library")
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.17 6l2 2H20v10H4V6h5.17M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>
-                  | Select
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none"/><path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg> Select
 
             if welcome
               h2 PhotoStructure license
