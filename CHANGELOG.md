@@ -10,7 +10,7 @@ This is a detailed list of changes per version.
 
 ## v0.9.0
 
-_Currently in alpha testing. We hope to ship by September 15._
+_Currently in alpha testing. We hope to ship by mid-September._
 
 ### Your feedback is requested!
 
@@ -34,9 +34,9 @@ confusing or buggy, please [email us](support@photostructure.com)**.
 
 - ✨ We've updated the "Where are your photos and videos?" section:
 
-{{< figure src="/img/2020/09/old-scan-paths.png" caption="Prior settings from version 0.8.3 and earlier" >}}
+{{< figure src="/img/2020/09/scan-paths-old.png" caption="Prior settings from version 0.8.3 and earlier" >}}
 
-{{< figure src="/img/2020/09/new-scan-paths.png" caption="New settings from version 0.9.0" >}}
+{{< figure src="/img/2020/09/scan-paths-new.png" caption="New settings from version 0.9.0" >}}
 
 - The scanning options are now just "automatic" or "manual".
 
@@ -71,8 +71,17 @@ confusing or buggy, please [email us](support@photostructure.com)**.
   variables](/faq/environment-variables)
   documentation for more information.
 
+- ✨ Browsing improvements for large libraries: Tag "samples" automatically show
+  fewer rows if there are many children.
+
 - ✨ UNC paths (`\\server\share\path\to\file.jpg`) are now supported both for
-  libraries and for scan paths.
+  libraries and for scan paths, but please note that _free space cannot be
+  monitored for these devices_. We still recommended that you map your network
+  drive to a drive letter, so PhotoStructure can monitor and pause imports if
+  the volume gets too full.
+
+- ✨ Galleries are now rendered with much simpler CSS, which makes browsing
+  faster.
 
 - ✨ The "show streams" button on the asset page is now iconic (rather than just
   a down arrow), with busy and close states (which should help discoverability
@@ -118,10 +127,6 @@ confusing or buggy, please [email us](support@photostructure.com)**.
 - 📦 Release notes are now available from the main navigation menu from
   within PhotoStructure, as well as the footer on photostructure.com pages.
 
-- 📦 PhotoStructure for Desktops is now running [Electron
-  10.x](https://www.electronjs.org/releases/stable#release-notes-for-v1000),
-  which includes a raft of security and performance updates.
-
 - 📦 Docker `:beta` tags now automatically pull in the last build from either
   `beta` or `main` branches.
 
@@ -139,12 +144,59 @@ confusing or buggy, please [email us](support@photostructure.com)**.
 - ✨ Several new binary thumbnail variants are now inspected, which can speed up
   imports of certain RAW images.
 
-- ✨ [Samples](/about/introducing-photostructure/#samples-to-keep-you-interested)
-  are now ordered with a simpler yet more robust formula.
+- ✨/🐛
+  [Samples](/about/introducing-photostructure/#samples-to-keep-you-interested)
+  are sampled randomly from child tags. The prior implementation biased strongly
+  towards more recent assets (which is why you'd see mostly photos from January
+  in the When samples!)
 
 - ✨ Captured-at times are extracted from several more tags now. Rather than
   using "first-one-in-wins," PhotoStructure now picks the earliest time with the
   highest resolution.
+
+<a id="pill-streams"></a>
+
+- ✨ Stream tags got a redesign to make each tag more visually distinct, and less
+  "busy" when there are many tags:
+
+{{< figure src="/img/2020/09/stream-tags-old.png" caption="Prior stream tags" >}}
+{{< figure src="/img/2020/09/stream-tags-new.png" caption="New stream tags in v0.9.0-beta.2" >}}
+
+- ✨/🐛 Progress reports from the web service used to poll the database every
+  couple seconds. When no sync is running, polling drops to every 10 seconds,
+  which should reduce idle CPU consumption.
+
+- ✨ When viewing duplicate assets, zoom is now supported (previous versions
+  disabled zoom if you were viewing an asset variant). View these variants by
+  opening the asset info panel (click the "i" when viewing an asset). Click a
+  file path to toggle viewing that image instead of the top, "shown" asset file.
+
+- ✨ New "pause zoom" mode: you can now "freeze" the current zoom and pan
+  position. Toggle this mode by either tapping either the <key>p</key> or the
+  <key>pause</key> key).
+
+  This mode lets you compare different asset file variants while zoomed in, or
+  to compare next and previous assets. This is especially handy when comparing
+  focus or smiles between shots.
+
+- 🐛/✨ Browsing on smaller screens has been improved:
+
+  - Long headers don't overlap anymore
+  - Tags in asset streams are shortened to just `parent/child`
+  - Asset contents now show under the asset info panel
+
+- ✨ [**Tools**](/tools) now support `--force-open` (please read the `--help`!) and
+  `main` has a `--pause-sync` for starting the service "paused" (if you want to
+  prevent sync from running until you manually resume via the navigation bar)
+
+- 📦 [**Systemd service
+  configuration**](/server/photostructure-for-node/#step-6-set-up-a-systemd-service)
+  was added to the PhotoStructure for Node instructions.
+
+- 📦 Added `--stop-timeout` and `stop_grace_period` to the [**docker**](/server/photostructure-for-docker/) and
+  [**docker-compose**] recipes. This should make restarts via docker more reliable (as
+  PhotoStructure will have sufficient time to [shut down
+  cleanly](/faq/how-to-start-and-stop-photostructure/#why-does-it-take-so-long-to-shut-down)).
 
 ### Bug fixes
 
@@ -156,12 +208,16 @@ confusing or buggy, please [email us](support@photostructure.com)**.
   launch. PhotoStructure now forces locale on forked tools to `C` which should
   address this issue.
 
+- 🐛 "Click to toggle showing this file" in the Asset Info panel works (again).
+
 - 🐛 Sync/import progress reconnects automatically on service restarts.
 
 - 🐛 Fixed AssetFile URI encoding errors for paths that had special characters.
   This could prevent prior versions of PhotoStructure from successfully
   importing files that had "special" characters. Please run "sync" if you think
   you may have been impacted.
+
+- 🐛 The asset info panel now handles very long pathnames properly.
 
 - 🐛 String comparisons are now locale-sensitive.
 
@@ -175,6 +231,9 @@ confusing or buggy, please [email us](support@photostructure.com)**.
 - 🐛 Binary keyword fields are now properly ignored. (PhotoStructure previously
   interpreted ExifTool's `(Binary data 32 bytes, use -b option to extract)` as a
   _keyword_, oops!).
+
+- 🐛 Fixed several asset stream rendering issues that could result in the UI
+  "hanging."
 
 _(note that this release had been called v0.8.4, but as several new
 features and 💔 were added, incrementing the minor version was warranted)_

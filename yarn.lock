@@ -26,72 +26,72 @@
   resolved "https://registry.yarnpkg.com/@iarna/toml/-/toml-2.2.5.tgz#b32366c89b43c6f8cefbdefac778b9c828e3ba8c"
   integrity sha512-trnsAYxU3xnS1gPHPyU961coFyLkh4gAD/0zQ5mymY4yOZ+CYvsPqUbOFSw0aDM4y0tV7tiFxL/1XfXPNC6IPg==
 
-"@sentry/core@5.23.0":
-  version "5.23.0"
-  resolved "https://registry.yarnpkg.com/@sentry/core/-/core-5.23.0.tgz#4d12ee4f5593e66fa5ffde0f9e9164a5468e5cec"
-  integrity sha512-K8Wp/g1opaauKJh2w5Z1Vw/YdudHQgH6Ng5fBazHZxA7zB9R8EbVKDsjy8XEcyHsWB7fTSlYX/7coqmZNOADdg==
+"@sentry/core@5.24.2":
+  version "5.24.2"
+  resolved "https://registry.yarnpkg.com/@sentry/core/-/core-5.24.2.tgz#1724652855c0887a690c3fc6acd2519d4072b511"
+  integrity sha512-nuAwCGU1l9hgMinl5P/8nIQGRXDP2FI9cJnq5h1qiP/XIOvJkJz2yzBR6nTyqr4vBth0tvxQJbIpDNGd7vHJLg==
   dependencies:
-    "@sentry/hub" "5.23.0"
-    "@sentry/minimal" "5.23.0"
-    "@sentry/types" "5.23.0"
-    "@sentry/utils" "5.23.0"
+    "@sentry/hub" "5.24.2"
+    "@sentry/minimal" "5.24.2"
+    "@sentry/types" "5.24.2"
+    "@sentry/utils" "5.24.2"
     tslib "^1.9.3"
 
-"@sentry/hub@5.23.0":
-  version "5.23.0"
-  resolved "https://registry.yarnpkg.com/@sentry/hub/-/hub-5.23.0.tgz#7350c2971fafdb9f883f0629fd1b35d2288cd6e1"
-  integrity sha512-P0sevLI9qAQc1J+AcHzNXwj83aG3GKiABVQJp0rgCUMtrXqLawa+j8pOHg8p7QWroHM7TKDMKeny9WemXBgzBQ==
+"@sentry/hub@5.24.2":
+  version "5.24.2"
+  resolved "https://registry.yarnpkg.com/@sentry/hub/-/hub-5.24.2.tgz#64a02fd487599945e488ae23aba4ce4df44ee79e"
+  integrity sha512-xmO1Ivvpb5Qr9WgekinuZZlpl9Iw7iPETUe84HQOhUrXf+2gKO+LaUYMMsYSVDwXQEmR6/tTMyOtS6iavldC6w==
   dependencies:
-    "@sentry/types" "5.23.0"
-    "@sentry/utils" "5.23.0"
+    "@sentry/types" "5.24.2"
+    "@sentry/utils" "5.24.2"
     tslib "^1.9.3"
 
-"@sentry/minimal@5.23.0":
-  version "5.23.0"
-  resolved "https://registry.yarnpkg.com/@sentry/minimal/-/minimal-5.23.0.tgz#93df781a98f0b334425f68b1fa0f4e1a86d8fa45"
-  integrity sha512-/w/B7ShMVu/tLI0/A5X+w6GfdZIQdFQihWyIK1vXaYS5NS6biGI3K6DcACuMrD/h4BsqlfgdXSOHHrmCJcyCXQ==
+"@sentry/minimal@5.24.2":
+  version "5.24.2"
+  resolved "https://registry.yarnpkg.com/@sentry/minimal/-/minimal-5.24.2.tgz#14e8b136842398a32987459f0574359b6dc57a1f"
+  integrity sha512-biFpux5bI3R8xiD/Zzvrk1kRE6bqPtfWXmZYAHRtaUMCAibprTKSY9Ta8QYHynOAEoJ5Akedy6HUsEkK5DoZfA==
   dependencies:
-    "@sentry/hub" "5.23.0"
-    "@sentry/types" "5.23.0"
+    "@sentry/hub" "5.24.2"
+    "@sentry/types" "5.24.2"
     tslib "^1.9.3"
 
-"@sentry/node@^5.23.0":
-  version "5.23.0"
-  resolved "https://registry.yarnpkg.com/@sentry/node/-/node-5.23.0.tgz#c5deb3e4842abacbd40ffaf296971e47df2f6e6c"
-  integrity sha512-WFiAI9+XALB144LRYsWt4aM6soxMRAp1SQ72H0LNOYQXyei5hnKXLmL8UH5RHJFD60Y8S42tIhZkdPPXSq7HgQ==
+"@sentry/node@^5.24.2":
+  version "5.24.2"
+  resolved "https://registry.yarnpkg.com/@sentry/node/-/node-5.24.2.tgz#6e06bf26f1e0b23e122a14f17aa57671d3428c4d"
+  integrity sha512-ddfU2tLTvhnY+NqzLIA/gxMt/uxq7R204Nb2J5qqE0WAgbh0dtylNAzfKZTizLdbZfRnpeISmd+CBILh3tavog==
   dependencies:
-    "@sentry/core" "5.23.0"
-    "@sentry/hub" "5.23.0"
-    "@sentry/tracing" "5.23.0"
-    "@sentry/types" "5.23.0"
-    "@sentry/utils" "5.23.0"
+    "@sentry/core" "5.24.2"
+    "@sentry/hub" "5.24.2"
+    "@sentry/tracing" "5.24.2"
+    "@sentry/types" "5.24.2"
+    "@sentry/utils" "5.24.2"
     cookie "^0.4.1"
     https-proxy-agent "^5.0.0"
     lru_map "^0.3.3"
     tslib "^1.9.3"
 
-"@sentry/tracing@5.23.0":
-  version "5.23.0"
-  resolved "https://registry.yarnpkg.com/@sentry/tracing/-/tracing-5.23.0.tgz#6627a6c659abce968e45e897ebc038873cc83fb2"
-  integrity sha512-cexFQCuGcFukqyaP8p8Uf/aCuMkzJeiU4Trx7vYHf16L95aSn5TGELK0SZOugEb2Gi9D9Z6NHfuK16nWjwPSRQ==
+"@sentry/tracing@5.24.2":
+  version "5.24.2"
+  resolved "https://registry.yarnpkg.com/@sentry/tracing/-/tracing-5.24.2.tgz#a36b4f9bf699c5e07e99a148360091c8e727c51f"
+  integrity sha512-1uDgvGGVF8lb3hRXbhNnns+8DBUKjhRKOFR5Z3RExjrDFYTDbHmoNtV73Q12Ra+Iht9HTZnIBOqYD3oSZIbJ0w==
   dependencies:
-    "@sentry/hub" "5.23.0"
-    "@sentry/minimal" "5.23.0"
-    "@sentry/types" "5.23.0"
-    "@sentry/utils" "5.23.0"
+    "@sentry/hub" "5.24.2"
+    "@sentry/minimal" "5.24.2"
+    "@sentry/types" "5.24.2"
+    "@sentry/utils" "5.24.2"
     tslib "^1.9.3"
 
-"@sentry/types@5.23.0":
-  version "5.23.0"
-  resolved "https://registry.yarnpkg.com/@sentry/types/-/types-5.23.0.tgz#935701637c2d5b1c123ac292bc253bddf451b076"
-  integrity sha512-PbN5MVWxrq05sZ707lc8lleV0xSsI6jWr9h9snvbAuMjcauE0lmdWmjoWKY3PAz2s1mGYFh55kIo8SmQuVwbYg==
+"@sentry/types@5.24.2":
+  version "5.24.2"
+  resolved "https://registry.yarnpkg.com/@sentry/types/-/types-5.24.2.tgz#e2c25d1e75d8dbec5dbbd9a309a321425b61c2ca"
+  integrity sha512-HcOK00R0tQG5vzrIrqQ0jC28+z76jWSgQCzXiessJ5SH/9uc6NzdO7sR7K8vqMP2+nweCHckFohC8G0T1DLzuQ==
 
-"@sentry/utils@5.23.0":
-  version "5.23.0"
-  resolved "https://registry.yarnpkg.com/@sentry/utils/-/utils-5.23.0.tgz#5e15f684b5a8f9c86e4ba15d81101eac7d6c240b"
-  integrity sha512-D5gQDM0wEjKxhE+YNvCuCHo/6JuaORF2/3aOhoJBR+dy9EACRspg7kp3+9KF44xd2HVEXkSVCJkv8/+sHePYRQ==
+"@sentry/utils@5.24.2":
+  version "5.24.2"
+  resolved "https://registry.yarnpkg.com/@sentry/utils/-/utils-5.24.2.tgz#90b7dff939bbbf4bb8edcac6aac2d04a0552af80"
+  integrity sha512-oPGde4tNEDHKk0Cg9q2p0qX649jLDUOwzJXHKpd0X65w3A6eJByDevMr8CSzKV9sesjrUpxqAv6f9WWlz185tA==
   dependencies:
-    "@sentry/types" "5.23.0"
+    "@sentry/types" "5.24.2"
     tslib "^1.9.3"
 
 "@tokenizer/token@^0.1.0", "@tokenizer/token@^0.1.1":
@@ -467,7 +467,14 @@ debug@2.6.9, debug@^2.2.0, debug@^2.3.3:
   dependencies:
     ms "2.0.0"
 
-debug@4, debug@4.1.1:
+debug@4:
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/debug/-/debug-4.2.0.tgz#7f150f93920e94c58f5574c2fd01a3110effe7f1"
+  integrity sha512-IX2ncY78vDTjZMFUdmsvIRFY2Cf4FnD0wRs+nQwJU8Lu99/tPFdb0VybiiMTPe3I6rQmwsqQqRBvxU+bZ/I8sg==
+  dependencies:
+    ms "2.1.2"
+
+debug@4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/debug/-/debug-4.1.1.tgz#3b72260255109c6b589cee050f1d516139664791"
   integrity sha512-pYAIzeRo8J6KPEaJ0VWOh5Pzkbw/RetuzehGM7QRRX5he4fPHx2rdKMB256ehJCkX+XRQm16eZLqLNS8RSZXZw==
@@ -582,27 +589,27 @@ etag@~1.8.1:
   resolved "https://registry.yarnpkg.com/etag/-/etag-1.8.1.tgz#41ae2eeb65efa62268aebfea83ac7d79299b0887"
   integrity sha1-Qa4u62XvpiJorr/qg6x9eSmbCIc=
 
-exiftool-vendored.exe@^12.5.0:
-  version "12.5.0"
-  resolved "https://registry.yarnpkg.com/exiftool-vendored.exe/-/exiftool-vendored.exe-12.5.0.tgz#3d84bb01d5ba5794fc3f41c275554c05f2a2cbb5"
-  integrity sha512-k9oXAq8VFztJLiyEM/4WtXscxQtyb4m3js2l1jlcoLIxiFmE5PJI99YtbbHl9g0Hy7327u7sp3xex6HZAFAiFA==
+exiftool-vendored.exe@^12.6.0:
+  version "12.6.0"
+  resolved "https://registry.yarnpkg.com/exiftool-vendored.exe/-/exiftool-vendored.exe-12.6.0.tgz#1dcbbcfa61ae0336fc003aee08cf2547a990c160"
+  integrity sha512-gJSjt1YyVU5B1WfuP7TVv7rGM3MnM0V5zw+Q7mM3zzvKl4WAmkQaPPkRGDoRZUhFqK8bUz2WbcniZOgw5LGcnA==
 
-exiftool-vendored.pl@^12.5.0:
-  version "12.5.0"
-  resolved "https://registry.yarnpkg.com/exiftool-vendored.pl/-/exiftool-vendored.pl-12.5.0.tgz#99c9e4f11891dc005dc1917d44a737c9dd27dbde"
-  integrity sha512-aY5G9lgHjgWS86uqJKtAE3Hxr3MxoiKY88oom+LZAf1PAY9+8JyT9h1AF7oK27upWx0MC14FsfNuc+cUjgIPkA==
+exiftool-vendored.pl@^12.6.0:
+  version "12.6.0"
+  resolved "https://registry.yarnpkg.com/exiftool-vendored.pl/-/exiftool-vendored.pl-12.6.0.tgz#af093b98b91770515c65279d23abfd15efdcba84"
+  integrity sha512-XeALcaaPKQWhEYiUik3KmhBLFKYNd44OWZLi7x8lvys5VH1a5ZpSNhErp+teeaPs0PkPWCImieElaXLIo9DG6g==
 
-exiftool-vendored@^12.1.0:
-  version "12.1.0"
-  resolved "https://registry.yarnpkg.com/exiftool-vendored/-/exiftool-vendored-12.1.0.tgz#5b46ffb59eff45de711821e974dd73fc6bf44878"
-  integrity sha512-nY5VYz7sVTmymArsyhnLaa6eUeRylQCbKZwDUSblH+RuHbX4zcj4i+PPC8xNovRslOYabCxuh2zuqAa34RzzoQ==
+exiftool-vendored@^12.2.0:
+  version "12.2.0"
+  resolved "https://registry.yarnpkg.com/exiftool-vendored/-/exiftool-vendored-12.2.0.tgz#48a52eff3f481b8ffd0cf7f2c9ec46ead24784de"
+  integrity sha512-1YKbJf1Ttm3TqcRlJQrSUgQGOR0kKhyIpUnD+dFppoinl0E0KHandBKqEtLirwFVOtaUnOjjx9ywRGOoipyumA==
   dependencies:
     batch-cluster "^5.11.2"
     luxon "^1.25.0"
     tz-lookup "^6.1.25"
   optionalDependencies:
-    exiftool-vendored.exe "^12.5.0"
-    exiftool-vendored.pl "^12.5.0"
+    exiftool-vendored.exe "^12.6.0"
+    exiftool-vendored.pl "^12.6.0"
 
 expand-brackets@^2.1.4:
   version "2.1.4"
@@ -1421,7 +1428,7 @@ ms@2.1.1:
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.1.tgz#30a5864eb3ebb0a66f2ebe6d727af06a09d86e0a"
   integrity sha512-tgp+dl5cGk28utYktBsrFqA7HKgrhgPsg6Z/EfhWI4gl1Hwq8B/GmY/0oXZ6nF8hDVesS/FpnYaD/kOWhYQvyg==
 
-ms@^2.1.1:
+ms@2.1.2, ms@^2.1.1:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.2.tgz#d09d1f357b443f493382a8eb3ccd183872ae6009"
   integrity sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==
