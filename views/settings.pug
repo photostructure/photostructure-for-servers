@@ -84,30 +84,27 @@ html(lang="en")
                 a(href="https://photostructure.com/faq/how-to-hide-directories/") all hidden files, as well as system, application, and NoMedia directories.
               li Changing this setting does not remove assets already in your library.
 
-            if isDocker
-              p PhotoStructure will scan all <a href="https://photostructure.com/server/photostructure-for-docker/#docker-volume-setup">mounted volumes for photos and videos</a>.
-              p If you want to change this, shut down the docker container and update the mounted volumes.
-            else
-              p
-                label(for="scanAllDrives")
-                  input#scanAllDrives(name="scan" type="radio" value="scanAllDrives" checked=scanAllDrives)
-                  span.pill.green.mr1em automatic
-                  | Scan all directories
-                  |
-                  | on 
-                  dfn(tooltip="New drives, including digital camera memory cards and USB drives, will be scanned when you plug them in.") all drives
-                  |
-                  | for photos and videos 
+            p
+              label(for="scanAllDrives")
+                input#scanAllDrives(name="scan" type="radio" value="scanAllDrives" checked=scanAllDrives)
+                span.pill.green.mr1em automatic
+                | Scan all directories
+                |
+                | on 
+                dfn(tooltip="New drives, including digital camera memory cards and USB drives, will be scanned when you plug them in.") all drives
+                |
+                | for photos and videos 
 
+            p
+              
+            label(for="scanPath")
+              input#scanPath(name="scan" type="radio" value="scanPath" checked=!scanAllDrives)
+              span.pill.purple.mr1em manual
+              dfn(tooltip="Add as many paths as you want. PhotoStructure will scan them in this order. Your library directory is always scanned.") Scan these paths:
               p
-                
-              label(for="scanPath")
-                input#scanPath(name="scan" type="radio" value="scanPath" checked=!scanAllDrives)
-                span.pill.purple.mr1em manual
-                dfn(tooltip="Add as many paths as you want. PhotoStructure will scan them in this order. Your library directory is always scanned.") Scan these paths:
-                p
-                  #scanPaths(data-paths=jsonScanPaths)
-  
+                #scanPaths(data-paths=jsonScanPaths)
+
+              if !isDocker
                 button.btn-small#scanMyPictures(
                   type="button"
                   title="Click to add " + picturesPath
@@ -116,12 +113,12 @@ html(lang="en")
                   | Add My Pictures directory
                 button.select-directory.btn-small.hidden.only-electron(
                   type="button"
-                  title="Click to add a directory toscan for photos and videos"
+                  title="Click to add a directory to scan for photos and videos"
                   data-input-container="#scanPaths"
                   data-name="scanPath"
                   data-placeholder="Custom path to scan for photos and videos") 
                   <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M20 6h-8l-2-2H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-1 8h-3v3h-2v-3h-3v-2h3V9h2v3h3v2z"/></svg> Add
-  
+
 
             h2 May PhotoStructure organize your photos and videos?
 

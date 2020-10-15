@@ -10,7 +10,7 @@ This is a detailed list of changes per version.
 
 ## v0.9.0
 
-_Currently in alpha testing. We hope to ship by mid-September._
+_Currently in beta testing. We hope to ship by early October._
 
 [**See our v0.9 version announcement**](/about/v-0-9/)
 
@@ -187,25 +187,38 @@ confusing or buggy, please [email us](support@photostructure.com)**.
   `main` has a `--pause-sync` for starting the service "paused" (if you want to
   prevent sync from running until you manually resume via the navigation bar).
 
-* 📦 [**Systemd service
+- 📦 [**Systemd service
   configuration**](/server/photostructure-for-node/#step-6-set-up-a-systemd-service)
   was added to the PhotoStructure for Node instructions.
 
-* 📦 Added `--stop-timeout` and `stop_grace_period` to the [**docker**](/server/photostructure-for-docker/) and
+- 📦 Added `--stop-timeout` and `stop_grace_period` to the [**docker**](/server/photostructure-for-docker/) and
   [**docker-compose**] recipes. This should make restarts via docker more reliable (as
   PhotoStructure will have sufficient time to [shut down
   cleanly](/faq/how-to-start-and-stop-photostructure/#why-does-it-take-so-long-to-shut-down)).
 
-* ✨ All elements in the UI with keyboard shortcuts now include the key in their
+- ✨ All elements in the UI with keyboard shortcuts now include the key in their
   tooltip.
 
-* ✨ [Library metrics](/metrics) were added to the About page
+- ✨ [Library metrics](/metrics) were added to the About page
+
+- ✨ Progress reports are now stored for each instance (like a library rebuild,
+  volume import, or volume synchronization). This helps in debugging, and
+  enables progress reports to discern between initial directory imports and
+  subsequent directory synchronizations.
+
+- ✨ Face tiles from iPhoto are now excluded automatically.
+
+- 🐛/✨ As directories are scanned, files that have been deleted will be removed
+  from the library as well.
+
+- ✨ Logfiles from more than a week ago are removed automatically to reduce disk
+  consumption.
 
 ### Bug fixes
 
 - 🐛 Fixed several asset stream rendering issues that could result in the UI
   "hanging."
-  
+
 - 🐛 Assets on the home page are automatically refreshed during initial import
   until there are roughly 200 library assets.
 
@@ -247,8 +260,11 @@ confusing or buggy, please [email us](support@photostructure.com)**.
 - 🐛 Keywords with URLs are no longer parsed as hierarchies, but considered a
   single "keyword" that is the URL.
 
-_(note that this release had been called v0.8.4, but as several new
-features and 💔 were added, incrementing the minor version was warranted)_
+- 🐛 Internal filesystem and metadata caching has been changed from LRU to FIFO.
+  Some caches (like asset counts) weren't updating properly due to this.
+
+_(note that this release had been called v0.8.4 in earlier release notes. That
+version's changes have been rolled into v0.9.0.)_
 
 ## v0.8.3
 

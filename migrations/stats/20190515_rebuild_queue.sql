@@ -13,7 +13,7 @@ CREATE TABLE QueueItem (
   id integer NOT NULL PRIMARY KEY,
   queueId integer NOT NULL,
   contents TEXT NOT NULL,
-  TYPE TEXT,
+  type TEXT,
   FOREIGN KEY(queueId) REFERENCES Queue(id)
 );
 
