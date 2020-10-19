@@ -42,17 +42,11 @@ html(lang="en")
                 | photos and videos. The initial import may take a while.
 
               p.info
-                i.emj.safe(title="Your files are safe")
-                | PhotoStructure  
-                | <a href="https://photostructure.com/faq/why-doesnt-photostructure-move-original-files/">
-                | never moves or deletes</a>
-                | your photos and videos.
+                i.emj.starry-night(title="Finish while you’re sleeping")
+                | You may want to leave your computer running 
+                | <dfn tooltip="If this is a laptop, make sure it’s plugged in!">overnight</dfn>
+                | during your initial import.
 
-              //- p.info
-              //-   i.emj.starry-night(title="Finish while you’re sleeping")
-              //-   | You may want to leave your computer running 
-              //-   | <dfn tooltip="If this is a laptop, make sure it’s plugged in!">overnight</dfn>
-              //-   | during your initial import.
               //- p.info
               //-   i.emj.thinking
               //-   | Hover over <br> <dfn tooltip="This is an example of some explanatory text. You’ll find more below ⬇️">underlined text</dfn>
@@ -238,9 +232,10 @@ html(lang="en")
       .scrim
       .message
         h3 Saving...
+        .details (this may take a minute)
         .loader
           svg.circular(viewBox="25 25 50 50")
-            circle.path(cx="50" cy="50" r="20" fill="none" stroke-width="4")
+            circle.path(cx="50" cy="50" r="20" fill="none" stroke-width="6")
   </div>
 
     script(src="/app/settings.js" nonce=nonce)

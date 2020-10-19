@@ -1,5 +1,5 @@
-CREATE TABLE ProgressMeta (
-  -- Used to store state of a sync. Prevents future sync jobs from re-doing prior work.
+CREATE TABLE ProgressMeta -- Used to store state of a sync. Prevents future sync jobs from re-doing prior work.
+(
   id integer NOT NULL PRIMARY KEY,
   progressId integer NOT NULL,
   name varchar(255) NOT NULL,

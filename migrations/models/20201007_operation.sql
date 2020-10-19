@@ -1,5 +1,5 @@
-CREATE TABLE Operation (
-  -- Used to store user-requested operations, like "forced" syncs.
+CREATE TABLE Operation -- used to store user-requested operations, like "forced" syncs
+(
   id integer NOT NULL PRIMARY KEY,
   name varchar(255) NOT NULL,
   value varchar(255),

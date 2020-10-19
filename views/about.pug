@@ -62,7 +62,7 @@ html
         p Read our <a href="https://photostructure.com/tags/getting-started/">getting started guides</a> and <a href="https://photostructure.com/tags/faq/">FAQ</a>.
 
         i.emj.beetle
-        p Found something odd, confusing, or buggy? Need help? <br> Email us at <a href="mailto:support@photostructure.com">support@photostructure.com</a>. 
+        p Found something odd, confusing, or buggy? Need help? <br> Email us at <a href="mailto:support@photostructure.com">support@photostructure.com</a>
 
         i.emj.crane
         p PhotoStructure is made possible by many <a href="https://photostructure.com/legal/3rd-party-licenses.txt">open source libraries and tools</a>.
@@ -79,7 +79,7 @@ html
             th.size size
             th.free free
             th.volsha <a href="https://photostructure.com/faq/what-is-a-volume">volume id</a>
-            th.label
+            th.label label
           each vol in volumes
             tr(class=vol.ok ? "notok" : "")
               td.mountpoint !{vol.mountpoint}
@@ -88,10 +88,11 @@ html
                 td.free.full(title="This disk is full")= vol.free
               else
                 td.free= vol.free
-              td.volsha= vol.volsha
+              td 
+                tt.volsha= vol.volsha
               td.label= vol.label
                 if vol.remote
-                  .unc= "//" + vol.remote.host + "/" + vol.remote.share
+                  tt.unc= "//" + vol.remote.host + "/" + vol.remote.share
 
   script(src="/app/about.js" nonce=nonce)
   

@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS Example -- used for integration tests and runtime health checks
+CREATE TABLE IF NOT EXISTS Example -- used for integration tests
 (
   id integer NOT NULL PRIMARY KEY,
   name varchar (255) NOT NULL,
@@ -114,7 +114,8 @@ CREATE UNIQUE INDEX IF NOT EXISTS assetfile_shown_udx ON AssetFile (assetId)
 WHERE
   shown = 1;
 
-CREATE TABLE IF NOT EXISTS AssetTag (
+CREATE TABLE IF NOT EXISTS AssetTag -- join table to associate Assets to Tags.
+(
   assetId integer NOT NULL,
   tagId integer NOT NULL,
   FOREIGN KEY(assetId) REFERENCES Asset(id) ON DELETE CASCADE,
