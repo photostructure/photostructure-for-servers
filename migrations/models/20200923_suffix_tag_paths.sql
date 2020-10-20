@@ -1,0 +1,1 @@
+-- This file will run db/Migrations.suffix_tag_paths

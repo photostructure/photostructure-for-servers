@@ -10,7 +10,9 @@ This is a detailed list of changes per version.
 
 ## v0.9.0
 
-_Currently in alpha testing. We hope to ship by September 15._
+_Currently in beta testing. We hope to ship by early October._
+
+[**See our v0.9 version announcement**](/about/v-0-9/)
 
 ### Your feedback is requested!
 
@@ -34,14 +36,13 @@ confusing or buggy, please [email us](support@photostructure.com)**.
 
 - ✨ We've updated the "Where are your photos and videos?" section:
 
-{{< figure src="/img/2020/09/old-scan-paths.png" caption="Prior settings from version 0.8.3 and earlier" >}}
+{{< figure src="/img/2020/09/scan-paths-old.png" caption="Prior settings from version 0.8.3 and earlier" >}}
 
-{{< figure src="/img/2020/09/new-scan-paths.png" caption="New settings from version 0.9.0" >}}
+{{< figure src="/img/2020/09/scan-paths-new.png" caption="New settings from version 0.9.0" >}}
 
 - The scanning options are now just "automatic" or "manual".
 
-- To examine your Pictures directory just click the "Add My Pictures directory"
-  button.
+- To examine your Pictures directory click "Add My Pictures directory."
 
 - PhotoStructure for Desktop users have an "Add" button to browse and add local
   directories. You can click it multiple times to add additional paths.
@@ -57,22 +58,34 @@ confusing or buggy, please [email us](support@photostructure.com)**.
 - 🛡️ Strict [CSP](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP) with
   nonces are now enabled. **If you experience page loading errors or see problems in
   your console, please report them to support@photostructure.com.** You can
-  disable CSP enforcement by setting `cspReportOnly` to `true`. Also see the new
+  disable CSP enforcement with the [library setting](/getting-started/advanced-settings/#library-settings) `cspReportOnly`. Also see the new
   `cspDirective` system setting for reverse-proxy users.
 
-- ✨ First step towards retroactive [NoMedia](/nomedia) file exclusions: assets
-  are now "excluded" from your library if _any_ file that was already imported
-  is found to be in a [NoMedia](/nomedia) directory. Set
-  `excludeNoMediaAssetsOnRebuild` to `false` to retain prior behavior.
+- ✨ During library rebuilds, assets are now excluded from your library if _any_
+  file that was already imported is found to be in a [NoMedia](/nomedia)
+  directory.
+
+  If you want to keep assets that have variations found in other directories,
+  set the `excludeNoMediaAssetsOnRebuild` [library
+  setting](/getting-started/advanced-settings/#library-settings) to `false` to
+  retain prior behavior.
 
 - ✨ The complete set of [settings](/getting-started/advanced-settings/) is now
   published to github and included in Docker images as a `defaults.env` file.
-  See the new [environment
-  variables](/faq/environment-variables)
-  documentation for more information.
+  See the new [environment variables](/faq/environment-variables) documentation
+  for more information.
 
-- ✨ UNC paths (`\\server\share\path\to\file.jpg`) are now supported both for
-  libraries and for scan paths.
+- ✨ The number of thumbnails to show per "[tag
+  sample](/about/introducing-photostructure/#samples-to-keep-you-interested)" is
+  now dynamic, based on both thumbnail size and screen size.
+
+- ✨
+  [UNC](https://en.wikipedia.org/wiki/Path_%28computing%29#Universal_Naming_Convention)
+  paths (`\\server\share\path\to\file.jpg`) are now supported both for libraries
+  and for scan paths, but please note that _free space cannot be monitored for
+  these devices_. We still recommended that you map your network drive to a
+  drive letter, so PhotoStructure can monitor and pause imports if the volume
+  gets too full.
 
 - ✨ The "show streams" button on the asset page is now iconic (rather than just
   a down arrow), with busy and close states (which should help discoverability
@@ -82,7 +95,7 @@ confusing or buggy, please [email us](support@photostructure.com)**.
 
 - ✨ Transcoded video encoded max bitrates are now configurable via
   `transcodeBitrateQVGA` and `transcodeBitrateUHD`. Videos with
-  resolutions between QVGA and UHD will lerp between these values.
+  resolutions between QVGA and UHD will interpolate between these values.
 
 - ✨ For MacPorts users: a new `toolPaths` setting is now configurable, and
   now includes `/opt/local/bin` on Linux and macOS.
@@ -101,26 +114,16 @@ confusing or buggy, please [email us](support@photostructure.com)**.
 
 - ✨ PhotoStructure will refuse to start if it detects that a library is from a
   newer version of PhotoStructure. Newer versions of PhotoStructure can open and
-  upgrade older libraries, however, and the upgrade process is automatic.
-
-- ✨ You can now prevent PhotoStructure from running a sync on startup with the
-  new `--pause-sync` option added to `main`, or by setting the `PS_START_PAUSED`
-  environment variable to `true`.
+  upgrade older libraries, however, and the library database upgrade process is
+  automatic.
 
 - 📦 The default value of `fuzzyDateImageCorrWeight` was changed from
   1.2 to 1.5. This makes PhotoStructure much more discriminating when it
   de-duplicates photos that don't have a precise date (like from scanned
   images).
 
-- 📦 Header components are removed or reduced on mobile to prevent titles from
-  overlapping.
-
 - 📦 Release notes are now available from the main navigation menu from
   within PhotoStructure, as well as the footer on photostructure.com pages.
-
-- 📦 PhotoStructure for Desktops is now running [Electron
-  10.x](https://www.electronjs.org/releases/stable#release-notes-for-v1000),
-  which includes a raft of security and performance updates.
 
 - 📦 Docker `:beta` tags now automatically pull in the last build from either
   `beta` or `main` branches.
@@ -139,22 +142,92 @@ confusing or buggy, please [email us](support@photostructure.com)**.
 - ✨ Several new binary thumbnail variants are now inspected, which can speed up
   imports of certain RAW images.
 
-- ✨ [Samples](/about/introducing-photostructure/#samples-to-keep-you-interested)
-  are now ordered with a simpler yet more robust formula.
+- ✨/🐛
+  [Samples](/about/introducing-photostructure/#samples-to-keep-you-interested)
+  are picked randomly from child tags. The prior implementation biased strongly
+  towards more recent assets (which is why you'd see mostly photos from January
+  in the When samples!)
 
 - ✨ Captured-at times are extracted from several more tags now. Rather than
   using "first-one-in-wins," PhotoStructure now picks the earliest time with the
   highest resolution.
 
+<a id="pill-streams"></a>
+
+- ✨ Stream tags got a redesign to make each tag more visually distinct, and less
+  "busy" when there are many tags:
+
+{{< figure src="/img/2020/09/stream-tags-old.png" caption="Prior stream tags" >}}
+{{< figure src="/img/2020/09/stream-tags-new.png" caption="New stream tags in v0.9.0-beta.2" >}}
+
+- ✨/🐛 Progress reports from the web service used to poll the database every
+  couple seconds. When no sync is running, polling drops to every 10 seconds,
+  which should reduce idle CPU consumption.
+
+- ✨ When viewing duplicate assets, zoom is now supported (previous versions
+  disabled zoom if you were viewing an asset variant). View these variants by
+  opening the asset info panel (click the "i" when viewing an asset). Click a
+  file path to toggle viewing that image instead of the top, "shown" asset file.
+
+- ✨ New "pause zoom" mode: you can now "freeze" the current zoom and pan
+  position. Toggle this mode by tapping either the <key>p</key> or the
+  <key>pause</key> key.
+
+  This mode lets you compare different asset file variants while zoomed in, or
+  to compare next and previous assets. This is especially handy when comparing
+  focus or smiles between shots.
+
+- 🐛/✨ Browsing on smaller screens has been improved:
+
+  - Long headers truncate to ellipses before overlapping
+  - Tags in asset streams are shortened to just `parent/child`
+  - Asset contents now show under the asset info panel
+
+- ✨ [**Tools**](/tools) now support `--force-open` (please read the `--help`!) and
+  `main` has a `--pause-sync` for starting the service "paused" (if you want to
+  prevent sync from running until you manually resume via the navigation bar).
+
+- 📦 [**Systemd service
+  configuration**](/server/photostructure-for-node/#step-6-set-up-a-systemd-service)
+  was added to the PhotoStructure for Node instructions.
+
+- 📦 Added `--stop-timeout` and `stop_grace_period` to the [**docker**](/server/photostructure-for-docker/) and
+  [**docker-compose**] recipes. This should make restarts via docker more reliable (as
+  PhotoStructure will have sufficient time to [shut down
+  cleanly](/faq/how-to-start-and-stop-photostructure/#why-does-it-take-so-long-to-shut-down)).
+
+- ✨ All elements in the UI with keyboard shortcuts now include the key in their
+  tooltip.
+
+- ✨ [Library metrics](/metrics) were added to the About page
+
+- ✨ Progress reports are now stored for each instance (like a library rebuild,
+  volume import, or volume synchronization). This helps in debugging, and
+  enables progress reports to discern between initial directory imports and
+  subsequent directory synchronizations.
+
+- ✨ Face tiles from iPhoto are now excluded automatically.
+
+- 🐛/✨ As directories are scanned, files that have been deleted will be removed
+  from the library as well.
+
+- ✨ Logfiles from more than a week ago are removed automatically to reduce disk
+  consumption.
+
 ### Bug fixes
 
-- 🐛 Assets on the home page are automatically refreshed during sync/import
-  (this used to work but broke 2 versions ago).
+- 🐛 Fixed several asset stream rendering issues that could result in the UI
+  "hanging."
 
-- 🐛 **Non-English locale support**: Users whose system locale was not
-  "`POSIX`" may have seen a number of different bugs, including failure to
-  launch. PhotoStructure now forces locale on forked tools to `C` which should
+- 🐛 Assets on the home page are automatically refreshed during initial import
+  until there are roughly 200 library assets.
+
+- 🐛 **Non-English locale support**: Users whose system locale was not "`POSIX`"
+  may have seen a number of different bugs, including failure to launch.
+  PhotoStructure now forces the locale for child processes to `C` which should
   address this issue.
+
+- 🐛 "Click to toggle showing this file" in the Asset Info panel works (again).
 
 - 🐛 Sync/import progress reconnects automatically on service restarts.
 
@@ -162,6 +235,8 @@ confusing or buggy, please [email us](support@photostructure.com)**.
   This could prevent prior versions of PhotoStructure from successfully
   importing files that had "special" characters. Please run "sync" if you think
   you may have been impacted.
+
+- 🐛 The asset info panel now linebreaks very long pathnames properly.
 
 - 🐛 String comparisons are now locale-sensitive.
 
@@ -176,8 +251,20 @@ confusing or buggy, please [email us](support@photostructure.com)**.
   interpreted ExifTool's `(Binary data 32 bytes, use -b option to extract)` as a
   _keyword_, oops!).
 
-_(note that this release had been called v0.8.4, but as several new
-features and 💔 were added, incrementing the minor version was warranted)_
+- 🐛 Tags with equal-prefix siblings are now handled correctly. Previous
+  versions of PhotoStructure would show assets tagged with `/Camera/HTC` under
+  both `/Camera/HT` and the correct tag.
+
+- 🐛 Beta users with year-old libraries are migrated gracefully now.
+
+- 🐛 Keywords with URLs are no longer parsed as hierarchies, but considered a
+  single "keyword" that is the URL.
+
+- 🐛 Internal filesystem and metadata caching has been changed from LRU to FIFO.
+  Some caches (like asset counts) weren't updating properly due to this.
+
+_(note that this release had been called v0.8.4 in earlier release notes. That
+version's changes have been rolled into v0.9.0.)_
 
 ## v0.8.3
 
@@ -272,7 +359,7 @@ suggestions or their assistance. Thank you!
   same as on PhotoStructure for Node: just `docker exec -it photostructure sh`
   and then `./photostructure --help` or `./photostructure info`.
 
-- 🐛 `logcat` handles very large inputs now.
+- 🐛 `logcat` now handles very large inputs.
 
 - 🐛 The cache directory wasn't clearing fast enough in v0.8.2. The "vacuum"
   process would eventually run, but caches could grow to 20gb on a fast enough
