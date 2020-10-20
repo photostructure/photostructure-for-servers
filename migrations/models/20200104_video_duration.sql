@@ -1,8 +1,11 @@
-ALTER TABLE AssetFile
+ALTER TABLE
+  AssetFile
 ADD
   COLUMN durationMs bigint;
+
 -- Revisit the video AssetFiles:
-UPDATE AssetFile
+UPDATE
+  AssetFile
 SET
   version = 0
 WHERE

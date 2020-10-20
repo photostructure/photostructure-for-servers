@@ -4,8 +4,7 @@ html
     meta(charset="utf-8")
     title= title
     meta(name="viewport" content="width=device-width,initial-scale=1")
-    link(rel="stylesheet", href="/app/about.css")
-    script const hasEmail = !{hasEmail}; const json = `!{json}`;
+    link(rel="stylesheet", href="/app/about.css" nonce=nonce)
 
   body.grid-center.reveal
     main
@@ -17,9 +16,20 @@ html
       table.versions
         each v in versions
           tr
-            td.dt= v.term
+            td.dt
+              if v.termURL
+                a(href=v.termURL)= v.term
+              else
+                | #{v.term}
             if v.term == "Video support" && v.defn == "-"
-              td.dd Tools are missing. <b><a target="_blank" href="https://photostructure.com/getting-started/video-support/">Learn more</a></b>.
+              td.dd Tools are missing. <b><a href="https://photostructure.com/getting-started/video-support/">Learn more</a></b>.
+            else if Array.isArray(v.defn)
+              td.dd
+                table.metrics
+                  each metric in v.defn
+                    tr
+                      td.count= metric.count
+                      td.desc= metric.desc
             else
               td.dd= v.defn
         tr
@@ -36,29 +46,29 @@ html
                 li.ok= ok
         tr
           td.dt
-          td <a href="#" onclick="navigator.clipboard.writeText(json)">copy to clipboard</a> or <a target="_blank" href="!{mailto}">email us</a>
+          td 
 
       .emojis
-        
+      
         i.emj.handshake
         p 
-          b Use of PhotoStructure is bound by the <a target="_blank" href="https://photostructure.com/legal/eula/">end-user license agreement</a>.
+          b Use of PhotoStructure is bound by the <a href="https://photostructure.com/legal/eula/">end-user license agreement</a>.
         
         i.emj.birthday
         p 
-          a(target="_blank" href="https://photostructure.com/about/v-0-8/") What’s new in this release?
+          a(href="https://photostructure.com/about/v-0-8/") What’s new in this release?
 
         i.emj.surf
-        p Read our <a target="_blank" href="https://photostructure.com/tags/getting-started/">getting started guides</a> and <a target="_blank" href="https://photostructure.com/tags/faq/">FAQ</a>.
+        p Read our <a href="https://photostructure.com/tags/getting-started/">getting started guides</a> and <a href="https://photostructure.com/tags/faq/">FAQ</a>.
 
         i.emj.beetle
-        p Found something odd, confusing, or buggy? Need help? <br> Please click the chat button or email us at <a href="mailto:support@photostructure.com">support@photostructure.com</a>, we’d love to hear from you.
+        p Found something odd, confusing, or buggy? Need help? <br> Email us at <a href="mailto:support@photostructure.com">support@photostructure.com</a>
 
         i.emj.crane
-        p PhotoStructure is made possible by many <a target="_blank" href="https://photostructure.com/legal/3rd-party-licenses.txt">open source libraries and tools</a>.
+        p PhotoStructure is made possible by many <a href="https://photostructure.com/legal/3rd-party-licenses.txt">open source libraries and tools</a>.
           
         i.emj.heart
-        p If you maintain or contribute to any of these projects, <b>thank you!</b> <a target="_blank" href="mailto:hello@photostructure.com?subject=Hi, I work on INSERT_YOUR_LIBRARY_NAME_HERE&body=Here's a link to my library: https://...%0D%0A%0D%0APlease send me a free personal license to PhotoStructure.%0D%0A%0D%0AThank you!">Send us an email</a> and we’ll set you up with a <b>free</b> personal license of PhotoStructure.</i> 
+        p If you maintain or contribute to any of these projects, <b>thank you!</b> <a href="mailto:hello@photostructure.com?subject=Hi, I work on INSERT_YOUR_LIBRARY_NAME_HERE&body=Here's a link to my library: https://...%0D%0A%0D%0APlease send me a free personal license to PhotoStructure.%0D%0A%0D%0AThank you!">Send us an email</a> and we’ll set you up with a <b>free</b> personal license of PhotoStructure.</i> 
     
     if volumes
       .volumes
@@ -68,24 +78,21 @@ html
             th.mountpoint mount
             th.size size
             th.free free
-            th.volsha <a href="https://photostructure.com/faq/what-is-a-volume" target="_blank">volume id</a>
+            th.volsha <a href="https://photostructure.com/faq/what-is-a-volume">volume id</a>
             th.label label
           each vol in volumes
-            tr
-              td.mountpoint= vol.mountpoint
+            tr(class=vol.ok ? "notok" : "")
+              td.mountpoint !{vol.mountpoint}
               td.size= vol.size
               if vol.full
                 td.free.full(title="This disk is full")= vol.free
               else
                 td.free= vol.free
-              td.volsha= vol.volsha
+              td 
+                tt.volsha= vol.volsha
               td.label= vol.label
-              if vol.remote
-                td.remote(class=vol.remote.ok ? "ok" : "notok")= vol.remote.share + "@" + vol.remote.host
-  //- Add titles to all the anchor tags:
-  script.
-    document.querySelectorAll("a[target]").forEach(ea => 
-      ea.setAttribute("title", `Click to open ${ea.getAttribute("href")} in a new window`)
-    )
+                if vol.remote
+                  tt.unc= "//" + vol.remote.host + "/" + vol.remote.share
 
-  include _chat.pug
+  script(src="/app/about.js" nonce=nonce)
+  

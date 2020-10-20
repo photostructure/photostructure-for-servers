@@ -1,1 +1,4 @@
-ALTER TABLE AssetFile ADD COLUMN rotation integer;
+ALTER TABLE
+  AssetFile
+ADD
+  COLUMN rotation integer;

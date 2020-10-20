@@ -35,11 +35,11 @@ CREATE TABLE "new_AssetFile" (
   mode4 integer,
   mode5 integer,
   mode6 integer,
-  searchHash integer, -- new
+  searchHash integer,
   version integer NOT NULL DEFAULT 0,
   createdAt bigint NOT NULL,
   updatedAt bigint NOT NULL,
-  updateCount integer NOT NULL DEFAULT 0, --new
+  updateCount integer NOT NULL DEFAULT 0,
   FOREIGN KEY(assetId) REFERENCES Asset(id)
 );
 
@@ -106,8 +106,7 @@ DROP INDEX IF EXISTS assetfile_shown_udx;
 DROP INDEX IF EXISTS assetfile_uri_udx;
 
 -- Replace the old with the new:
-ALTER TABLE
-  AssetFile RENAME TO AssetFile_20200128;
+DROP TABLE IF EXISTS AssetFile;
 
 ALTER TABLE
   new_AssetFile RENAME TO AssetFile;
@@ -140,6 +139,3 @@ CREATE INDEX assetfile_mode1_idx ON AssetFile (mode1);
 CREATE INDEX assetfile_mode2_idx ON AssetFile (mode2);
 
 CREATE INDEX assetfile_mode3_idx ON AssetFile (mode3);
-
--- yay, everything worked. drop the old table:
-DROP TABLE IF EXISTS AssetFile_20200128;
