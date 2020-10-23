@@ -10,7 +10,6 @@ html(lang="en")
     header.settings
       .title
         img(src="/images/logo-white.svg" height=32 title="PhotoStructure")
-        b.reveal.pl1em #{title}
 
     main
       if err
@@ -52,14 +51,7 @@ html(lang="en")
               //-   | Hover over <br> <dfn tooltip="This is an example of some explanatory text. You’ll find more below ⬇️">underlined text</dfn>
               //-   | or click on links <a href="https://support.photostructure.com/tag/getting-started/">that look like this</a> for more information.
 
-            if (isVideoTranscodingSupported)
-              #videoSupported.info.message
-                p
-                  i.emj.check
-                  | You’re all set to 
-                  dfn(tooltip="using " + videoToolDetails) import videos!
-            
-            else
+            unless (isVideoTranscodingSupported)
               #videoSupported.warn.message 
                 p 
                   b.fs11  🎥 Do you have videos?
@@ -212,6 +204,22 @@ html(lang="en")
                   data-title="Choose a directory to store your PhotoStructure library")
                   <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none"/><path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg> Select
 
+            h2 Error reporting
+
+            p PhotoStructure's error reports help us detect, triage, and fix issues (<a href="https://photostructure.com/faq/error-reports/">learn more</a>).
+            
+            p
+              label
+                input#reportErrorsYes(name="reportErrors" type="radio" value="true" checked=(reportErrors))
+                i.emj.thumbs-up
+                | Yes, PhotoStructure may report unexpected errors.
+
+            p
+              label
+                input#reportErrorsNo(name="reportErrors" type="radio" value="false" checked=(!reportErrors))
+                i.emj.thumbs-down
+                | No thanks, do not send any error reports.
+
             if welcome
               h2 PhotoStructure license
               .eula
@@ -221,10 +229,10 @@ html(lang="en")
             else
               .pt
               b By clicking Save you agree to all terms of the <a href="https://photostructure.com/legal/eula/">PhotoStructure End-User License Agreement</a>.
-            
+
             .pt
             button.btn(type="submit" name="action" title="Accept the EULA and save settings") #{welcome ? "Start" : "Save"}
-            
+
             unless welcome
               a.btn.cancel(href="/" title="Don't save any changes made on this page and return home") Cancel
 

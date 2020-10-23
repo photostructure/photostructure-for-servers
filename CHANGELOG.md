@@ -10,7 +10,7 @@ This is a detailed list of changes per version.
 
 ## v0.9.0
 
-_Currently in beta testing. We hope to ship by early October._
+**Released 2020-10-19**
 
 [**See our v0.9 version announcement**](/about/v-0-9/)
 
@@ -213,6 +213,9 @@ confusing or buggy, please [email us](support@photostructure.com)**.
 
 - ✨ Logfiles from more than a week ago are removed automatically to reduce disk
   consumption.
+
+- ✨ All UI widgets that have keyboard shortcuts now say what their shortcut is
+  in their tooltip.
 
 ### Bug fixes
 
