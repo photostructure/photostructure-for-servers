@@ -8,6 +8,42 @@ This is a detailed list of changes per version.
   sneak-peak into what we're going to be working on next (and don't forget to
   share your feedback with us!)
 
+Please note:
+
+- **Stable versions are recommended.**
+- `alpha` builds may not even launch
+- `beta` builds have not been thoroughly tested
+- Only run alpha or beta builds if you have recent backups.
+
+## v0.9.1-alpha.1
+
+**Released 2020-10-23**
+
+- ✨ Error reporting can now be enabled or disabled via the settings page
+
+- 🐛 PhotoStructure libraries from pre-v0.6 had migrations that could have prevented launching.
+
+- 🐛 The "What's new?" link on the About page hadn't been updated for v0.9.
+
+- 📦 Several non-fatal errors (like corrupt JPEGs) were downgraded (to prevent
+  `sync-file` from restarting unnecessarily)
+
+- 📦 The navigation menu order used to be
+
+  - (home, root tag links)
+  - (about, help)
+  - (settings, sync, shutdown)
+
+  We flipped the order to be
+
+  - (home, root tag links)
+  - (settings, sync, shutdown)
+  - (about, help)
+
+  Several beta users on smaller monitors hadn't realized there was a third
+  section (which is arguably more important than the about/help links).
+  Hopefully this will help.
+
 ## v0.9.0
 
 **Released 2020-10-19**
