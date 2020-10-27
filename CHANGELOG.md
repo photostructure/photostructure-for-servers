@@ -8,9 +8,74 @@ This is a detailed list of changes per version.
   sneak-peak into what we're going to be working on next (and don't forget to
   share your feedback with us!)
 
+Please note:
+
+- **Stable versions are recommended.**
+- `alpha` builds may not even launch
+- `beta` builds have not been thoroughly tested
+- Only run alpha or beta builds if you have recent backups.
+
+## v0.9.1-alpha.3
+
+**Released 2020-10-26**
+
+- ✨ Keywords are now shown in the Asset Info panel
+
+- ✨ New `excludedRootTags` library setting to omit problematic keywords
+
+- ✨ Asset header on iPad displays shouldn't overlap anymore
+
+- 🐛 Added a migration to normalize and de-dupe asset files. Libraries from
+  pre-version-0.9 and current libraries used a different URI library which
+  resulted in different encoding for the same file. This migration may take 5-20
+  seconds to apply. Your asset file count may drop after this migration is
+  applied.
+
+- 📦 The "resync this asset" command now forcefully rebuilds metadata, tags, and
+  previews for the asset.
+
+- 📦 Upgraded to Webpack 5 (resulted in slightly smaller packages)
+
+## v0.9.1-alpha.2
+
+**Released 2020-10-24**
+
+- 🐛 Added a migration to apply recursive tag de-duping. If you see duplicate
+  root tags (like 2 "When" tags) on the home page, this migration should address
+  that.
+
+## v0.9.1-alpha.1
+
+**Released 2020-10-23**
+
+- ✨ Error reporting can now be enabled or disabled via the settings page
+
+- 🐛 PhotoStructure libraries from pre-v0.6 had migrations that could have prevented launching.
+
+- 🐛 The "What's new?" link on the About page hadn't been updated for v0.9.
+
+- 📦 Several non-fatal errors (like corrupt JPEGs) were downgraded (to prevent
+  `sync-file` from restarting unnecessarily)
+
+- 📦 The navigation menu order used to be
+
+  - (home, root tag links)
+  - (about, help)
+  - (settings, sync, shutdown)
+
+  We flipped the order to be
+
+  - (home, root tag links)
+  - (settings, sync, shutdown)
+  - (about, help)
+
+  Several beta users on smaller monitors hadn't realized there was a third
+  section (which is arguably more important than the about/help links).
+  Hopefully this will help.
+
 ## v0.9.0
 
-_Currently in beta testing. We hope to ship by early October._
+**Released 2020-10-19**
 
 [**See our v0.9 version announcement**](/about/v-0-9/)
 
@@ -213,6 +278,9 @@ confusing or buggy, please [email us](support@photostructure.com)**.
 
 - ✨ Logfiles from more than a week ago are removed automatically to reduce disk
   consumption.
+
+- ✨ All UI widgets that have keyboard shortcuts now say what their shortcut is
+  in their tooltip.
 
 ### Bug fixes
 
