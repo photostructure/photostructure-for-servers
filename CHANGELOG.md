@@ -15,6 +15,35 @@ Please note:
 - `beta` builds have not been thoroughly tested
 - Only run alpha or beta builds if you have recent backups.
 
+## v0.9.1-alpha.3
+
+**Released 2020-10-26**
+
+- ✨ Keywords are now shown in the Asset Info panel
+
+- ✨ New `excludedRootTags` library setting to omit problematic keywords
+
+- ✨ Asset header on iPad displays shouldn't overlap anymore
+
+- 🐛 Added a migration to normalize and de-dupe asset files. Libraries from
+  pre-version-0.9 and current libraries used a different URI library which
+  resulted in different encoding for the same file. This migration may take 5-20
+  seconds to apply. Your asset file count may drop after this migration is
+  applied.
+
+- 📦 The "resync this asset" command now forcefully rebuilds metadata, tags, and
+  previews for the asset.
+
+- 📦 Upgraded to Webpack 5 (resulted in slightly smaller packages)
+
+## v0.9.1-alpha.2
+
+**Released 2020-10-24**
+
+- 🐛 Added a migration to apply recursive tag de-duping. If you see duplicate
+  root tags (like 2 "When" tags) on the home page, this migration should address
+  that.
+
 ## v0.9.1-alpha.1
 
 **Released 2020-10-23**
