@@ -15,7 +15,29 @@ Please note:
 - `beta` builds have not been thoroughly tested
 - Only run alpha or beta builds if you have recent backups.
 
-## v0.9.1-alpha.3
+## v0.9.1-beta.2
+
+**Released 2020-10-27**
+
+- ✨ New `greyscaleColorThreshold` setting for monochrome image detection. The
+  previous hard-coded default of `3` is now `5`, which should allow greyscale
+  images with slight off-white balance to still be considered greyscale.
+
+- 📦 New versions of sharp, electron, and typescript have been pulled in. Note
+  that the new version of sharp produces slightly different image hashes and
+  dominant colors in some cases, but the differences are not large enough to
+  break deduping heuristics and warrant a rebuild (thank goodness). We had to
+  hold off on upgrading sharp for v0.9 due to incompatibilities with
+  AppImage-packaged electron builds, so this change may need to be reverted
+  (again) if integration tests don't go smoothly.
+
+- 📦 Performance improvements to `logcat`, "send recent logs," and error
+  reporting in general.
+
+- 🐛 More URI work: `psfile://` uris, specifically, are normalized both in
+  parsing and generation now.
+
+## v0.9.1-beta.1
 
 **Released 2020-10-26**
 
