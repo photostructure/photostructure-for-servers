@@ -15,7 +15,7 @@ function die {
 
 cd "$(dirname "$0")" || die "failed to cd"
 
-# Propogate ctrl-c:
+# Propagate ctrl-c:
 trap 'exit 130' INT
 
 missingCommands=()
