@@ -3,7 +3,7 @@
   "productName": "PhotoStructure",
   "author": "PhotoStructure, Inc. <hello@photostructure.com>",
   "license": "SEE LICENSE IN LICENSE.md",
-  "version": "0.9.1-beta.1",
+  "version": "0.9.1-beta.2",
   "description": "PhotoStructure for Servers",
   "repository": {
     "type": "git",
@@ -26,13 +26,13 @@
     "fs-extra": "^9.0.1",
     "he": "^1.2.0",
     "helmet": "^4.1.1",
-    "knex": "^0.21.7",
+    "knex": "^0.21.8",
     "luxon": "^1.25.0",
     "mime-types": "^2.1.27",
     "on-finished": "^2.3.0",
     "pug": "^3.0.0",
     "punycode": "^2.1.1",
-    "sharp": "0.23.4",
+    "sharp": "0.26.2",
     "xml2js": "^0.4.23"
   }
 }
