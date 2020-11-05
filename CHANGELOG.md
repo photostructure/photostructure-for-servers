@@ -1,25 +1,123 @@
 
 This is a detailed list of changes per version.
 
-- Releases sometimes have separate posts that describe new features, like
-  [**this one**](/about/v-0-8/).
+- Releases sometimes have separate posts that describe new features, like for
+  [version 0.6](/about/v-0-6/), [version 0.8](/about/v-0-8/), and [version
+  0.9](/about/v-0-9/)).
 
-- Visit [**what's next**](/about/whats-next/) to get a
-  sneak-peak into what we're going to be working on next (and don't forget to
-  share your feedback with us!)
+- Visit [**what's next**](/about/whats-next/) to get a sneak peak into what
+  we're going to be working on next.
 
-Please note:
+## Please note
 
-- **Stable versions are recommended.**
-- `alpha` builds may not even launch
-- `beta` builds have not been thoroughly tested
-- Only run alpha or beta builds if you have recent backups.
+- **Stable, released versions are recommended,** unless we specifically suggest
+  you try out a pre-release build.
+
+- "Pre-release" builds (those that end with `alpha` or `beta`) have not been
+  thoroughly tested, and may not even launch.
+
+- Only run `alpha` or `beta` builds if you have [recent
+  backups](/faq/how-do-i-safely-store-files/).
+
+## v0.9.1-beta.4
+
+**Not yet released**
+
+- ✨ Experimental support for HDR imagery. See [this reddit
+  post](https://www.reddit.com/r/PhotoStructure/comments/jk3319/p3_color_support/).
+  You'll need to rebuild your library (available via the main navigation menu)
+  to rebuild previews, or run "Re-sync this asset" from the `⋮` menu on the
+  asset page to just try one example first. If you have P3-gamut source images,
+  and an HDR display, please share how this works for you!
+
+- ✨ Clickable elements with multiple keyboard shortcuts now list all shortcut
+  options.
+
+- ✨ `vi` users, rejoice: you can now navigate between assets with <key>j</key>
+  and <key>k</key> (synonyms to <key>left</key> and <key>right</key>)
+
+- ✨ `./photostructure info --volumes` is now supported (to get volume metadata
+  from the command line rather than the About page).
+
+- 🐛 "Manual" [scan paths](/about/v-0-9/#-scan-path-improvements) was broken for
+  docker users in v0.9.0: they had to select "automatic" to continue. Version
+  0.9.1 adds (working!) support for manual scan paths for docker users.
+  Apologies if you got bit by this bug!
+
+- 🏃💨 **Large library owners, rejoice**: tag pages, even for large libraries,
+  render in < 100ms now! The home page in prior versions could take upwards of
+  1.5 seconds to render, due to several expensive database queries. One of the
+  most expensive queries was library asset counting due to the way
+  PhotoStructure's hierarchical tags are structured. v0.9.1 adds materialized
+  asset and asset file counts. Prior queries could take 200-300ms per tag to
+  count assets, and another 300ms to count asset files. These counts are now
+  automatically updated periodically. 🎉
+
+- 🏃💨 **Image hashing speed has been improved** for larger images (in some cases,
+  like panoramas, 10x faster! This was due to a call to `sharp.trim()` to
+  automatically remove letterboxed embedded thumbnails. `trim()` can take 5-10
+  seconds to run on larger images, though, and larger images are never
+  letterboxed, so image hashing skips the trim() on larger images now).
+
+- 🏃💨 **Sync import parallelism has been improved.** Due to the way videos are
+  transcoded, only 1 or 2 videos can be processed at any given time. In prior
+  versions, if the next N files in the work queue are all videos, PhotoStructure
+  would refuse to start additional work, in effect "single-threading" the sync.
+  This version detects this scenario and pops off eligible work from elsewhere
+  in the queue.
+
+- 🐛 In some cases when many assets shared the same captured-at time, the asset
+  stream wouldn't present the correct images. This has been fixed.
+
+- 🐛 Tags from prior imports that are no longer correct or relevant are now
+  removed by the "Resync this asset", "Sync", and "Rebuild."
+
+- 🐛 Errors raised from `sync-file` due to health check failures (which are
+  expected from parsing or importing problematic files) are logged but not
+  propagated to the main service (which would then shut down PhotoStructure).
+  
+- 🐛 PhotoStructure opens a "filesystem watcher" for the library opened-by file,
+  to get notified if the library is unmounted or has lost it's open lock. This
+  error may fail of the library is stored on a remote filesystem. This error is
+  now logged and ignored (as we also poll for the lock when health checks run).
+
+- 📦 PhotoStructure's UI will now automatically reload with the new frontend
+  code when the server's version is found to have changed (like after updating
+  to a new version). This should avoid confusion caused by people expecting new
+  features, but running the prior frontend code (because they haven't hit
+  refresh on their browser). You can tell if you're running a new UI by clicking
+  the nav menu and see the running version next to the "About" button.
+
+- 📦 PhotoStructure now knows how to parse date-timestamps from macOS and gnome
+  screenshots: `y-M-d 'at' H.m.s` and `y-M-d H-m-s`.
+
+- 📦 Retries on database lock timeouts have progressively longer
+  wait-before-retry times. This may help reduce spurious db timeouts after
+  retries.
+
+- 📦 `#snapshot` directories (found on newer Synology drives) and any non-hidden
+  `lfs/objects` directories are now ignored automatically. (Scanning these
+  snapshop directories could add many, _many_ duplicates to your library).
+  
+- 📦 Updated all dependencies to latest-stable, and switched from `node-sass`
+  (which was deprecated) to `sass` (I didn't see any CSS compilation
+  differences, but please tell me if you see anything!)
+
+## v0.9.1-beta.3
+
+**Released 2020-10-28**
+
+- 📦 Sure enough, new versions of sharp and electron still don't agree with
+  eachother on PhotoStructure for Desktops on Ubuntu, so this version rolls back
+  to Electron 9 and sharp 0.23 😢.
+
+- 📦 All other third-party libraries are now latest-stable.
 
 ## v0.9.1-beta.2
 
 **Released 2020-10-27**
 
-- ✨ New `greyscaleColorThreshold` setting for monochrome image detection. The
+- 📦 New `greyscaleColorThreshold` setting for monochrome image detection. The
   previous hard-coded default of `3` is now `5`, which should allow greyscale
   images with slight off-white balance to still be considered greyscale.
 
@@ -35,7 +133,8 @@ Please note:
   reporting in general.
 
 - 🐛 More URI work: `psfile://` uris, specifically, are normalized both in
-  parsing and generation now.
+  parsing and generation now. This normalization on reads and writes should
+  prevent DUPLICATE_KEY errors that some beta users were experiencing.
 
 ## v0.9.1-beta.1
 
@@ -43,15 +142,15 @@ Please note:
 
 - ✨ Keywords are now shown in the Asset Info panel
 
-- ✨ New `excludedRootTags` library setting to omit problematic keywords
-
-- ✨ Asset header on iPad displays shouldn't overlap anymore
+- 🐛 Asset header on iPad displays shouldn't overlap anymore
 
 - 🐛 Added a migration to normalize and de-dupe asset files. Libraries from
   pre-version-0.9 and current libraries used a different URI library which
   resulted in different encoding for the same file. This migration may take 5-20
   seconds to apply. Your asset file count may drop after this migration is
   applied.
+
+- 📦 New `excludedRootTags` library setting to omit problematic keywords
 
 - 📦 The "resync this asset" command now forcefully rebuilds metadata, tags, and
   previews for the asset.
