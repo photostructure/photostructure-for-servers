@@ -19,9 +19,36 @@ This is a detailed list of changes per version.
 - Only run `alpha` or `beta` builds if you have [recent
   backups](/faq/how-do-i-safely-store-files/).
 
+## v0.9.1-beta.5
+
+**2020-11-06**
+
+- 🐛 Windows system recovery volumes are now ignored (prior releases could fail
+  health checks if a system recovery volume wasn't healthy, but we never use
+  those volumes, so we ignore them now).
+
+- 🐛 The embedded SQLite binary didn't run properly on Ubuntu 18.04 LTS (it did
+  work on 20.04, though). I've rebuilt the binary on 18.04 x64 and it seems to
+  work properly now.
+
+- 🐛 Prior versions of PhotoStructure may have added non-normalized tags.
+  Current versions of PhotoStructure assumed all tags were normalized, which
+  would prevent these tags from being cleaned up. A new migration was added to
+  force all tags into normalized form.
+
+- 📦 Health check warnings and failures are now pushed out in a progress panel
+  shown on the home page, to make sure people see that their system is failing a
+  health check.
+  
+- 📦 v0.9.1-beta.4 PhotoStructure for Desktops for linux was built on an Ubuntu
+  20.04 box (as the SSD on my Ubuntu 18 box died _during the upload of the
+  build_). This caused beta.4 to not launch properly on 18.04 boxes 😢.
+  
+  I've rebuilt my 18.04 box, and beta.5 should restore Ubuntu 18 compatability.
+
 ## v0.9.1-beta.4
 
-**Not yet released**
+**2020-11-04**
 
 - ✨ Experimental support for HDR imagery. See [this reddit
   post](https://www.reddit.com/r/PhotoStructure/comments/jk3319/p3_color_support/).
@@ -75,7 +102,7 @@ This is a detailed list of changes per version.
 - 🐛 Errors raised from `sync-file` due to health check failures (which are
   expected from parsing or importing problematic files) are logged but not
   propagated to the main service (which would then shut down PhotoStructure).
-  
+
 - 🐛 PhotoStructure opens a "filesystem watcher" for the library opened-by file,
   to get notified if the library is unmounted or has lost it's open lock. This
   error may fail of the library is stored on a remote filesystem. This error is
@@ -98,7 +125,7 @@ This is a detailed list of changes per version.
 - 📦 `#snapshot` directories (found on newer Synology drives) and any non-hidden
   `lfs/objects` directories are now ignored automatically. (Scanning these
   snapshop directories could add many, _many_ duplicates to your library).
-  
+
 - 📦 Updated all dependencies to latest-stable, and switched from `node-sass`
   (which was deprecated) to `sass` (I didn't see any CSS compilation
   differences, but please tell me if you see anything!)
