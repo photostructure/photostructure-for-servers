@@ -10,7 +10,6 @@ html(lang="en")
     header.settings
       .title
         img(src="/images/logo-white.svg" height=32 title="PhotoStructure")
-        b.reveal.pl1em #{title}
 
     main
       if err
@@ -52,14 +51,7 @@ html(lang="en")
               //-   | Hover over <br> <dfn tooltip="This is an example of some explanatory text. You’ll find more below ⬇️">underlined text</dfn>
               //-   | or click on links <a href="https://support.photostructure.com/tag/getting-started/">that look like this</a> for more information.
 
-            if (isVideoTranscodingSupported)
-              #videoSupported.info.message
-                p
-                  i.emj.check
-                  | You’re all set to 
-                  dfn(tooltip="using " + videoToolDetails) import videos!
-            
-            else
+            unless (isVideoTranscodingSupported)
               #videoSupported.warn.message 
                 p 
                   b.fs11  🎥 Do you have videos?
@@ -70,7 +62,7 @@ html(lang="en")
                   | Before continuing, please 
                   a(href="https://photostructure.com/getting-started/video-support/") follow these steps
                   | . It’ll only take a minute.
-                  //- we don’t have the "reload" step here so people (like Jim L) don’t lose their form entries.
+                  //- we don’t have the "reload" button here so people (like Jim L) don’t lose their form entries.
 
             h2 Where are your photos and videos?
             ul
@@ -91,12 +83,15 @@ html(lang="en")
 
             p
               
-            label(for="scanPath")
+            label(for="scanPath").path-component
               input#scanPath(name="scan" type="radio" value="scanPath" checked=!scanAllDrives)
               span.pill.purple.mr1em manual
               dfn(tooltip="Add as many paths as you want. PhotoStructure will scan them in this order. Your library directory is always scanned.") Scan these paths:
               p
-                #scanPaths(data-paths=jsonScanPaths)
+                #scanPaths.input-container(
+                  data-placeholder="Custom path to scan for photos and videos"
+                  data-paths=jsonScanPaths
+                )
 
               if !isDocker
                 button.btn-small#scanMyPictures(
@@ -105,12 +100,11 @@ html(lang="en")
                   data-path=picturesPath) 
                   | <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18"><path d="M0 0h24v24H0z" fill="none"/><path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM5 17l4.5-6 3.5 4.51 2.5-3.01L19 17z"/></svg>
                   | Add My Pictures directory
-                button.select-directory.btn-small.hidden.only-electron(
+                button.btn-small.select-directory.hidden.only-electron(
                   type="button"
                   title="Click to add a directory to scan for photos and videos"
-                  data-input-container="#scanPaths"
-                  data-name="scanPath"
-                  data-placeholder="Custom path to scan for photos and videos") 
+                  data-properties="openDirectory,createDirectory"
+                  ) 
                   <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M20 6h-8l-2-2H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-1 8h-3v3h-2v-3h-3v-2h3V9h2v3h3v2z"/></svg> Add
 
 
@@ -197,7 +191,7 @@ html(lang="en")
                 p.warning No drives were found on your computer with at least #{minFreeAvailable} free disk space.
 
               h3 Custom library directory
-              label(for="libraryPathCustom")
+              label(for="libraryPathCustom" name="libraryPath").path-component
                 input#libraryPathCustom(name="libraryPathRadio" type="radio" value="libraryPathCustom")
 
                 input#libraryPathCustomInput.select-directory-path(
@@ -212,6 +206,22 @@ html(lang="en")
                   data-title="Choose a directory to store your PhotoStructure library")
                   <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none"/><path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg> Select
 
+            h2 Error reporting
+
+            p PhotoStructure's error reports help us detect, triage, and fix issues (<a href="https://photostructure.com/faq/error-reports/">learn more</a>).
+            
+            p
+              label
+                input#reportErrorsYes(name="reportErrors" type="radio" value="true" checked=(reportErrors))
+                i.emj.thumbs-up
+                | Yes, PhotoStructure may report unexpected errors.
+
+            p
+              label
+                input#reportErrorsNo(name="reportErrors" type="radio" value="false" checked=(!reportErrors))
+                i.emj.thumbs-down
+                | No thanks, do not send any error reports.
+
             if welcome
               h2 PhotoStructure license
               .eula
@@ -221,10 +231,10 @@ html(lang="en")
             else
               .pt
               b By clicking Save you agree to all terms of the <a href="https://photostructure.com/legal/eula/">PhotoStructure End-User License Agreement</a>.
-            
+
             .pt
             button.btn(type="submit" name="action" title="Accept the EULA and save settings") #{welcome ? "Start" : "Save"}
-            
+
             unless welcome
               a.btn.cancel(href="/" title="Don't save any changes made on this page and return home") Cancel
 

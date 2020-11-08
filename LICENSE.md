@@ -51,20 +51,16 @@ derivative works of the Product.
 
 ### Privacy and consent to use data
 
-**The Product will not share your photos and videos to any outside
-entity without your explicit consent.**
+**The Product does not send your photos or videos to PhotoStructure, Inc.**
 
-PhotoStructure Customer Support may request access to problematic images or
-videos, but will only access those assets that you explicitly consent to
-sharing.
+The Product may periodically download and install updates. These updates may
+include bug fixes, security updates, and new features. Updates may be <a
+href="https://photostructure.com/getting-started/advanced-settings/#system-settings"
+target="_blank">disabled by the user</a>.
 
-The Product will periodically and automatically download and install updates.
-These updates may include bug fixes, security updates, and new features.
-
-The Product may send crash reports and usage telemetry to us via a third party
-(such as Sentry). These reports contain <a
-href="https://photostructure.com/error-reports/" target="_blank">your
-PhotoStructure account, system metadata, and recent log messages</a>.
+The Product may send error reports that contain limited file metadata via a
+third party (such as Sentry). Error reports may be <a href="https://photostructure.com/faq/error-reports/#how-to-opt-out-of-sending-error-reports"
+target="_blank">disabled by the user</a>.
 
 [//]: # "The URL above must be fully-qualified, as the EULA is included in the welcome page."
 
