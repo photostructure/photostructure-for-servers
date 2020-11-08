@@ -19,6 +19,29 @@ This is a detailed list of changes per version.
 - Only run `alpha` or `beta` builds if you have [recent
   backups](/faq/how-do-i-safely-store-files/).
 
+## v0.9.1
+
+**Released 2020-11-08**
+
+This release contains all prior v0.9.1-alpha and v0.9.1-beta changes.
+
+## v0.9.1-beta.6
+
+**2020-11-08**
+
+- 🐛 Fixed an issue with the new tag normalization migration added by beta.5,
+  which would fail if multiple tags normalized to the same path.
+
+- 📦 The ".photostructure/previews" directory is now customizable via the new
+  `previewsDir` [system
+  setting](https://photostructure.com/getting-started/advanced-settings/#system-settings)
+  or `PS_PREVIEWS_DIR` [environment
+  variable](https://photostructure.com/faq/environment-variables).
+
+- 📦 Added several new camera make/model parsing patterns.
+
+- 📦 Tag normalization migration now has debug timing.
+
 ## v0.9.1-beta.5
 
 **2020-11-06**
@@ -39,11 +62,11 @@ This is a detailed list of changes per version.
 - 📦 Health check warnings and failures are now pushed out in a progress panel
   shown on the home page, to make sure people see that their system is failing a
   health check.
-  
+
 - 📦 v0.9.1-beta.4 PhotoStructure for Desktops for linux was built on an Ubuntu
   20.04 box (as the SSD on my Ubuntu 18 box died _during the upload of the
   build_). This caused beta.4 to not launch properly on 18.04 boxes 😢.
-  
+
   I've rebuilt my 18.04 box, and beta.5 should restore Ubuntu 18 compatability.
 
 ## v0.9.1-beta.4
