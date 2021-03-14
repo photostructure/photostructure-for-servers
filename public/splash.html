@@ -164,18 +164,20 @@
         }
       }
 
-      .bg {
+      #bg {
         position: absolute;
         z-index: -1;
         top: 0;
         left: 0;
         width: 100vw;
         height: 100vh;
-        background: url("images/splashbg02-1024w.jpg") no-repeat center center
-          fixed;
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-size: cover;
+        background-attachment: fixed;
       }
 
-      body.animate .bg {
+      body.animate #bg {
         animation: zoom 30s ease;
       }
 
@@ -191,8 +193,8 @@
     </style>
   </head>
 
-  <body>
-    <div class="bg"></div>
+  <body class="animate">
+    <div id="bg"></div>
     <main>
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -239,7 +241,12 @@
           r="2.993"
           cy="24.369"
           cx="45.932"
-          style="isolation:auto;mix-blend-mode:normal;solid-color:#000;solid-opacity:1"
+          style="
+            isolation: auto;
+            mix-blend-mode: normal;
+            solid-color: #000;
+            solid-opacity: 1;
+          "
           color="#000"
           overflow="visible"
           fill="none"
@@ -254,17 +261,22 @@
   </body>
 
   <script>
-    const ipc = require("electron").ipcRenderer
-    ipc.on("animate", () =>
-      document.querySelector("body").classList.add("animate")
-    )
-    ipc.on(
+    const min = 1;
+    const max = 4;
+    const id = Math.floor(Math.random() * (max - min + 1) + min);
+    const img = `images/splashbg${id}-1024w.jpg`;
+    document.getElementById("bg").style.backgroundImage = `url("${img}")`;
+    const ipc = require("electron").ipcRenderer;
+    // ipc?.on("animate", () =>
+    //   document.querySelector("body").classList.add("animate")
+    // );
+    ipc?.on(
       "version",
       (event, msg) => (document.querySelector(".version").textContent = msg)
-    )
-    ipc.on(
+    );
+    ipc?.on(
       "message",
       (event, msg) => (document.querySelector(".message").textContent = msg)
-    )
+    );
   </script>
 </html>

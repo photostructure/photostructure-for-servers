@@ -1,0 +1,53 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="utf-8")
+    title #{title} - Welcome
+    meta(name="viewport" content="width=device-width,initial-scale=1")
+    link(rel="stylesheet" href="/app/settings.css" nonce=nonce)
+
+  body(class=bodyClass)#app
+    header.bg-color-gradient
+      .title
+        img(class="logo" src="/images/logo-white.svg" title="PhotoStructure")
+        img(class="mark" src="/images/photostructure-white.svg" title="PhotoStructure")
+
+    main
+      if err
+        .error.sticky.message
+          p= err
+
+      .container.mh100vh.flex-center
+        .section
+          form(action="/welcome" method="post")  
+            .hero.center.mt4em
+              h2 Welcome to 
+              img.logo(src="/images/logo-horizontal.svg")
+              
+            .notes
+              .info 
+                i.emj(title="Your data shouldn’t help advertising networks").computer
+                | PhotoStructure only runs on <dfn tooltip="PhotoStructure is self-hosted: you retain control of all your files.">this computer</dfn>.<br>
+                b <a href="https://photostructure.com/faq/why-photostructure/">Your photos and videos stay with you.</a>
+
+              .info
+                i.emj(title="Your home for all your photos and videos").home
+                | PhotoStructure is designed to organize <b>all</b> your 
+                | photos and videos. The initial import may take a while.
+
+              .info
+                i.emj(title="Let PhotoStructure work while you’re sleeping").starry-night
+                | You may want to leave your computer running 
+                | <dfn tooltip="If this is a laptop, make sure it’s plugged in!">overnight</dfn>
+                | during your initial import.
+
+              //- p.info
+              //-   i.emj.thinking
+              //-   | Hover over <br> <dfn tooltip="This is an example of some explanatory text. You’ll find more below ⬇️">underlined text</dfn>
+              //-   | or click on links <a href="https://support.photostructure.com/tag/getting-started/">that look like this</a> for more information.
+
+            .buttons.mt3em
+              a.btn.skip(href="/settings" title="Don't pick a PhotoStructure plan right now.") skip
+
+              input.btn(type="submit" title="Choose a PhotoStructure plan" value="Continue")
+

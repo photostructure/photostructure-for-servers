@@ -1,13 +1,15 @@
 #!/bin/bash -e
 
-# Copyright © 2020, PhotoStructure Inc.
+# Copyright © 2021, PhotoStructure Inc.
 
 # Running this software indicates your agreement with to the terms of this
 # license: <https://photostructure.com/eula>
 
+# (we use arrays in this script, so we're using bash instead of sh)
+
 # See <https://photostructure.com/server> for help.
 
-function die {
+die() {
   printf "%s\n" "$1"
   printf "See <https://photostructure.com/server/photostructure-for-node/> or\nsend an email to <support@photostructure.com> for help."
   exit 1
@@ -20,11 +22,12 @@ trap 'exit 130' INT
 
 missingCommands=()
 
-if [[ $(uname -o) = "Msys" ]] ; then
-  PATH="$PATH:$(pwd)/tools/win-ia32/dcraw"
+# macOS doesn't have -o, because macOS.
+if [ "$(uname -o 2>/dev/null)" = "Msys" ] ; then
+  PATH="$PATH:$(pwd)/tools/win-x64/libraw"
 fi
 
-for i in node git dcraw jpegtran sqlite3 ffmpeg ; do
+for i in node git dcraw_emu jpegtran sqlite3 ffmpeg ; do
   command -v $i >/dev/null || missingCommands+=("$i")
 done
 
@@ -39,7 +42,7 @@ git pull || die "git pull failed."
 PS_CONFIG_DIR=${PS_CONFIG_DIR:-$HOME/.config/PhotoStructure}
 mkdir -p "$PS_CONFIG_DIR"
 
-function clean {
+clean() {
   rm -rf node_modules "$HOME/.electron" "$HOME/.electron-gyp" "$HOME/.npm/_libvips" "$HOME/.node-gyp" "$HOME/.cache/yarn/*/*sharp*"
 }
 
@@ -63,7 +66,10 @@ npx yarn install || die "Dependency installation failed."
 exit_code=$?
 
 if [ $exit_code -ne 0 ] ; then
-  echo "Unexpected non-zero exit status. Please send the following to <support@photostructure.com> for assistance:"
+  echo "Unexpected non-zero exit status."
+  echo 
+  echo "Please post to <https://forum.photostructure.com/c/support/6> with the error and the following information:"
+  set +x
   npx envinfo --binaries --languages --system --utilities
   cat start.log
 fi

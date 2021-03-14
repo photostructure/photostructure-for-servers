@@ -6,9 +6,9 @@ This End-User License Agreement ("EULA") is a legal agreement between (a) You
 authors and copyright holders) that governs your use of the Product (any
 software or hardware installed or made available by PhotoStructure, Inc.).
 
-**If you do not agree to the following terms of this license, please uninstall
-all software and return any hardware within 30 days of your purchase for a
-proportionate refund.**
+**If you do not agree to the following terms of this license, please <a
+href="https://photostructure.com/faq/uninstall/" target="_blank">uninstall</a>
+the software within 30 days of your purchase and request a proportionate refund.**
 
 ### Copyright
 
@@ -24,7 +24,7 @@ not sold.
 
 ### Limitation of liability
 
-**In no event and under no legal theory, whether in tort (including negligence),
+In no event and under no legal theory, whether in tort (including negligence),
 contract, or otherwise, unless required by applicable law (such as deliberate
 and grossly negligent acts) or agreed to in writing, shall any authors or
 copyright holders be liable to you for damages, including any direct, indirect,
@@ -32,16 +32,16 @@ special, incidental, or consequential damages of any character arising as a
 result of this license or out of the use or inability to use the Product
 (including but not limited to damages for loss of goodwill, work stoppage,
 computer failure or malfunction, or any and all other commercial damages or
-losses).**
+losses).
 
 ### Disclaimer of warranty
 
-**The Product is provided "as is," without warranty of any kind, express or
+The Product is provided "as is," without warranty of any kind, express or
 implied, including but not limited to the warranties of merchantability, fitness
 for a particular purpose and noninfringement. In no event shall the authors or
 copyright holders be liable for any claim, damages or other liability, whether
 in an action of contract, tort or otherwise, arising from, out of or in
-connection with the Product or the use or other dealings in the Product.**
+connection with the Product or the use or other dealings in the Product.
 
 ### Limitation on derivative works
 
@@ -54,21 +54,17 @@ derivative works of the Product.
 **The Product does not send your photos or videos to PhotoStructure, Inc.**
 
 The Product may periodically download and install updates. These updates may
-include bug fixes, security updates, and new features. Updates may be <a
-href="https://photostructure.com/getting-started/advanced-settings/#system-settings"
-target="_blank">disabled by the user</a>.
+include bug fixes, security updates, and new features. Automatic updates may be
+disabled by the user via <a
+href="https://photostructure.com/getting-started/advanced-settings/"
+target="_blank">settings</a>.
 
 The Product may send error reports that contain limited file metadata via a
-third party (such as Sentry). Error reports may be <a href="https://photostructure.com/faq/error-reports/#how-to-opt-out-of-sending-error-reports"
+third party (such as Sentry). Error reports may be <a
+href="https://photostructure.com/faq/error-reports/#how-to-opt-out-of-sending-error-reports"
 target="_blank">disabled by the user</a>.
 
 [//]: # "The URL above must be fully-qualified, as the EULA is included in the welcome page."
-
-### Termination of use
-
-Your rights under this EULA will terminate automatically if you fail to comply
-with any of its terms, in which case you must destroy all copies of the Product
-and return any component parts.
 
 ### Amendments to this Agreement
 
@@ -76,3 +72,9 @@ Photostructure, Inc. reserves the right, at its sole discretion, to modify or
 replace this Agreement at any time. If a revision is material we will provide at
 least 30 days' notice prior to any new terms taking effect. What constitutes a
 material change will be determined at our sole discretion.
+
+### Termination of use
+
+Your rights under this EULA will terminate automatically if you fail to comply
+with any of its terms, in which case you must destroy all copies of the Product
+and return any component parts.

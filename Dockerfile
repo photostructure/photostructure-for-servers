@@ -3,8 +3,8 @@
 FROM node:14-alpine as builder
 
 # Build requirements for native node libraries:
+# sharp needs lcms2 and libjpeg
 
-# coreutils for sha256sum
 RUN apk update ; apk upgrade ; apk add --no-cache \
   build-base \
   coreutils \
@@ -19,21 +19,6 @@ COPY package.json ./
 
 RUN yarn install
 
-# We need to build `dcraw` (as it isn't packaged by alpine)
-WORKDIR /tmp
-
-# busybox has `wget` but not `curl`.
-
-# The version hosted on PhotoStructure.com is verbatim v9.28 (I didn't want
-# CI builds to hammer his website)
-
-RUN set -e ; wget https://photostructure.com/src/dcraw.c ;\
-  echo "d18d9e43a096eea04eee2148e53068f8fa45ce95395d97128b1aa37b477eab43 dcraw.c" | sha256sum --check --status ;\
-  gcc -o dcraw -O4 dcraw.c -lm -DNODEPS ;\
-  mkdir -p /ps/app/bin ;\
-  cp dcraw /ps/app/bin/dcraw ;\
-  chmod 755 /ps/app/bin/dcraw
-
 #
 # Stage 2: the final image:
 #
@@ -47,16 +32,20 @@ FROM node:14-alpine
 # util-linux (which should be there already) provides `renice` and `lsblk`
 # musl-locales provides `locale`
 # perl is required for exiftool.
+# libheif-tools provides "heif-convert"
+# libraw-tools provides "dcraw_emu" and "raw-identify"
 
 # https://pkgs.alpinelinux.org/contents
 
 RUN apk update ; apk upgrade ;\
-  apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/v3.12/community musl-locales ;\
+  apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/v3.12/community musl-locales ;\
   apk add --no-cache \
   coreutils \
   ffmpeg \
   glib \
+  libheif-tools \
   libjpeg-turbo-utils \
+  libraw-tools \
   perl \
   procps \
   sqlite \
@@ -77,7 +66,7 @@ EXPOSE 1787
 # are configured in docker-compose.yml. These ENV values should not be overridden.
 
 # Tell PhotoStructure we're running under docker:
-ENV PS_DOCKER="1"
+ENV PS_IS_DOCKER="1"
 
 # This is the path to the library in the docker image. You'll mount a directory
 # from the host machine via VOLUME: 
