@@ -30,9 +30,26 @@ This is a detailed list of changes per version.
 
 <a id="v1.0.0"></a>
 
-## v1.0.0-alpha.0
+## v1.0.0-alpha.2
 
-**to be released**
+**unreleased**
+
+- 💔 I've reverted the `UserData` directory downcasing that was changed in
+  `-alpha.1`: I believe I've fixed the problem with Electron startup that caused
+  this issue. Sorry for the changes!
+  
+- ✨ PhotoStructure for Desktops apps now support command-line options, so
+  running `PhotoStructure-1.0.0-x86_64.AppImage --verbose` on a terminal is now
+  a thing. (This should help debug alpha testers that are sitting at a spinning
+  splash screen with no progress).
+  
+- ✨ Say hello to `.cr3` support! LibRaw v0.20.1 is now included in all editions
+  of PhotoStructure, as Ubuntu and Fedora distros are tracking older versions
+  that don't support .cr3.
+
+## v1.0.0-alpha.1
+
+**Released 2021-03-14**
 
 ## Please note
 

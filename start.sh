@@ -23,15 +23,25 @@ trap 'exit 130' INT
 missingCommands=()
 
 # macOS doesn't have -o, because macOS.
-if [ "$(uname -o 2>/dev/null)" = "Msys" ] ; then
+if [[ "$(uname)" =~ "Darwin" ]]; then
+  PATH="$PATH:$(pwd)/tools/mac-x64/libraw"
+
+elif [[ "$(uname -o 2>/dev/null)" = "Msys" ]]; then
   PATH="$PATH:$(pwd)/tools/win-x64/libraw"
+
+elif [[ "$(uname -o 2>/dev/null)" =~ "Linux" ]]; then
+  PATH="$PATH:$(pwd)/tools/linux-x64/libraw"
+
+else
+  echo "WARNING: is this a supported platform?"
+
 fi
 
-for i in node git dcraw_emu jpegtran sqlite3 ffmpeg ; do
+for i in node git jpegtran sqlite3 ffmpeg; do
   command -v $i >/dev/null || missingCommands+=("$i")
 done
 
-if [ ${#missingCommands[@]} -gt 0 ] ; then
+if [ ${#missingCommands[@]} -gt 0 ]; then
   die "Please install the system prerequisites. (missing commands: ${missingCommands[*]})"
 fi
 
@@ -50,10 +60,10 @@ clean() {
 # with git stash.
 PRIOR_VERSION="$PS_CONFIG_DIR/prior-version.json"
 EXPECTED_VERSION="{ \"node\": \"$(node -v)\", \"photostructure\": $(cat VERSION.json) }"
-if [ ! -r "$PRIOR_VERSION" ] || [ "$(cat "$PRIOR_VERSION")" != "$EXPECTED_VERSION" ] ; then
+if [ ! -r "$PRIOR_VERSION" ] || [ "$(cat "$PRIOR_VERSION")" != "$EXPECTED_VERSION" ]; then
   echo "Cleaning up prior builds before recompiling..."
   clean
-  echo "$EXPECTED_VERSION" > "$PRIOR_VERSION"
+  echo "$EXPECTED_VERSION" >"$PRIOR_VERSION"
 fi
 
 argv=("$@")
@@ -65,9 +75,9 @@ npx yarn install || die "Dependency installation failed."
 ./photostructure "${argv[@]}" 2>&1 | tee start.log
 exit_code=$?
 
-if [ $exit_code -ne 0 ] ; then
+if [ $exit_code -ne 0 ]; then
   echo "Unexpected non-zero exit status."
-  echo 
+  echo
   echo "Please post to <https://forum.photostructure.com/c/support/6> with the error and the following information:"
   set +x
   npx envinfo --binaries --languages --system --utilities
