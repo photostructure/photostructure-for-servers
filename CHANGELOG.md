@@ -40,9 +40,21 @@ todo:
   incorrect timeout setup.
 -->
 
+## v1.0.0-alpha.4
+
+**Released 2021-04-11**
+
+- 🐛 Fix docker ENTRYPOINT and UID/GID handling
+
+- 📦 Docker detection was massaged: PhotoStructure first looks at the `PS_IS_DOCKER` environment variable. If it's set to 0 or 1, it'll use that value. If `PS_IS_DOCKER` is not set, and the OS is Linux, _and_ `/etc/alpine-release` exists, PhotoStructure assumes it's running within docker. Those of you running Alpine outside of docker, please set `PS_IS_DOCKER=0` and please send me an email why you run Alpine.
+
+- 📦 Removed almost all of the `ENV` settings in the `Dockerfile`: `PS_LIBRARY_DIR`, `PS_LOG_DIR`, ... are now given (the same) default values when PhotoStructure sees that it is running within docker.
+
+- 📦 If you start up Docker and are missing some bind mounts, PhotoStructure will now error with a link to the [bind mount volume descriptions](https://photostructure.com/server/photostructure-for-docker/#docker-volume-setup).
+
 ## v1.0.0-alpha.3
 
-** to be released **
+**Released 2021-04-11**
 
 - ✨ [Search support](https://photostructure.com/faq/search/): one of the
   [most-requested features](https://forum.photostructure.com/t/asset-search-support/97) 🎉

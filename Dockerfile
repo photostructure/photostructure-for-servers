@@ -55,6 +55,7 @@ FROM node:14-alpine3.13
 # perl is required for exiftool.
 # libheif-tools provides "heif-convert"
 # libraw-tools provides "dcraw_emu" and "raw-identify"
+# shadow provides usermod
 
 # https://pkgs.alpinelinux.org/contents
 
@@ -69,30 +70,30 @@ RUN apk update ; apk upgrade ;\
   libraw-tools \
   perl \
   procps \
+  shadow \
   sqlite \
   tini \
   util-linux
 
+ENV UID=1000
+ENV GID=1000
+
+RUN deluser node && \
+  addgroup --gid $GID phstr && \
+  adduser --uid $UID --disabled-password --gecos "" -G phstr phstr
+
 # Sets the default path to be inside app when running `docker exec -it`
 WORKDIR /ps/app
 
-COPY . ./
-COPY --from=builder /ps/app ./
+COPY --chown=phstr:phstr . ./
+COPY --from=builder --chown=phstr:phstr /ps/app ./
 
 # Your library is exposed by default to <http://localhost:1787>
 # This can be changed by setting the PS_HTTP_PORT environment variable.
 EXPOSE 1787
 
-ENV UID=1000
-ENV GID=1000
-
 # Get the node:14-alpine-provided "node" user out of the way. It has UID 1000,
 # and new ubuntu users have userid 1000.
-
-RUN deluser node && \
-  addgroup --gid $GID --system phstr && \
-  adduser --uid $UID --system --disabled-password --gecos "" -G phstr phstr && \
-  chown -R phstr:phstr /ps/app 
 
 # These volume paths are configured in docker-compose.yml, using values set by
 # photostructure.env. 
@@ -102,4 +103,6 @@ VOLUME [ "/ps/library", "/ps/logs", "/ps/tmp", "/ps/config" ]
 HEALTHCHECK CMD wget --quiet --output-document - http://localhost:1787/ping
 
 # https://docs.docker.com/engine/reference/builder/#understand-how-cmd-and-entrypoint-interact
-ENTRYPOINT [ "/ps/app/docker-entrypoint.sh" ]
+
+# docker-entrypoint handles dropping privileges down to the "phstr" user:
+ENTRYPOINT [ "/sbin/tini", "--", "/ps/app/docker-entrypoint.sh" ]
