@@ -102,4 +102,4 @@ VOLUME [ "/ps/library", "/ps/logs", "/ps/tmp", "/ps/config" ]
 HEALTHCHECK CMD wget --quiet --output-document - http://localhost:1787/ping
 
 # https://docs.docker.com/engine/reference/builder/#understand-how-cmd-and-entrypoint-interact
-ENTRYPOINT [ "/ps/docker-entrypoint.sh" ]
+ENTRYPOINT [ "/ps/app/docker-entrypoint.sh" ]
