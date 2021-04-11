@@ -3,7 +3,7 @@
 To reproduce on Ubuntu 20.04 LTS:
 
 ```sh
-sudo apt install build-essential autogen autoconf libtool pkg-config libjpeg-dev libz-dev
+sudo apt install build-essential autogen autoconf libtool pkg-config libjpeg-dev zlib1g-dev
 
 wget https://www.libraw.org/data/LibRaw-0.20.2.tar.gz
 

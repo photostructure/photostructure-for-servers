@@ -3,7 +3,7 @@
   "productName": "PhotoStructure",
   "author": "PhotoStructure, Inc. <hello@photostructure.com>",
   "license": "SEE LICENSE IN LICENSE.md",
-  "version": "1.0.0-alpha.2",
+  "version": "1.0.0-alpha.3",
   "description": "PhotoStructure for Servers",
   "repository": {
     "type": "git",
@@ -14,11 +14,11 @@
   },
   "dependencies": {
     "@iarna/toml": "~2.2.5",
-    "@sentry/node": "~6.2.2",
+    "@sentry/node": "~6.2.5",
     "batch-cluster": "~6.0.2",
-    "better-sqlite3": "~7.1.2",
+    "better-sqlite3": "~7.1.4",
     "body-parser": "~1.19.0",
-    "commander": "~7.1.0",
+    "commander": "~7.2.0",
     "deep-eql": "~4.0.0",
     "exiftool-vendored": "~14.1.1",
     "express": "~4.17.1",
@@ -27,13 +27,15 @@
     "fs-extra": "~9.1.0",
     "he": "~1.2.0",
     "helmet": "~4.4.1",
-    "knex": "~0.95.2",
+    "knex": "~0.95.4",
     "luxon": "~1.26.0",
-    "mime-types": "~2.1.29",
+    "mime-types": "~2.1.30",
+    "moo": "^0.5.1",
+    "nearley": "^2.20.1",
     "on-finished": "~2.3.0",
     "pug": "~3.0.2",
     "punycode": "~2.1.1",
-    "sharp": "~0.27.2",
+    "sharp": "0.28.1",
     "xml2js": "~0.4.23"
   }
 }

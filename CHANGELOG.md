@@ -2,10 +2,10 @@
 This is a detailed list of changes per version.
 
 - Releases sometimes have separate posts that describe new features, like for
-  [version 0.6](/about/v-0-6/), [version 0.8](/about/v-0-8/), and [version
-  0.9](/about/v-0-9/)).
+  [version 0.6](https://photostructure.com/about/v-0-6/), [version 0.8](https://photostructure.com/about/v-0-8/), and [version
+  0.9](https://photostructure.com/about/v-0-9/)).
 
-- Visit [**what's next**](/about/whats-next/) to get a sneak peak into what
+- Visit [**what's next**](https://photostructure.com/about/whats-next/) to get a sneak peak into what
   we're going to be working on next.
 
 ## Please note
@@ -20,32 +20,75 @@ This is a detailed list of changes per version.
   thoroughly tested, and may not even launch.
 
 - Only run `alpha` or `beta` builds if you have [recent
-  backups](/faq/how-do-i-safely-store-files/).
+  backups](https://photostructure.com/faq/how-do-i-safely-store-files/).
 
 - If you update to an alpha or beta build and you want to downgrade to a prior
   version, know that older versions of PhotoStructure may not be able to open
   libraries created by newer versions of PhotoStructure. You will probably need
   to [restore your library from a database
-  backup](/faq/restore-db-from-backup/).
+  backup](https://photostructure.com/faq/restore-db-from-backup/).
 
 <a id="v1.0.0"></a>
 
+<!--
+todo: 
+- 🐛 `alpha.2` could [~~crash~~ shut down unexpectedly when child processes
+  didn't gracefully
+  end](https://forum.photostructure.com/t/photostructure-shuts-down-unexpectedly/449).
+
+- 🐛 Sync and rebuild processes could be slow (~ 15 seconds per asset) due to an
+  incorrect timeout setup.
+-->
+
+## v1.0.0-alpha.3
+
+** to be released **
+
+- ✨ [Search support](https://photostructure.com/faq/search/): one of the
+  [most-requested features](https://forum.photostructure.com/t/asset-search-support/97) 🎉
+
+- ✨ PhotoStructure for Desktop users: [Open in
+  browser...](https://photostructure.com/faq/search/) now opens the current URL
+  in a local browser, rather than the home page.
+
+- ✨ [Extraction support for ACDSee face
+  tags](https://forum.photostructure.com/t/workflow-for-organizing-tagging-my-pictures/438/4?u=mrm)
+
+- ✨ PhotoStructure for Docker users: added [support for
+  UID/GID](https://forum.photostructure.com/t/add-linuxserver-style-puid-and-pgid-support-to-the-photostructure-docker-image/370)
+  (rather than fighting with `userns`).
+
+- 🐛 `settings.toml` files encoded in [UTF-16 (LE) and UTF-8 with a
+  BOM](https://forum.photostructure.com/t/change-subdirectorydatestampformat/455/9?u=mrm)
+  are now read correctly.
+
+- 📦 Added new `writeMetadataToSidecarsIfSidecarExists` setting, whose name is
+  both self-documenting, and a new winner for longest-named setting.
+
+- 📦 Upgraded all dependencies, including electron, sharp, and SQLite
+
+- 📦 Direct (non-sidecar) metadata writes to large files and movies are now
+  [correctly
+  handled](https://forum.photostructure.com/t/manually-editing-capture-time-title-and-description-caption/104/9)
+
 ## v1.0.0-alpha.2
 
-**unreleased**
+**Released 2021-03-19**
 
 - 💔 I've reverted the `UserData` directory downcasing that was changed in
   `-alpha.1`: I believe I've fixed the problem with Electron startup that caused
   this issue. Sorry for the changes!
-  
-- ✨ PhotoStructure for Desktops apps now support command-line options, so
-  running `PhotoStructure-1.0.0-x86_64.AppImage --verbose` on a terminal is now
-  a thing. (This should help debug alpha testers that are sitting at a spinning
-  splash screen with no progress).
-  
+
 - ✨ Say hello to `.cr3` support! LibRaw v0.20.1 is now included in all editions
   of PhotoStructure, as Ubuntu and Fedora distros are tracking older versions
   that don't support .cr3.
+
+- ✨ The main PhotoStructure for Desktops binary now supports command-line
+  options, so running `PhotoStructure-1.0.0-x86_64.AppImage --verbose` on a
+  terminal is now a thing.
+
+- ✨ PhotoStructure for Desktops has a new "Open in browser..." in the View menu
+  and the system tray menu.
 
 ## v1.0.0-alpha.1
 

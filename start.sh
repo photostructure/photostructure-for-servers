@@ -37,7 +37,7 @@ else
 
 fi
 
-for i in node git jpegtran sqlite3 ffmpeg; do
+for i in node git ffmpeg; do
   command -v $i >/dev/null || missingCommands+=("$i")
 done
 
