@@ -40,6 +40,31 @@ todo:
   incorrect timeout setup.
 -->
 
+## v1.0.0-alpha.5
+
+**To be released**
+
+- ✨ Added `meta` headers to [support iOS homescreen](https://forum.photostructure.com/t/ios-homescreen-support/162).
+
+- ✨ Have scanned images of older photos? A new `datesBeforeAreEstimated` setting automatically considers all captured-at times before 1999 to be an "estimated" time, which requires files to have a tighter image correlation to be considered a duplicate of an existing asset variant. [This addresses issues like this](https://forum.photostructure.com/t/why-assetfile-shown-0/473/9?u=mrm).
+
+**PhotoStructure for Desktops:**
+
+- 🐛 Fixed the stripe checkout background
+
+- 🐛 The stripe.com link in the plans page is now clickable
+
+**PhotoStructure for Docker:**
+
+- 🐛 Fixed bogus "PS_LIBRARY_PATH must be set" error in `/settings`
+
+- 📦 If you are seeing file permission problems, temporarily set the environment variable `PS_FIX_PERMISSIONS=1` and run `docker-compose up` (without `--detach`) or `docker run -it photostructure/server:alpha`. This will run `chmod -R $UID:$GID /ps` as root from within docker, so make sure `UID` and `GID` are set appropriately. This `chmod` should address any permission issues if you previously ran a PhotoStructure container as the root user.
+
+- 📦 Set the environment variable `UID=0` if you want to run PhotoStructure as the root user within your docker container, as it has in prior versions.
+
+- 🐛/📦 If either the `/ps/tmp` or `/ps/cache` directories are bind-mounted, either will be used for the cache directory. This should solve spurious EACCES errors that some alpha testers saw.
+
+
 ## v1.0.0-alpha.4
 
 **Released 2021-04-11**
@@ -56,32 +81,21 @@ todo:
 
 **Released 2021-04-11**
 
-- ✨ [Search support](https://photostructure.com/faq/search/): one of the
-  [most-requested features](https://forum.photostructure.com/t/asset-search-support/97) 🎉
+- ✨ [Search support](https://photostructure.com/faq/search/): one of the [most-requested features](https://forum.photostructure.com/t/asset-search-support/97) 🎉
 
-- ✨ PhotoStructure for Desktop users: [Open in
-  browser...](https://photostructure.com/faq/search/) now opens the current URL
-  in a local browser, rather than the home page.
+- ✨ PhotoStructure for Desktop users: [Open in browser...](https://photostructure.com/faq/search/) now opens the current URL in a local browser, rather than the home page.
 
-- ✨ [Extraction support for ACDSee face
-  tags](https://forum.photostructure.com/t/workflow-for-organizing-tagging-my-pictures/438/4?u=mrm)
+- ✨ [Extraction support for ACDSee face tags](https://forum.photostructure.com/t/workflow-for-organizing-tagging-my-pictures/438/4?u=mrm)
 
-- ✨ PhotoStructure for Docker users: added [support for
-  UID/GID](https://forum.photostructure.com/t/add-linuxserver-style-puid-and-pgid-support-to-the-photostructure-docker-image/370)
-  (rather than fighting with `userns`).
+- ✨ PhotoStructure for Docker users: added [support for UID/GID](https://forum.photostructure.com/t/add-linuxserver-style-puid-and-pgid-support-to-the-photostructure-docker-image/370) (rather than fighting with `userns`).
 
-- 🐛 `settings.toml` files encoded in [UTF-16 (LE) and UTF-8 with a
-  BOM](https://forum.photostructure.com/t/change-subdirectorydatestampformat/455/9?u=mrm)
-  are now read correctly.
+- 🐛 `settings.toml` files encoded in [UTF-16 (LE) and UTF-8 with a BOM](https://forum.photostructure.com/t/change-subdirectorydatestampformat/455/9?u=mrm) are now read correctly.
 
-- 📦 Added new `writeMetadataToSidecarsIfSidecarExists` setting, whose name is
-  both self-documenting, and a new winner for longest-named setting.
+- 📦 Added new `writeMetadataToSidecarsIfSidecarExists` setting, whose name is both self-documenting, and a new winner for longest-named setting.
 
 - 📦 Upgraded all dependencies, including electron, sharp, and SQLite
 
-- 📦 Direct (non-sidecar) metadata writes to large files and movies are now
-  [correctly
-  handled](https://forum.photostructure.com/t/manually-editing-capture-time-title-and-description-caption/104/9)
+- 📦 Direct (non-sidecar) metadata writes to large files and movies are now [correctly handled](https://forum.photostructure.com/t/manually-editing-capture-time-title-and-description-caption/104/9)
 
 ## v1.0.0-alpha.2
 
