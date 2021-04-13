@@ -42,7 +42,7 @@ todo:
 
 ## v1.0.0-alpha.5
 
-**To be released**
+**Released 2021-04-12**
 
 - ✨ Added `meta` headers to [support iOS homescreen](https://forum.photostructure.com/t/ios-homescreen-support/162).
 

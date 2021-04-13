@@ -13,6 +13,7 @@ export GID=${GID:-${PGID:-1000}}
 
 # Are we already not root, or are they forcing PhotoStructure to run as root?
 # RUNNING PHOTOSTRUCTURE AS ROOT IS NOT RECOMMENDED.
+
 if [ "$UID" = "0" ] || [ "$(id --real --user)" != "0" ]; then
   # They want to run as root or started docker with --user, so we shouldn't do
   # any usermod/groupmod/su shenanigans:
@@ -20,12 +21,12 @@ if [ "$UID" = "0" ] || [ "$(id --real --user)" != "0" ]; then
 else
   # Change the phstr user and group to match UID/GID.
   # (we don't care about "usermod: no changes"):
-  usermod --non-unique --uid "$UID" phstr | grep -v "usermod: no changes"
+  usermod --non-unique --uid "$UID" phstr >/dev/null
   groupmod --non-unique --gid "$GID" phstr
-  
+
   # Always make sure the settings, opened-by, and models directories are
   # writable by phstr:
-  chown --recursive phstr:phstr /ps/library/.photostructure/settings.toml /ps/library/.photostructure/opened-by /ps/library/.photostructure/models
+  chown --silent --recursive phstr:phstr /ps/library/.photostructure/settings.toml /ps/library/.photostructure/opened-by /ps/library/.photostructure/models
 
   # Help for prior users that ran as root:
   if [ "$PS_FIX_PERMISSIONS" = "1" ]; then
@@ -40,7 +41,6 @@ else
     chown --recursive $UID:$GID /ps
   fi
 
-  # - `exec tini` to prevent zombies
   # - Start photostructure as user phstr instead of root:
   su --preserve-environment phstr --command "/usr/local/bin/node /ps/app/photostructure $*"
 fi
