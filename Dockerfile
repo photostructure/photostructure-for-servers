@@ -22,7 +22,7 @@ RUN apk update ; apk upgrade ; apk add --no-cache \
 # https://docs.docker.com/engine/reference/builder/#workdir
 WORKDIR /ps/app
 
-COPY package.json ./
+COPY package.json yarn.lock ./
 
 RUN yarn install
 

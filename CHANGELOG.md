@@ -31,7 +31,7 @@ This is a detailed list of changes per version.
 <a id="v1.0.0"></a>
 
 <!--
-todo: 
+todo:
 - 🐛 `alpha.2` could [~~crash~~ shut down unexpectedly when child processes
   didn't gracefully
   end](https://forum.photostructure.com/t/photostructure-shuts-down-unexpectedly/449).
@@ -40,7 +40,47 @@ todo:
   incorrect timeout setup.
 -->
 
-## v1.0.0-alpha.5
+## v1.0.0-alpha.7
+
+**To be released**
+
+- ✨ The [back button no longer resets scroll position](https://forum.photostructure.com/t/improve-back-button-navigation/206) on tag or search pages!
+
+### Search improvements
+
+- ✨/🐛/📦 Search had been query-as-you-type. Now searches are only executed when the user hits return, clicks the magnifying glass, or taps the "search" key on their mobile keyboard.
+
+- ✨ Search results are now paged via lazy-loaded infinite scroll
+
+- ✨ The search button on non-root tags now pre-fills the search icon with the current tag to support paging through all inherited assets and as a start to adding more search criteria. 
+
+- ✨ You can now clear prior searches (there’s an X to the right of the heading)
+
+- 🐛 Fixed the [prior search list](https://forum.photostructure.com/t/prior-searches-list/479)
+ 
+- 🐛 Query parameters from search no longer transfer when returning to the home page
+
+- 📦 Reworked the search examples
+
+- 📦 Search queries with unmatched quotes, `AND`, or `OR` are no longer considered valid.
+
+- 📦 The search button [isn't hidden on mobile devices anymore](https://forum.photostructure.com/t/dont-hide-search-button-even-for-narrow-screen-size/492). 
+
+### Other improvements
+
+- ✨ Keyword extraction is now [more configurable](https://forum.photostructure.com/t/more-settings-to-control-imported-keywords/496)
+
+- 🐛 `docker-entrypoint.sh` now `exec`s `node`, which lets docker shutdown propagate to PhotoStructure, and let it shut down gracefully (and avoid "Library is already opened by" errors)
+
+- 📦 New `openLockStaleMinutes` setting, which defaults to 1 hour: `If an opened-by lockfile has not been touched in this number of minutes, the file is considered stale and invalid. Libraries will refresh their lockfile more frequently than this period. The disk that hosts your library won't be able to idle if this is set too short`
+
+- 📦 `yarn.lock` is now copied into the docker container to ensure consistent contents
+
+- 🐛 `-alpha.1` changed some paths from `PhotoStructure` to `photostructure`. `-alpha.2` reverted several of these changes, but logfiles were still being written to `photostructure`. `-alpha.7` fixes this.
+
+- 📦 Upgraded to [Electron](https://www.electronjs.org/) v12.0.4 and [ExifTool](https://exiftool.org/) v12.24
+
+## v1.0.0-alpha.6
 
 **Released 2021-04-12**
 
@@ -63,7 +103,6 @@ todo:
 - 📦 Set the environment variable `UID=0` if you want to run PhotoStructure as the root user within your docker container, as it has in prior versions.
 
 - 🐛/📦 If either the `/ps/tmp` or `/ps/cache` directories are bind-mounted, either will be used for the cache directory. This should solve spurious EACCES errors that some alpha testers saw.
-
 
 ## v1.0.0-alpha.4
 
