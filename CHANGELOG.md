@@ -30,21 +30,79 @@ This is a detailed list of changes per version.
 
 <a id="v1.0.0"></a>
 
-<!--
-todo:
-- 🐛 `alpha.2` could [~~crash~~ shut down unexpectedly when child processes
-  didn't gracefully
-  end](https://forum.photostructure.com/t/photostructure-shuts-down-unexpectedly/449).
-
-- 🐛 Sync and rebuild processes could be slow (~ 15 seconds per asset) due to an
-  incorrect timeout setup.
--->
-
-## v1.0.0-alpha.7
+## v1.0.0-alpha.8
 
 **To be released**
 
+<!-- - ✨/🐛/📦/🚫☠ For most cases, PhotoStructure no longer "fails fast." [Read more here](https://forum.photostructure.com/t/disable-photostructure-from-failing-fast/501). -->
+
+<!-- - ✨ Logs are now viewable in the UI -->
+
+- ✨ Added a first pass at tag normalization: the "Album", "Keyword" and "Who" tags now all support "aliases", controlled by the new `rootTagAlbumsAliases`, `rootTagKeywordsAliases`, and `rootTagWhoAliases` settings. This helps normalize tags in existing files, say, if your keywords aren't (all) in English, or have inconsistencies ("Keyword/Sky" and "Keyword**s**/Sky").
+
+- ✨ Dropdown menu improvements
+
+  - 📦 Dropdown menus are now positioned to [ensure the content is visible](https://forum.photostructure.com/t/download-dropdown-not-completely-viewable-synology-docker-compose-alpha-branch/546). If possible, they show to the right and below the click target, but will render to the left or even above the click target if the right or bottom screen edge is close.
+  - 📦 Dropdown menus now have a close button.
+  - 📦 Dropdown menus can now be dismissed by clicking or tapping anywhere else on the screen, and these taps and clicks that dismiss a menu are ignored.
+  - 📦 Dropdown menu contents can scroll vertically if their content is too tall for the screen.
+
+- ✨/📦 Improved UID/GID handling for those upgrading PhotoStructure for Docker from v0.9.
+
+  Prior to v1.0, PhotoStructure for Docker defaulted to running as root. To prevent upgrades from failing due to permission issues, we now default the userid to match the current owner of `/ps/config/settings.toml`.
+
+  This default value will be overridden if `UID`, `GID`, `PUID`, or `PGID` are set, which is recommended to minimize both the number of files owned by root, and the number of processes running as root (even within containers).
+
+  If the file is missing, we default to `1000` for both the UID and GID, which
+  is the default for the first non-system user (at least in Ubuntu and Fedora).
+
+- 🐛 Fixed PhotoStructure for Desktops packaging: `alpha.7` was [erroneously](https://forum.photostructure.com/t/libvips-cpp-so-42-not-found-on-appimage-upgrade-from-0-9-1-to-1-0-0-alpha-7/542) [omitting](https://forum.photostructure.com/t/cant-launch-latest-photostructure-alpha/561) required third-party `.so`/`.dll`s.
+
+- 🐛 Name parsing for family names that end in "i" is now fixed.
+
+- 🐛 The `when:` and `date:` search query filters are now synonyms, and normalize to `date:` ([details](https://forum.photostructure.com/t/the-search-filters-when-and-date-dont-act-the-same/500)).
+
+- 🐛/📦 Tag paths are normalized to ["NFC" Unicode Normalization Form](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/normalize) now. This should help library portability between macOS and other platforms.
+
+- 🐛 Asset streams are now always scrolled into view on navigation (this was broken in alpha.7)
+
+- 🐛 Navigating from the welcome page to the plans page could take a while if the user had many slow drives. An aggressive timeout (3 seconds) was added to prevent the page from hanging.
+
+- 🐛/📦 The "shown" asset file variant in the asset info panel is easier to select now (the prior click target was only the pathname)
+
+- 🐛/📦 Searching for `before:2022` now works (if you want a query that returns all assets in your library). Previous versions applied the "captured at" validity filter to dates, which reject dates more than several weeks in the future.
+
+- 📦 The `View` menubar items were re-ordered
+
+- 📦 Environment and TOML settings now support "aliases." This allows us to change or improve the names of settings between versions but not break existing configurations. These aliases are listed per setting in the library and system `settings.toml` files now.
+
+- 📦 `settings.toml` and `defaults.env` now enumerate all environment and TOML key aliases (so prior setting names can be found).
+
+- 🐛/📦 Clicking "continue" from `/welcome` now has an aggressive timeout to prevent hangups during the initial installation flow. If you have tons of slow external disks attached to your computer, this should help.
+
+- 🐛 Subscription signups could fail sometimes when the Stripe API reported that newly-created customers didn't exist. We retry these requests automatically now to work around this issue.
+
+- 📦 The `info` tool now supports filtering output, including deep fields. See `info --help` for more information.
+
+- 📦 PhotoStructure for Node's `start.sh` script now
+
+  - 📦 verifies that Node.js is at least v14.16.0
+  - 📦 warns if `ffmpeg` isn't available
+  - 📦 warns Ubuntu 18 users that HEIF isn't supported
+
+- 📦 Ubuntu 18 fixes:
+
+  - 🐛 `lsblk` parsing supports older versions (that don't support volume size information)
+
+  - 📦 rebuilt binaries on 18.04 (prior alpha builds had binaries built on Ubuntu 20.04)
+
+## v1.0.0-alpha.7
+
+**Released 2021-04-16**
+
 - ✨ The [back button no longer resets scroll position](https://forum.photostructure.com/t/improve-back-button-navigation/206) on tag or search pages!
+
+- 🐛 Docker now disables the bounce service, which should address [this docker crash](https://forum.photostructure.com/t/alpha-is-crashing-occasionally/399)
 
 ### Search improvements
 
@@ -52,19 +110,19 @@ todo:
 
 - ✨ Search results are now paged via lazy-loaded infinite scroll
 
-- ✨ The search button on non-root tags now pre-fills the search icon with the current tag to support paging through all inherited assets and as a start to adding more search criteria. 
+- ✨ The search button on non-root tags now pre-fills the search icon with the current tag to support paging through all inherited assets and as a start to adding more search criteria.
 
 - ✨ You can now clear prior searches (there’s an X to the right of the heading)
 
 - 🐛 Fixed the [prior search list](https://forum.photostructure.com/t/prior-searches-list/479)
- 
+
 - 🐛 Query parameters from search no longer transfer when returning to the home page
 
 - 📦 Reworked the search examples
 
 - 📦 Search queries with unmatched quotes, `AND`, or `OR` are no longer considered valid.
 
-- 📦 The search button [isn't hidden on mobile devices anymore](https://forum.photostructure.com/t/dont-hide-search-button-even-for-narrow-screen-size/492). 
+- 📦 The search button [isn't hidden on mobile devices anymore](https://forum.photostructure.com/t/dont-hide-search-button-even-for-narrow-screen-size/492).
 
 ### Other improvements
 
