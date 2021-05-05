@@ -8,30 +8,73 @@ html
 
   body.grid-center.reveal
     main
-      .title
-        img(src="/images/logo-gradient-gloss.svg" class="logo")
-        h1 photo<b>structure</b>
-         span.tm ™
-        h2 #{forFlavor}
-      table.versions
-        each v in versions
+      img.logo(src="/images/logo-horizontal.svg")
+
+      .emojis
+      
+        if (subTier == "lite")
+        
+          i.emj.thinking
+          p 
+            | You're using PhotoStructure <span class="#{subTier}">#{subTier}</span>.<br>
+            | <b><a href="/plans/pick?then=/about">Learn more about PhotoStructure <span class="plus">plus</span></a></b>.<br>
+            | If you're a current subscriber, <a href="/plans/activate?then=/about">log in to activate your license on this computer</a>.
+            
+        else
+          i.emj.tada
+          p 
+            b Thanks for being a <span class="#{subTier}">#{subTier}</span> subscriber!
+          
+          if (subTrial)
+            i.emj.clock
+            p Your free trial subscription ends in #{subExpiresInDuration}. 
+            
+          else
+            i.emj.calendar
+            p Your <span class="#{subTier}">#{subTier}</span> subscription will end or renew in #{subExpiresInDuration}.
+          
+          i.emj.bank
+          p <b><a href="/plans/billing?then=/about">Manage your subscription and billing</a></b>.
+
+        i.emj.handshake
+        p 
+          b Use of PhotoStructure is bound by the <a href="https://photostructure.com/legal/eula/">end-user license agreement</a>, and other <a href="https://photostructure.com/legal/">terms and conditions</a>.
+        
+        i.emj.birthday
+        p 
+          a(href="https://photostructure.com/whats-new/") What’s new in this release?
+
+        i.emj.surf
+        p Read our <a href="https://photostructure.com/tags/getting-started/">getting started guides</a> and <a href="https://photostructure.com/tags/faq/">FAQ</a>.
+
+        i.emj.beetle
+        p Found something odd, confusing, or buggy? <br> Visit the <a href="https://forum.photostructure.com">PhotoStructure community forum</a> to get support and share feedback.</a>
+
+        i.emj.crane
+        p PhotoStructure is made possible by many <a href="https://photostructure.com/legal/3rd-party-licenses.txt">open source libraries and tools</a>.
+          
+        i.emj.heart
+        p If you maintain or contribute to any of these projects, <b>thank you!</b> <a href="mailto:hello@photostructure.com?subject=Hi, I work on INSERT_YOUR_LIBRARY_NAME_HERE&body=Here's a link to my library: https://...%0D%0A%0D%0APlease send me a free personal license to PhotoStructure.%0D%0A%0D%0AThank you!">Send us an email</a> and we’ll set you up with a <b>free</b> personal license of PhotoStructure.</i> 
+
+      h2 System information
+
+      table.system-info
+        each ea in systemInfo
           tr
             td.dt
-              if v.termURL
-                a(href=v.termURL)= v.term
+              if ea.termURL
+                a(href=ea.termURL)= ea.term
               else
-                | #{v.term}
-            if v.term == "Video support" && v.defn == "-"
-              td.dd Tools are missing. <b><a href="https://photostructure.com/getting-started/video-support/">Learn more</a></b>.
-            else if Array.isArray(v.defn)
-              td.dd
+                | #{ea.term}
+            if Array.isArray(ea.defn)
+              td
                 table.metrics
-                  each metric in v.defn
+                  each metric in ea.defn
                     tr
                       td.count= metric.count
                       td.desc= metric.desc
             else
-              td.dd= v.defn
+              td.dd(class=ea.defnClass title=ea.defnTitle)= ea.defn
         tr
           td.dt Health checks
           td.dd
@@ -44,35 +87,10 @@ html
                 li.warn= warn
               each ok in health.ok
                 li.ok= ok
-        tr
-          td.dt
-          td 
 
-      .emojis
-      
-        i.emj.handshake
-        p 
-          b Use of PhotoStructure is bound by the <a href="https://photostructure.com/legal/eula/">end-user license agreement</a>.
-        
-        i.emj.birthday
-        p 
-          a(href="https://photostructure.com/whats-new/") What’s new in this release?
-
-        i.emj.surf
-        p Read our <a href="https://photostructure.com/tags/getting-started/">getting started guides</a> and <a href="https://photostructure.com/tags/faq/">FAQ</a>.
-
-        i.emj.beetle
-        p Found something odd, confusing, or buggy? Need help? <br> Email us at <a href="mailto:support@photostructure.com">support@photostructure.com</a>
-
-        i.emj.crane
-        p PhotoStructure is made possible by many <a href="https://photostructure.com/legal/3rd-party-licenses.txt">open source libraries and tools</a>.
-          
-        i.emj.heart
-        p If you maintain or contribute to any of these projects, <b>thank you!</b> <a href="mailto:hello@photostructure.com?subject=Hi, I work on INSERT_YOUR_LIBRARY_NAME_HERE&body=Here's a link to my library: https://...%0D%0A%0D%0APlease send me a free personal license to PhotoStructure.%0D%0A%0D%0AThank you!">Send us an email</a> and we’ll set you up with a <b>free</b> personal license of PhotoStructure.</i> 
-    
     if volumes
       .volumes
-        h3 Volumes
+        h2 Volume information
         table
           tr
             th.mountpoint mount
@@ -95,4 +113,6 @@ html
                   tt.unc= "//" + vol.remote.host + "/" + vol.remote.share
 
   script(src="/app/about.js" nonce=nonce)
-  
+  if (subTier != "lite" && !subTrial)
+    //- YAY THANK YOU
+    script(src="/js/confetti.min.js" nonce=nonce)

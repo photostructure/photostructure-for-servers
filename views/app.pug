@@ -9,6 +9,12 @@ html(lang="en")
     link(rel="stylesheet", href="/app/app.css" nonce=nonce)
     //- from https://realfavicongenerator.net
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    //- https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/SafariWebContent/ConfiguringWebApplications/ConfiguringWebApplications.html
+    meta(name="apple-mobile-web-app-capable" content="yes")
+    meta(name="apple-mobile-web-app-title" content="PhotoStructure")
+    meta(name="apple-mobile-web-app-status-bar-style" content="black")
+    meta(name="apple-mobile-web-app-capable" content="yes")
+    meta(name="application-name" content="PhotoStructure")
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="manifest" href="/site.webmanifest">
@@ -18,5 +24,5 @@ html(lang="en")
 
   body#app(class=bodyClass)
     #mount
-
+    
   script(src="/app/app.js" nonce=nonce)
