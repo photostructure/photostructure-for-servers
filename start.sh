@@ -5,19 +5,22 @@
 # BY RUNNING THIS SOFTWARE YOU AGREE TO ALL THE TERMS OF THIS LICENSE:
 # <https://photostructure.com/eula>
 
-# (we use arrays in this script, so we have to use bash instead of sh)
-
 # See <https://photostructure.com/server> for instructions and
 # <https://forum.photostructure.com/> for support.
 
-function die {
+# SYNTAX NOTE TO FUTURE SELF:
+# function foo {...} # < doesn't work with /bin/sh
+# foo() {...} # < works with dash and bash
+
+die() {
   printf "%s\n" "$1"
   printf "Please refer to <https://photostructure.com/server/photostructure-for-node/>.\nYou can also visit <https://forum.photostructure.com> for help.\n\n"
   exit 1
 }
 
-function version {
-  echo "$@" | awk -F. '{ printf("%d%03d%03d%03d\n", $1,$2,$3,$4); }'
+version() {
+  # Support "1.2", "1.2.3", "1.2.3.4", and "01.23.001":
+  echo "$@" | awk -F. '{ printf("%03d%03d%03d%03d\n", $1,$2,$3,$4); }'
 }
 
 cd "$(dirname "$0")" || die "failed to cd"
@@ -25,17 +28,23 @@ cd "$(dirname "$0")" || die "failed to cd"
 # Propagate ctrl-c:
 trap 'exit 130' INT
 
-# macOS doesn't have -o, because macOS.
-if [[ "$(uname)" =~ "Darwin" ]]; then
-  PATH="$PATH:$(pwd)/tools/mac-x64/libraw"
+NODE="node"
 
-elif [ "$(uname -o 2>/dev/null)" = "Msys" ]; then
-  PATH="$PATH:$(pwd)/tools/win-x64/libraw"
+# Windows needs `uname -o`, but that doesn't exist of macOS. macOS works with
+# `uname -s`. Linux works with either -o or -s.
+OS="$(uname -o 2>/dev/null || uname -s)"
 
-elif [[ "$(uname -o 2>/dev/null)" =~ "Linux" ]]; then
-  PATH="$PATH:$(pwd)/tools/linux-x64/libraw"
+if [ "$OS" = "Darwin" ]; then
+  if [ "$(version "$(uname -r)")" -lt "$(version 18.7)" ]; then
+    echo "WARNING: PhotoStructure for Servers is only supported on macOS Mojave and later."
+  fi
+elif [ "$OS" = "Msys" ] || [ "$OS" = "Cygwin" ]; then
+  NODE="node.exe" # < workaround for windows tty shenanigans
+
+elif [ "$OS" = "Linux" ] || [ "$OS" = "GNU/Linux" ]; then
   if [ -r /etc/os-release ]; then
     # If we're on Ubuntu...
+    # (we source into a subshell to avoid inadvertent variable pollution)
     if [ "$(
       source /etc/os-release
       echo "$NAME"
@@ -58,21 +67,30 @@ else
   echo "WARNING: this isn't a supported platform."
 fi
 
-missingCommands=()
+# Version 1.0.0 includes all the binaries from PhotoStructure for Desktop in
+# PhotoStructure for Node because the system libraries (like libraw and sqlite)
+# are probably out of date.
 
-for i in git ffmpeg; do
-  command -v $i >/dev/null || missingCommands+=("$i")
+# We really just need node and git at this point:
+
+for i in git $NODE; do
+  command -v $i >/dev/null || die "Please install $i"
 done
 
-if [ ${#missingCommands[@]} -gt 0 ]; then
-  die "Please install these commands: ${missingCommands[*]}"
-fi
+# And warn people if they don't have ffmpeg:
 
 if ! command -v ffmpeg >/dev/null; then
   printf "WARNING: ffmpeg is required for video support.\nSee <https://photostructure.com/getting-started/video-support/#ubuntu-installation>\n\n"
 fi
 
-if [ "$(version "$(node --version)")" -lt "$(version "14.16.0")" ]; then
+# We can't just run `node --version` because that doesn't work in a subshell on
+# Windows. CROSS PLATFORM CODE IS FUN
+
+NODE_VERSION="$(version "$($NODE -p process.versions.node)")"
+
+# Node 14 has (many!) important security and performance improvements
+
+if [ "$NODE_VERSION" -lt "$(version "14.16.0")" ]; then
   die "Please install Node.js v14.16.0 or later"
 fi
 
@@ -83,14 +101,15 @@ git pull || die "git pull failed."
 PS_CONFIG_DIR=${PS_CONFIG_DIR:-$HOME/.config/PhotoStructure}
 mkdir -p "$PS_CONFIG_DIR"
 
-function clean {
+clean() {
+  # NOTE: even if $HOME isn't set, these paths from root wouldn't be terrible to delete:
   rm -rf node_modules "$HOME/.electron" "$HOME/.electron-gyp" "$HOME/.npm/_libvips" "$HOME/.node-gyp" "$HOME/.cache/yarn/*/*sharp*"
 }
 
 # We can't put this in the current directory, because we always clean it out
 # with git stash.
 PRIOR_VERSION="$PS_CONFIG_DIR/prior-version.json"
-EXPECTED_VERSION="{ \"node\": \"$(node -v)\", \"photostructure\": $(cat VERSION.json) }"
+EXPECTED_VERSION="{ \"node\": \"$NODE_VERSION\", \"photostructure\": $(cat VERSION.json) }"
 if [ ! -r "$PRIOR_VERSION" ] || [ "$(cat "$PRIOR_VERSION")" != "$EXPECTED_VERSION" ]; then
   echo "Cleaning up prior builds before recompiling..."
   clean
@@ -103,7 +122,7 @@ argv=("$@")
 # all the dependency compilation warnings and other console spam.
 npx yarn install || die "Dependency installation failed."
 
-./photostructure "${argv[@]}" 2>&1 | tee start.log
+$NODE ./photostructure "${argv[@]}" 2>&1 | tee start.log
 exit_code=$?
 
 if [ $exit_code -ne 0 ]; then
