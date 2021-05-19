@@ -28,15 +28,57 @@ This is a detailed list of changes per version.
   to [restore your library from a database
   backup](https://photostructure.com/faq/restore-db-from-backup/).
 
+<!-- TODO: -->
+<!-- - ✨/🐛/📦/🚫☠ For most cases, PhotoStructure no longer "fails fast." [Read more here](https://forum.photostructure.com/t/disable-photostructure-from-failing-fast/501). -->
+<!-- - ✨ Logs are now viewable in the UI -->
+
 <a id="v1.0.0"></a>
 
-## v1.0.0-alpha.8
+## v1.0.0-beta.3
 
-**To be released**
+**to be released**
 
-<!-- - ✨/🐛/📦/🚫☠ For most cases, PhotoStructure no longer "fails fast." [Read more here](https://forum.photostructure.com/t/disable-photostructure-from-failing-fast/501). -->
+- ✨ PhotoStructure now imports [invalidly-named JSON sidecars from Google Takeouts](https://forum.photostructure.com/t/creation-time-formatted-time-total-confusion-or-google-takeout-sidecar-files-are-misnamed/574)
 
-<!-- - ✨ Logs are now viewable in the UI -->
+- ✨ PhotoStructure for Desktop's splash screen now renders both the version and startup progress.
+
+- ✨ Date parsing now uses a customizable set of datetime formats. See the new `extraDateTimeFormats` setting for more information.
+
+  If you have an old LG phone, you might want to add `MM.dd.yyyy HH:mm:ss` to this setting (I didn't/couldn't add this to the default list, as the format ambiguously defines MDY and DMY, and ambiguous parsing leads to pain and suffering).
+
+- 🐛 On initial library scan, a "library is empty" message would be rendered due to incorrect asset-count caching. This has been fixed.
+
+- 🐛 Fixed the ["update now..." menu item which could result in breaking the current installation](https://forum.photostructure.com/t/remove-update-now-option-when-already-updated/597).
+
+- 🐛/📦 Computers in "dark mode" could obscure parts of the PhotoStructure <span class="plus">plus</span> checkout page and the email with the verification code. We now explicitly set the background color to fix this issue.
+
+- 🐛/📦 Both environment and file settings can now use either `PS_SHOUTY_SNAKE_CASE` or `camelCase` names of settings, (like `PS_LOG_LEVEL` and `logLevel`) in an effort to make things "just work." We recommend `PS_SHOUTY_SNAKE_CASE` for environment variables, though, just to avoid PhotoStructure settings from colliding with any other software.
+
+- 🐛/📦 The `info` tool now has a working `--filter` argument to filter output to only fields you're interested in
+
+- 📦 Logfiles now automatically rotate every day
+
+- 📦 As part of PhotoStructure's "health checks," it verifies that a library volume can be written to. These "write tests" are called `.tmp-XXXXX/write-test.jpg` and live in your originals directory. [In some cases these may be created but not successfully deleted](https://forum.photostructure.com/t/what-are-the-tmp-folders/138). PhotoStructure now tries to clean up prior `.tmp-*` directories when performing health checks.
+
+- 📦 PhotoStructure for Desktops now shuts down (rather than running in the background) if the main window is closed and a library hasn't been set up yet.
+
+- 📦 PhotoStructure for Desktops fills the screen on 1080p displays. On larger displays, it only takes 80% of the screen.
+
+- 📦 Upgraded all dependencies, which included updates to sharp, electron, and knex
+
+- 📦 PhotoStructure for Desktops is now being signed by an extended-verification code signing certificate from Sectigo. Prior releases were signed with a certificate from DigiCert. This _should_ be a transparent change.
+
+## v1.0.0-beta.2
+
+**2021-05-07**
+
+- 🐛/📦 PhotoStructure for Node's `start.sh` now works under [`bash`](https://www.gnu.org/software/bash/), [Cygwin](https://www.cygwin.com/), and from [Git for Windows](https://gitforwindows.org/)
+
+- 📦 Timeouts are now configurable (because _what PhotoStructure really needed was MOAR SETTINGS_). The defaults are the same as before, but those of you with 10+ external volumes or (very eh, lethargic?) HDDs can now double or triple these timeouts.
+
+## v1.0.0-beta.1
+
+**2021-05-05**
 
 - ✨ Added a first pass at tag normalization: the "Album", "Keyword" and "Who" tags now all support "aliases", controlled by the new `rootTagAlbumsAliases`, `rootTagKeywordsAliases`, and `rootTagWhoAliases` settings. This helps normalize tags in existing files, say, if your keywords aren't (all) in English, or have inconsistencies ("Keyword/Sky" and "Keyword**s**/Sky").
 

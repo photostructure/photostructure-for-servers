@@ -24,7 +24,7 @@ WORKDIR /ps/app
 
 COPY package.json yarn.lock ./
 
-RUN yarn install
+RUN yarn install --frozen-lockfile
 
 # Build libraw (only necessary when the version with alpine is old)
 # WORKDIR /tmp
@@ -75,25 +75,15 @@ RUN apk update ; apk upgrade ;\
   tini \
   util-linux
 
-ENV UID=1000
-ENV GID=1000
-
-RUN deluser node && \
-  addgroup --gid $GID phstr && \
-  adduser --uid $UID --disabled-password --gecos "" -G phstr phstr
-
 # Sets the default path to be inside app when running `docker exec -it`
 WORKDIR /ps/app
 
-COPY --chown=phstr:phstr . ./
-COPY --from=builder --chown=phstr:phstr /ps/app ./
+COPY --chown=node:node . ./
+COPY --from=builder --chown=node:node /ps/app ./
 
 # Your library is exposed by default to <http://localhost:1787>
 # This can be changed by setting the PS_HTTP_PORT environment variable.
 EXPOSE 1787
-
-# Get the node:14-alpine-provided "node" user out of the way. It has UID 1000,
-# and new ubuntu users have userid 1000.
 
 # These volume paths are configured in docker-compose.yml, using values set by
 # photostructure.env. 
@@ -104,5 +94,5 @@ HEALTHCHECK CMD wget --quiet --output-document - http://localhost:1787/ping
 
 # https://docs.docker.com/engine/reference/builder/#understand-how-cmd-and-entrypoint-interact
 
-# docker-entrypoint handles dropping privileges down to the "phstr" user:
+# docker-entrypoint handles dropping privileges down to the "node" user:
 ENTRYPOINT [ "/sbin/tini", "--", "/ps/app/docker-entrypoint.sh" ]
