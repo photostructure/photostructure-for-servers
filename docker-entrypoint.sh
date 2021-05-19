@@ -14,12 +14,15 @@ trap 'exit 130' INT
 # Tell PhotoStructure that we're running in a docker container:
 export PS_IS_DOCKER="1"
 
+# Tell node to run in production:
+export NODE_ENV="production"
+
 # Node was already installed into /usr/local/bin:
 export PATH="${PATH}:/usr/local/bin"
 
 # Prior to v1.0, PhotoStructure for Docker defaulted to running as root. To
-# prevent upgrades from failing due to permission issues, let's default the
-# userid to match the current owner of the system settings.toml file. 
+# prevent upgrades from failing due to permission issues, let's default the UID
+# and GID to match the current owner of the system settings.toml file.
 
 # This default value will be overridden if UID, GID, PUID, or PGID are set.
 
@@ -30,41 +33,39 @@ export PATH="${PATH}:/usr/local/bin"
 DEFAULT_UID=$(stat -c %u /ps/config/settings.toml 2>/dev/null || echo 1000)
 DEFAULT_GID=$(stat -c %g /ps/config/settings.toml 2>/dev/null || echo 1000)
 
-# Accept either UID or PUID. We default to 0 (root) 
+# Accept either UID or PUID:
 export UID=${UID:-${PUID:-${DEFAULT_UID}}}
 
 # Accept either GID or PGID:
 export GID=${GID:-${PGID:-${DEFAULT_GID}}}
 
-if [ "$*" = "sh" ]; then
-  # Let the user shell into the container:
-  true
+# Let the user shell into the container:
+if [ "$*" = "sh" ] || [ "$*" = "dash" ] || [ "$*" = "bash" ]; then
+  exec "$*"
 elif [ "$UID" = "0" ] || [ "$(id --real --user)" != "0" ]; then
   # They either want to run as root, or started docker with --user, so we
   # shouldn't do any usermod/groupmod/su shenanigans.
 
-  # We `exec` to replace the process with node so it gets all signals sent to
-  # the container:
+  # We `exec` to replace the current shell so nothing is between tini and node:
   exec /usr/local/bin/node /ps/app/photostructure "$@"
 else
-  # Change the phstr user and group to match UID/GID.
+  # Change the node user and group to match UID/GID.
   # (we don't care about "usermod: no changes"):
-  usermod --non-unique --uid "$UID" phstr >/dev/null
-  groupmod --non-unique --gid "$GID" phstr
+  usermod --non-unique --uid "$UID" node >/dev/null
+  groupmod --non-unique --gid "$GID" node
 
   # Always make sure the settings, opened-by, and models directories are
-  # writable by phstr:
-  chown --silent --recursive phstr:phstr /ps/library/.photostructure/settings.toml /ps/library/.photostructure/opened-by /ps/library/.photostructure/models
+  # writable by node:
+  chown --silent --recursive node:node /ps/library/.photostructure/settings.toml /ps/library/.photostructure/opened-by /ps/library/.photostructure/models
 
   # Help prior users that previously ran as root:
   if [ "$PS_FIX_DOCKER_PERMISSIONS" = "1" ]; then
-    echo "Recursively changing ownership of your library to $UID:$GID. This may take a while..." 
-    chown --recursive phstr:phstr /ps
+    echo "Recursively changing ownership of your library to $UID:$GID. This may take a while..."
+    chown --recursive node:node /ps
   fi
 
-  # Start photostructure as user phstr instead of root. 
-  
-  # We `exec` to replace the process with node so it gets all signals sent to
-  # the container:
-  exec su --preserve-environment phstr --command "/usr/local/bin/node /ps/app/photostructure $*"
+  # Start photostructure as user node instead of root.
+
+  # We `exec` to replace the current shell so nothing is between tini and node:
+  exec su --preserve-environment node --command "/usr/local/bin/node /ps/app/photostructure $*"
 fi

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
+    <meta charset="UTF-8" />
     <title>PhotoStructure</title>
     <style>
       body {
@@ -8,6 +9,15 @@
         margin: 0;
         padding: 0;
         overflow: hidden;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+          "Segoe UI Symbol";
+      }
+      html,
+      *,
+      *:before,
+      *:after {
+        box-sizing: border-box;
       }
 
       body * {
@@ -59,40 +69,41 @@
         animation: logo-bg 6s linear infinite;
       }
 
-      footer,
-      .version {
-        position: absolute;
-        bottom: 1em;
-        color: white;
-        font: bold 14px sans-serif;
-      }
-
       footer {
-        left: 50%;
-        transform: translateX(-50%);
+        position: absolute;
+        display: flex;
+        align-items: flex-end; /* stick on the bottom */
+        justify-content: space-between;
+        bottom: 0;
+        color: white;
+        font-weight: bold;
+        font-size: 14px;
+        background-color: rgba(0, 0, 0, 0.4);
+        width: 100vw;
       }
 
-      .version {
-        right: 2em;
+      footer * {
+        padding: 16px;
+      }
+
+      footer .version {
+        text-align: right;
+        flex-shrink: 0;
       }
 
       @keyframes dash {
         0% {
           stroke-dashoffset: -181;
         }
-
         25% {
-          stroke-dashoffset: -181;
+          stroke-dashoffset: 0;
         }
-
         50% {
           stroke-dashoffset: 0;
         }
-
         75% {
-          stroke-dashoffset: 0;
+          stroke-dashoffset: 181;
         }
-
         100% {
           stroke-dashoffset: 181;
         }
@@ -102,19 +113,15 @@
         0% {
           stroke-dashoffset: -111;
         }
-
         25% {
-          stroke-dashoffset: -111;
+          stroke-dashoffset: 0;
         }
-
         50% {
           stroke-dashoffset: 0;
         }
-
         75% {
-          stroke-dashoffset: 0;
+          stroke-dashoffset: 111;
         }
-
         100% {
           stroke-dashoffset: 111;
         }
@@ -124,19 +131,15 @@
         0% {
           stroke-dashoffset: 23;
         }
-
         25% {
-          stroke-dashoffset: 23;
+          stroke-dashoffset: 0;
         }
-
         50% {
           stroke-dashoffset: 0;
         }
-
         75% {
-          stroke-dashoffset: 0;
+          stroke-dashoffset: -23;
         }
-
         100% {
           stroke-dashoffset: -23;
         }
@@ -146,19 +149,15 @@
         0% {
           opacity: 0.25;
         }
-
         25% {
-          opacity: 0.25;
+          opacity: 1;
         }
-
         50% {
           opacity: 1;
         }
-
         75% {
-          opacity: 1;
+          opacity: 0.25;
         }
-
         100% {
           opacity: 0.25;
         }
@@ -256,8 +255,10 @@
         />
       </svg>
     </main>
-    <footer class="message"></footer>
-    <div class="version"></div>
+    <footer>
+      <div class="message"></div>
+      <div class="version"></div>
+    </footer>
   </body>
 
   <script>
@@ -266,17 +267,19 @@
     const id = Math.floor(Math.random() * (max - min + 1) + min);
     const img = `images/splashbg${id}-1024w.jpg`;
     document.getElementById("bg").style.backgroundImage = `url("${img}")`;
-    const ipc = require("electron").ipcRenderer;
-    // ipc?.on("animate", () =>
-    //   document.querySelector("body").classList.add("animate")
-    // );
-    ipc?.on(
-      "version",
-      (event, msg) => (document.querySelector(".version").textContent = msg)
-    );
-    ipc?.on(
-      "message",
-      (event, msg) => (document.querySelector(".message").textContent = msg)
-    );
+    const ipc = window.electronIPC;
+    if (ipc != null) {
+      // ipc.on("animate", () =>
+      //   document.querySelector("body").classList.add("animate")
+      // );
+      ipc.on(
+        "version",
+        (event, msg) => (document.querySelector(".version").textContent = msg)
+      );
+      ipc.on(
+        "message",
+        (event, msg) => (document.querySelector(".message").textContent = msg)
+      );
+    }
   </script>
 </html>
