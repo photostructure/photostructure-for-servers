@@ -36,7 +36,7 @@ jobs:
 
       - name: Docker meta
         id: meta
-        uses: docker/metadata-action@v3.1.0
+        uses: docker/metadata-action@v3.2.0
         with:
           images: photostructure/server,ghcr.io/photostructure/server
           tags: |
