@@ -1,5 +1,5 @@
 # To get the latest libraw-tools and a recent sqlite we need alpine 3.13:
-FROM node:14-alpine3.13 as builder
+FROM node:16-alpine3.13 as builder
 
 # https://docs.docker.com/develop/develop-images/multistage-build/
 
@@ -44,7 +44,7 @@ RUN yarn install --frozen-lockfile
 #   cp dcraw_emu raw-identify /ps/app/bin && \
 #   chmod 755 /ps/app/bin/*
 
-FROM node:14-alpine3.13
+FROM node:16-alpine3.13
 
 # Busybox's commands are a bit too bare-bones:
 # procps provides a working `ps -o lstart`
@@ -68,6 +68,7 @@ RUN apk update ; apk upgrade ;\
   libheif-tools \
   libjpeg-turbo-utils \
   libraw-tools \
+  pciutils \
   perl \
   procps \
   shadow \

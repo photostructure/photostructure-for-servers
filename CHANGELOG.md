@@ -30,15 +30,45 @@ This is a detailed list of changes per version.
 
 <!-- TODO: -->
 <!-- - ✨/🐛/📦/🚫☠ For most cases, PhotoStructure no longer "fails fast." [Read more here](https://forum.photostructure.com/t/disable-photostructure-from-failing-fast/501). -->
+<!-- - ✨ Added a new shove-all-my-keywords-into-the-`Keywords`-tag setting -->
 <!-- - ✨ Logs are now viewable in the UI -->
+<!-- - ✨/🐛 Volume metadata extraction was rewritten to scale to systems that have many attached drives and very slow network drives. [See the forum for details](https://forum.photostructure.com/t/support-for-systems-with-many-external-drives/595). -->
 
 <a id="v1.0.0"></a>
 
+## v1.0.0-beta.4
+
+**To be released**
+
+- ✨ [Video assets in galleries now show a duration and video play icon](https://forum.photostructure.com/t/show-video-icon-and-or-video-duriation-in-video-thumbnails/94)
+
+- ✨ [JSON Takeout sidecars for images ending in `-edited` or `-1`](https://forum.photostructure.com/t/creation-time-formatted-time-total-confusion-or-google-takeout-sidecar-files-are-misnamed/574/16) are now paired properly.
+
+- ✨ Better crash recovery: irreparable SQLite replicas found in the cache directory are now replaced with the primary database automatically.
+
+- ✨/📦 Tag asset counts had been updated monolithically, which was faster for smaller libraries, but for larger (200k+ asset files) libraries (especially not stored on SSDs), this could result in slow or wedged imports.
+
+  Tag asset counts are now updated incrementally and the query has been indexed and simplified.
+
+- ✨/📦 More robust SQLite backups via filesystem retries and the new `VACCUM INTO` command.
+
+- ✨/📦 [De-duplication improvement](https://forum.photostructure.com/t/combining-images/524/14?u=mrm) by adding `MetadataDate` to the default set of captured-at tags. 
+
+- 🐛 Restored [PhotoStructure's periodic sync job](https://forum.photostructure.com/t/does-photostructure-stay-in-sync-with-filesystem-changes/280)
+
+- 🐛 Docker [license validation errors](https://forum.photostructure.com/t/error-during-initial-license-validation/620) and should be fixed now. Apologies if you saw this!
+
+- 🐛 PhotoStructure no longer looks for sidecar metadata for files within `.photostucture` directories
+
+- 🐛 Gallery rendering has been improved for mobile displays, which in prior versions sometimes showed blank grey rectangles at the bottom right. 
+
+- 📦 Docker users: A `UMASK` environment variable, if set, will be given to `umask` during startup. The default is `0022` which removes "group" and "other" write permissions. You may want a more restrictive `0027` which removes read access to "other".
+
 ## v1.0.0-beta.3
 
-**to be released**
+**2021-05-20**
 
-- ✨ PhotoStructure now imports [invalidly-named JSON sidecars from Google Takeouts](https://forum.photostructure.com/t/creation-time-formatted-time-total-confusion-or-google-takeout-sidecar-files-are-misnamed/574)
+- ✨ PhotoStructure now imports [invalidly-named UUID-like JSON sidecars from Google Takeouts](https://forum.photostructure.com/t/creation-time-formatted-time-total-confusion-or-google-takeout-sidecar-files-are-misnamed/574)
 
 - ✨ PhotoStructure for Desktop's splash screen now renders both the version and startup progress.
 
@@ -54,7 +84,7 @@ This is a detailed list of changes per version.
 
 - 🐛/📦 Both environment and file settings can now use either `PS_SHOUTY_SNAKE_CASE` or `camelCase` names of settings, (like `PS_LOG_LEVEL` and `logLevel`) in an effort to make things "just work." We recommend `PS_SHOUTY_SNAKE_CASE` for environment variables, though, just to avoid PhotoStructure settings from colliding with any other software.
 
-- 🐛/📦 The `info` tool now has a working `--filter` argument to filter output to only fields you're interested in
+- 🐛/📦 The [`info` tool](https://photostructure.com/server/tools/) now has a working `--filter` argument to filter output to only fields you're interested in
 
 - 📦 Logfiles now automatically rotate every day
 

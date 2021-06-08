@@ -39,6 +39,9 @@ export UID=${UID:-${PUID:-${DEFAULT_UID}}}
 # Accept either GID or PGID:
 export GID=${GID:-${PGID:-${DEFAULT_GID}}}
 
+# Accept UMASK:
+umask "${UMASK:-0022}"
+
 # Let the user shell into the container:
 if [ "$*" = "sh" ] || [ "$*" = "dash" ] || [ "$*" = "bash" ]; then
   exec "$*"

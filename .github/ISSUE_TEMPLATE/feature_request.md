@@ -4,14 +4,16 @@ about: Suggest an idea for this project
 
 ---
 
-**Is your feature request related to a problem? Please describe.**
-A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
+## Welcome to PhotoStructure!
 
-**Describe the solution you'd like**
-A clear and concise description of what you want to happen.
+**Please note that this git repository is not where PhotoStructure handles bug tracking or feature requests.**
 
-**Describe alternatives you've considered**
-A clear and concise description of any alternative solutions or features you've considered.
+Please visit the official [PhotoStructure Forum](https://forum.photostructure.com/c/feature-requests/7/l/latest?order=votes) to see if your feature request has already been suggested.
 
-**Additional context**
-Add any other context or screenshots about the feature request here.
+If it has, be sure to add your comments on how you think the feature could be handled or improved upon.
+
+If it hasn't, [click "new topic" in the feature requests category](https://forum.photostructure.com/c/feature-requests/7/l/latest?order=votes), and provide as many details as you can.
+
+Remember to vote on what you want built next: it really helps prioritize next work. 
+
+Cheers!

@@ -1,1 +1,4 @@
-tools
+**/*.md
+.github
+.gitignore
+Dockerfile
