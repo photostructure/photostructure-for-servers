@@ -4,15 +4,16 @@ about: Create a report to help us improve
 
 ---
 
-**Describe the bug**
-Thanks for taking the time to report your bug! Filling out this template can help expedite resolving the issue.
+## Welcome to PhotoStructure!
 
-**To Reproduce**
+**Please note that this git repository is not where PhotoStructure handles bug tracking or feature requests.**
 
-1. Please include your system and library information, found on your About page.
-2. If relevant, please include a sample photo or video (please don't share anything you want to remain private!)
+First off: apologies if PhotoStructure is misbehaving for you. It's always frustrating when software doesn't "just work."
 
-**What did you expect to happen?**
+Please visit the official [PhotoStructure Forum](https://forum.photostructure.com/c/bug/8/l/latest) and see if your bug has already been reported.
 
-**What actually happened?**
+If it has, please add any additional context or system information that you think would be helpful in tracking down and solving the issue.
 
+If it hasn't, the more context the better: and if there is information that you'd rather keep private, please email support@photostructure.com with a reference to the bug and those additional details.
+
+Cheers! 

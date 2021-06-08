@@ -8,7 +8,7 @@ software or hardware installed or made available by PhotoStructure, Inc.).
 
 **If you do not agree to the following terms of this license, please <a
 href="https://photostructure.com/faq/uninstall/" target="_blank">uninstall</a>
-the software within 30 days of your purchase and request a proportionate refund.**
+the Product.**
 
 ### Copyright
 
