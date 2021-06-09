@@ -38,21 +38,25 @@ This is a detailed list of changes per version.
 
 ## v1.0.0-beta.4
 
-**To be released**
+**2021-06-08**
 
-- ✨ [Video assets in galleries now show a duration and video play icon](https://forum.photostructure.com/t/show-video-icon-and-or-video-duriation-in-video-thumbnails/94)
+- ✨ [Video assets in galleries now show a duration](https://forum.photostructure.com/t/show-video-icon-and-or-video-duriation-in-video-thumbnails/94) (the video icon wasn't added in an effort to reduce the number of DOM elements on the page and get Firefox to render faster)
+
+- ✨ Tag gallery thumbnails now have a captured-at `title` (hover over photos to
+  see when they were taken).
 
 - ✨ [JSON Takeout sidecars for images ending in `-edited` or `-1`](https://forum.photostructure.com/t/creation-time-formatted-time-total-confusion-or-google-takeout-sidecar-files-are-misnamed/574/16) are now paired properly.
 
 - ✨ Better crash recovery: irreparable SQLite replicas found in the cache directory are now replaced with the primary database automatically.
 
-- ✨/📦 Tag asset counts had been updated monolithically, which was faster for smaller libraries, but for larger (200k+ asset files) libraries (especially not stored on SSDs), this could result in slow or wedged imports.
+- 🚅/📦 Tag asset counts in prior versions were updated monolithically (every tag's asset count was recomputed every 5 minutes during syncs). This approach is reasonably fast for smaller libraries, but for larger (200k+ asset files) libraries (especially not stored on SSDs), these queries could take > 30 seconds, which had a large performance impact on filesystem synchronization.
 
-  Tag asset counts are now updated incrementally and the query has been indexed and simplified.
+  Tag asset counts are now updated incrementally, and the update query itself has been improved as well (even with very large libraries, incremental tag counts take under 1 second with the new code).
 
-- ✨/📦 More robust SQLite backups via filesystem retries and the new `VACCUM INTO` command.
+- 🚅/📦 Images on all browsers [that aren't Safari](https://caniuse.com/loading-lazy-attr) now use [lazy loading](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#attr-loading). This helps improve the page load time on full-screen 4k displays, but Chrome is still instantaneous, and Firefox takes seconds (at least on Linux).
 
-- ✨/📦 [De-duplication improvement](https://forum.photostructure.com/t/combining-images/524/14?u=mrm) by adding `MetadataDate` to the default set of captured-at tags. 
+- ✨/📦 [De-duplication improvement](https://forum.photostructure.com/t/combining-images/524/14?u=mrm) by adding `MetadataDate` to the default set of captured-at tags.
+
 
 - 🐛 Restored [PhotoStructure's periodic sync job](https://forum.photostructure.com/t/does-photostructure-stay-in-sync-with-filesystem-changes/280)
 
@@ -60,7 +64,9 @@ This is a detailed list of changes per version.
 
 - 🐛 PhotoStructure no longer looks for sidecar metadata for files within `.photostucture` directories
 
-- 🐛 Gallery rendering has been improved for mobile displays, which in prior versions sometimes showed blank grey rectangles at the bottom right. 
+- 🐛 Gallery rendering has been improved for mobile displays, which in prior versions sometimes showed blank grey rectangles at the bottom right.
+
+- 📦 SQLite backups now try to use [the backup API](https://sqlite.org/backup.html), and if that fails, tries the new [`VACCUM INTO` command](https://sqlite.org/lang_vacuum.html#vacuuminto).
 
 - 📦 Docker users: A `UMASK` environment variable, if set, will be given to `umask` during startup. The default is `0022` which removes "group" and "other" write permissions. You may want a more restrictive `0027` which removes read access to "other".
 
