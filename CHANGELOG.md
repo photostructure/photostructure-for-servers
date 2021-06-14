@@ -36,6 +36,12 @@ This is a detailed list of changes per version.
 
 <a id="v1.0.0"></a>
 
+## v1.0.0-beta.5
+
+**2021-06-08**
+
+- 🐛 [Fixed asset info panel dropdowns](https://forum.photostructure.com/t/1-0-0-beta-4-is-ready/647/10?u=mrm)
+
 ## v1.0.0-beta.4
 
 **2021-06-08**
@@ -56,7 +62,6 @@ This is a detailed list of changes per version.
 - 🚅/📦 Images on all browsers [that aren't Safari](https://caniuse.com/loading-lazy-attr) now use [lazy loading](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#attr-loading). This helps improve the page load time on full-screen 4k displays, but Chrome is still instantaneous, and Firefox takes seconds (at least on Linux).
 
 - ✨/📦 [De-duplication improvement](https://forum.photostructure.com/t/combining-images/524/14?u=mrm) by adding `MetadataDate` to the default set of captured-at tags.
-
 
 - 🐛 Restored [PhotoStructure's periodic sync job](https://forum.photostructure.com/t/does-photostructure-stay-in-sync-with-filesystem-changes/280)
 
