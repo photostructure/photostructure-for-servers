@@ -38,7 +38,7 @@ This is a detailed list of changes per version.
 
 ## v1.0.0-beta.8
 
-**2021-06-17**
+**to be released**
 
 - ✨ Added new `disableAllFilters` setting, that forces all filter settings to their most permissive value.
 
