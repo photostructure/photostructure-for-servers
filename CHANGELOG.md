@@ -36,6 +36,42 @@ This is a detailed list of changes per version.
 
 <a id="v1.0.0"></a>
 
+## v1.0.0-beta.8
+
+**2021-06-17**
+
+- ✨ Added new `disableAllFilters` setting, that forces all filter settings to their most permissive value.
+
+- ✨ Added new `ffmpegHwaccel` setting enabling [FFmpeg hardware-accelerated transcoding](https://forum.photostructure.com/t/hardware-accelerated-encoding-transcoding/166).
+
+- ✨ Transcoded videos now support [high gamut output](https://forum.photostructure.com/t/poor-transcoding-of-videos-in-wider-color-spaces-rec-2020/646).
+
+- ✨ Added several new date parsers, new `extraDateTimeFormats` defaults, and `CreationTime` to `capturedAtTags`.
+
+- ✨/🐛 Fixed a race condition in child process handling affecting videos and raw images that could cause these files to not be imported.
+
+- 🐛 Fixed paging for tags with [large numbers of the exact same captured-at time](https://forum.photostructure.com/t/thumbnails-missing-server-install/675/16?u=mrm)
+
+- 🚅/🐛 Updated the is-this-file-in-sync test to handle remote filesystem timestamp skew. This should also help speed up re-syncs of existing volumes.
+
+- 🐛 Full-text search indexes and asset tag counts are now only rebuilt when changed. This should remove the high I/O issue and help with [slow rebuilds](https://forum.photostructure.com/t/slow-stalled-rebuild/640).
+
+- 📦 "Send recent logs" was removed from the nav menu (context was frequently insufficient, and new versions of sentry broke the prior implementation)
+
+- 📦 Upgraded all dependencies, including electron 13.
+
+## v1.0.0-beta.7
+
+**2021-06-14**
+
+- 🐛 [Fixed search result rendering issue](https://forum.photostructure.com/t/search-is-broken-in-beta-5-for-node-and-beta-4-for-mac/673)
+
+## v1.0.0-beta.6
+
+**2021-06-14**
+
+- 🐛 [Fixed tool binary mismatch in docker](https://forum.photostructure.com/t/bug-too-few-pictures-imported/672) which prevented JPEGs from being imported
+
 ## v1.0.0-beta.5
 
 **2021-06-08**
