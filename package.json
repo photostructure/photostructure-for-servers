@@ -3,7 +3,7 @@
   "productName": "PhotoStructure",
   "author": "PhotoStructure, Inc. <hello@photostructure.com>",
   "license": "SEE LICENSE IN LICENSE.md",
-  "version": "1.0.0-beta.7",
+  "version": "1.0.0-beta.8",
   "description": "PhotoStructure for Servers",
   "repository": {
     "type": "git",
@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@iarna/toml": "~2.2.5",
-    "@sentry/node": "~6.5.1",
+    "@sentry/node": "~6.7.1",
     "batch-cluster": "~6.1.0",
     "better-sqlite3": "~7.4.1",
     "body-parser": "~1.19.0",
