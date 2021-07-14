@@ -34,9 +34,15 @@ This is a detailed list of changes per version.
 
 <a id="v1.0.0"></a>
 
+## v1.0.0-beta.11
+
+**2021-07-14**
+
+- 🐛 [Fixed "Cannot set service name twice" error](https://forum.photostructure.com/t/v1-0-0-beta-10-released/806/3?u=mrm)
+
 ## v1.0.0-beta.10
 
-**to be released**
+**2021-07-14**
 
 - ✨ Added `validationErrorAllowlist` to fix false-positive JPEG validation errors from smartphone photos that aren't correctly encoded
 
