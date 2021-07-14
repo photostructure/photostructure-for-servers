@@ -65,6 +65,7 @@ RUN apk update ; apk upgrade ;\
   coreutils \
   ffmpeg \
   glib \
+  lcms2 \
   libheif-tools \
   libjpeg-turbo-utils \
   libraw-tools \
@@ -85,10 +86,6 @@ COPY --from=builder --chown=node:node /ps/app ./
 # Your library is exposed by default to <http://localhost:1787>
 # This can be changed by setting the PS_HTTP_PORT environment variable.
 EXPOSE 1787
-
-# These volume paths are configured in docker-compose.yml, using values set by
-# photostructure.env. 
-VOLUME [ "/ps/library", "/ps/logs", "/ps/tmp", "/ps/config" ]
 
 # We're not installing curl, but busybox has a wget workalike:
 HEALTHCHECK CMD wget --quiet --output-document - http://localhost:1787/ping

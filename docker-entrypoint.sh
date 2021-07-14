@@ -18,7 +18,7 @@ export PS_IS_DOCKER="1"
 export NODE_ENV="production"
 
 # Node was already installed into /usr/local/bin:
-export PATH="${PATH}:/usr/local/bin"
+export PATH="${PATH}:/usr/local/bin:/ps/app:/ps/app/bin"
 
 # Prior to v1.0, PhotoStructure for Docker defaulted to running as root. To
 # prevent upgrades from failing due to permission issues, let's default the UID
@@ -58,16 +58,10 @@ else
   groupmod --non-unique --gid "$GID" node
 
   # Always make sure the settings, opened-by, and models directories are
-  # writable by node:
+  # read/writable by node:
   chown --silent --recursive node:node /ps/library/.photostructure/settings.toml /ps/library/.photostructure/opened-by /ps/library/.photostructure/models
 
-  # Help prior users that previously ran as root:
-  if [ "$PS_FIX_DOCKER_PERMISSIONS" = "1" ]; then
-    echo "Recursively changing ownership of your library to $UID:$GID. This may take a while..."
-    chown --recursive node:node /ps
-  fi
-
-  # Start photostructure as user node instead of root.
+  # Start photostructure as the user "node" instead of root.
 
   # We `exec` to replace the current shell so nothing is between tini and node:
   exec su --preserve-environment node --command "/usr/local/bin/node /ps/app/photostructure $*"

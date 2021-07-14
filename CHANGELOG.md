@@ -30,15 +30,95 @@ This is a detailed list of changes per version.
 
 <!-- TODO: -->
 <!-- - ✨/🐛/📦/🚫☠ For most cases, PhotoStructure no longer "fails fast." [Read more here](https://forum.photostructure.com/t/disable-photostructure-from-failing-fast/501). -->
-<!-- - ✨ Added a new shove-all-my-keywords-into-the-`Keywords`-tag setting -->
 <!-- - ✨ Logs are now viewable in the UI -->
-<!-- - ✨/🐛 Volume metadata extraction was rewritten to scale to systems that have many attached drives and very slow network drives. [See the forum for details](https://forum.photostructure.com/t/support-for-systems-with-many-external-drives/595). -->
 
 <a id="v1.0.0"></a>
 
-## v1.0.0-beta.8
+## v1.0.0-beta.10
 
 **to be released**
+
+- ✨ Added `validationErrorAllowlist` to fix false-positive JPEG validation errors from smartphone photos that aren't correctly encoded
+
+- ✨ Long tag hierarchies [automatically collapse in tag gallery views](https://forum.photostructure.com/t/volume-id-shows-as-a-tag/754/6?u=mrm).
+
+- ✨/🐛 Volume metadata is now multithreaded to scale to systems that have many attached drives and very slow network drives. [See the forum for details](https://forum.photostructure.com/t/support-for-systems-with-many-external-drives/595).
+
+- ✨/🐛 MacOS and Windows users with tons of volumes: UUID extraction is now done in parallel, which should [avoid "Failed to scan system volumes" errors](https://forum.photostructure.com/t/1-0-0-beta-2-error-failed-to-scan-system-volumes/581).
+
+- ✨ Added new keyword re-parenting setting, [`keywordReparenting`](https://forum.photostructure.com/t/prefix-for-keywords-tag/499)
+
+- ✨ Image hashing performance has been doubled (!!) thanks to [in-memory binary preview extraction](https://github.com/photostructure/exiftool-vendored.js/issues/99#issuecomment-875230809).
+
+- 🐛/📦 Process handling was rebuilt
+
+  - Asset importing rejection reasons are no longer "errors," which caused the `sync-file` process to be recycled (and slow down the import)
+  - Health checks are now automatically run, separate from file importing. Unhealthy processes could result in files being skipped in prior builds.
+  - Raw image and video importing are now more reliable. Previous implementations would make a go/no-go decision based on the first buffer seen on stderr output--but ffmpeg streams warnings and errors throughout the processing of a video, so this go/no-go was based on incomplete data.
+
+- 🐛 Added another swing at [fixing file access errors on Desktop on macOS](https://forum.photostructure.com/t/apple-photos-database-import-sync/121/3?u=mrm) by calling `scandir` against the library, user directories, and scan paths from the main process.
+
+- 🐛 `sync` [didn't idle in beta.9](https://forum.photostructure.com/t/1-0-0-beta-9-is-ready/693/2).
+
+- 🐛 `startPaused` now holds true [for new libraries](https://forum.photostructure.com/t/docker-environmental-flags-not-working-or-possible-syntax-error/684).
+
+- 🐛 Tag counts were incorrectly cached, which could [prevent new libraries from showing tag counts properly](https://forum.photostructure.com/t/crash-on-initial-scan/727/4).
+
+- 🐛 Improved docker mountpoint filtering (scans could get "stuck" in `/proc/*` volumes)
+
+- 🐛 Remote MacOS AFP volume hostnames are now properly parsed.
+
+- 🐛/📦 Nav menu improvements on mobile: more reliable scrolling on iOS Safari, and the bottom element should now be visible (even when the bottom button bar is shown)
+
+- 🐛 Filepath tags [don't show volume SHAs anymore](https://forum.photostructure.com/t/volume-id-shows-as-a-tag/754)
+
+- 🐛 File paths in the Asset Info panel [could have rendering issues](https://forum.photostructure.com/t/image-filepath-not-correct-synology-docker-compose-alpha-branch/545/4)
+
+- 🐛 `opened-by` lockfiles from prior versions are automatically cleaned up (to avoid [these errors](https://forum.photostructure.com/t/upgraded-to-alpha-photostructure-wont-start/406))
+
+- 🐛/📦 macOS Big Sur versions are now rendered properly on m1 machines
+
+- ✨/📦 The `strictDeduping` setting now automatically sets 9 deduping settings to "very strict" values.
+
+- ✨/📦 Root filesystem tags are now configurable. See the new `tagDisplayNameFSLabels` and `tagDisplayNameFSRoot` settings.
+
+- 📦 Fixed the [progress caret](https://forum.photostructure.com/t/details-arrow-suggestion/386)
+
+- 📦 Fixed the nav menu pointer (thanks, Cowherd!)
+
+- 📦 Improved [asset deduping when pairs have different captured-at precision](https://forum.photostructure.com/t/duplicates-of-photos/749)
+
+- 📦 `--force` now re-transcodes videos (handy for benchmarking `ffmpegHwaccel`)
+
+- 📦 `--no-filter` now disables all filters (including `NoMedia`)
+
+- 📦 The server dockerfile no longer specifies `VOLUME`s
+
+- 📦 Changed the default for `ffmpegHwaccel` from `auto` to `disabled`. Docs suggested that `auto` would be safe, but in practice some platforms (like macOS) throw errors. Feel free to try it out on your box, but don't be surprised when it doesn't work... 😞 (see [this forum post](https://forum.photostructure.com/t/hwaccel-auto-errors-on-docker/735))
+
+- 📦 The config, library, and cache dir now remove rwX from Group and Other to help with security.
+
+- 📦 `main` now runs health checks on the `web` service every minute, and the `sync` service every 15 minutes, just to reduce system load.
+
+- 📦 `maxSyncFileJobs` and `sharpThreadsPerJob` can be overridden (if `cpuLoadPercent` doesn't do what you want).
+
+- 📦 `.cache` directory cleanup is more efficient now (the prior implementation could get "stuck" if concurrent writes happened during `sync`)
+
+- ✨/📦 `logcat` now reads from stdin when no filenames are provided.
+
+- 📦 The `libraryPath`/`PS_LIBRARY_PATH` setting has been renamed `libraryDir`/`PS_LIBRARY_DIR`. This matches all other directory settings. An alias was added for backward compatibility.
+
+- 📦 Added new `remoteFilesystemTypes` that defaults to `sshfs` and `s3fs` (note that non-FUSE filesystems are already handled properly)
+
+## v1.0.0-beta.9
+
+**2021-06-17**
+
+- ✨/🐛 Fixed a race condition in child process handling affecting videos and raw images that could cause these files to not be imported.
+
+## v1.0.0-beta.8
+
+**2021-06-17**
 
 - ✨ Added new `disableAllFilters` setting, that forces all filter settings to their most permissive value.
 
@@ -48,17 +128,15 @@ This is a detailed list of changes per version.
 
 - ✨ Added several new date parsers, new `extraDateTimeFormats` defaults, and `CreationTime` to `capturedAtTags`.
 
-- ✨/🐛 Fixed a race condition in child process handling affecting videos and raw images that could cause these files to not be imported.
+* 🐛 Fixed paging for tags with [large numbers of the exact same captured-at time](https://forum.photostructure.com/t/thumbnails-missing-server-install/675/16?u=mrm)
 
-- 🐛 Fixed paging for tags with [large numbers of the exact same captured-at time](https://forum.photostructure.com/t/thumbnails-missing-server-install/675/16?u=mrm)
+* 🚅/🐛 Updated the is-this-file-in-sync test to handle remote filesystem timestamp skew. This should also help speed up re-syncs of existing volumes.
 
-- 🚅/🐛 Updated the is-this-file-in-sync test to handle remote filesystem timestamp skew. This should also help speed up re-syncs of existing volumes.
+* 🐛 Full-text search indexes and asset tag counts are now only rebuilt when changed. This should remove the high I/O issue and help with [slow rebuilds](https://forum.photostructure.com/t/slow-stalled-rebuild/640).
 
-- 🐛 Full-text search indexes and asset tag counts are now only rebuilt when changed. This should remove the high I/O issue and help with [slow rebuilds](https://forum.photostructure.com/t/slow-stalled-rebuild/640).
+* 📦 "Send recent logs" was removed from the nav menu (context was frequently insufficient, and new versions of sentry broke the prior implementation)
 
-- 📦 "Send recent logs" was removed from the nav menu (context was frequently insufficient, and new versions of sentry broke the prior implementation)
-
-- 📦 Upgraded all dependencies, including electron 13.
+* 📦 Upgraded all dependencies, including electron 13.
 
 ## v1.0.0-beta.7
 
