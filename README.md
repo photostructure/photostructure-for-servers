@@ -20,7 +20,11 @@ Installing and running PhotoStructure indicates your agreement to all terms in t
 PhotoStructure for Servers requires:
 
 - a 64-bit Intel or AMD CPU
-- either Ubuntu LTS (18.04) or macOS (High Sierra or later)
+- either Ubuntu LTS (18.04) or macOS (Mojave or later)
+
+Docker user? See <https://photostructure.com/server/photostructure-for-docker/>
+
+Docker-compose user? See <https://photostructure.com/server/photostructure-for-docker-compose/>
 
 ## Installation instructions
 

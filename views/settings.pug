@@ -59,10 +59,10 @@ html(lang="en")
           .section
             if isDocker
               h2 Your PhotoStructure library
-              if currentLibraryPath
+              if currentLibraryDir
                 p
                   | Your library is 
-                  tt#currentLibraryPath #{currentLibraryPath}
+                  tt#currentLibraryDir #{currentLibraryDir}
                   | . 
                 p
                   a(href="https://photostructure.com/server/photostructure-for-docker/") Read more about Docker setup here.
@@ -88,18 +88,18 @@ html(lang="en")
             else
               h2 Your PhotoStructure library
                 p Your <a href="https://photostructure.com/faq/library/">PhotoStructure Library</a> is currently
-                  tt#currentLibraryPath #{currentLibraryPath}
+                  tt#currentLibraryDir #{currentLibraryDir}
 
                 p Changing your library location closes your current library and either creates or opens a library in your new directory. 
                   | Prior library contents will not be copied over unless you import your prior library directory.
 
             if !isDocker
-              if suggestedLibraryPaths
+              if suggestedLibraryDirs
                 h3 Suggested library directories
-                each ea, index in suggestedLibraryPaths
+                each ea, index in suggestedLibraryDirs
                   p
-                  label(for="libraryPath" + index)
-                    input(name="libraryPathRadio" type="radio" value=ea.path checked=(index == 0) id="libraryPath" + index)
+                  label(for="libraryDir" + index)
+                    input(name="libraryDirRadio" type="radio" value=ea.path checked=(index == 0) id="libraryDir" + index)
                     .wbrpath !{ea.wbrPath}
                     if ea.isCurrentLibrary
                       .details This is your current PhotoStructure library.
@@ -114,15 +114,15 @@ html(lang="en")
                 p.warning No drives were found on your computer with at least #{minFreeAvailable} free disk space.
 
               h3 Custom library directory
-              label(for="libraryPathCustom" name="libraryPath").path-component
-                input#libraryPathCustom(name="libraryPathRadio" type="radio" value="libraryPathCustom")
+              label(for="libraryDirCustom" name="libraryDir").path-component
+                input#libraryDirCustom(name="libraryDirRadio" type="radio" value="libraryDirCustom")
 
-                input#libraryPathCustomInput.select-directory-path(
-                  name="libraryPath"
+                input#libraryDirCustomInput.select-directory-path(
+                  name="libraryDir"
                   type="text"
                   placeholder="Path to your library"
                   max=1024
-                  value=libraryPath 
+                  value=libraryDir 
                 )
                 button.select-directory.btn-small.hidden.only-electron(
                   type="button"
