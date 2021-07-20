@@ -42,6 +42,10 @@ export GID=${GID:-${PGID:-${DEFAULT_GID}}}
 # Accept UMASK:
 umask "${UMASK:-0022}"
 
+if [ -x "$PS_RUN_AT_STARTUP" ] ; then
+  "$PS_RUN_AT_STARTUP"
+fi
+
 # Let the user shell into the container:
 if [ "$*" = "sh" ] || [ "$*" = "dash" ] || [ "$*" = "bash" ]; then
   exec "$*"

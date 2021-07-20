@@ -13,7 +13,7 @@ cd LibRaw-0.20.2
 
 autoreconf -fiv
 
-./configure --enable-static --disable-lcms --disable-openmp
+./configure --enable-static --disable-lcms --disable-openmp -DUSE_OLD_VIDEOCAMS
 
 make -j24
 

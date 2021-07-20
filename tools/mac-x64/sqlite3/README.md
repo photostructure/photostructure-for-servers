@@ -11,18 +11,22 @@ binaries from SQLite. See <https://support.apple.com/en-us/HT208436>.
 Compiled using all defaults:
 
 ```sh
-$ curl -o - https://sqlite.org/2021/sqlite-autoconf-3350200.tar.gz | tar xz
-$ cd sqlite-autoconf-3350200
-$ ./configure --enable-static --enable-readline
-$ make -j6
-$ strip sqlite3
-$ cp sqlite3 ~/src/photostructure/tools/mac-x64/sqlite3
+bash
+VER=3360000
+curl -o - https://sqlite.org/2021/sqlite-autoconf-$VER.tar.gz | tar xz
+cd sqlite-autoconf-$VER
+./configure --enable-static --enable-readline
+make -j6
+strip sqlite3
+arch=$(node -e "console.log(require('os').arch())")
+cp sqlite3 ~/src/photostructure/tools/mac-$arch/sqlite3
 ```
 
 Validated that required dynamic libraries seem reasonable:
 
 ```sh
 $ otool -L sqlite3
+
 sqlite3:
 	/usr/lib/libedit.3.dylib (compatibility version 2.0.0, current version 3.0.0)
 	/usr/lib/libncurses.5.4.dylib (compatibility version 5.4.0, current version 5.4.0)
