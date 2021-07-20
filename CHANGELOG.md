@@ -34,11 +34,31 @@ This is a detailed list of changes per version.
 
 <a id="v1.0.0"></a>
 
+## v1.0.0-beta.12
+
+**2021-07-20**
+
+- ✨ Slow directories (those that don't `readdir` in less than `readdirCacheSlowMs`) are now automatically excluded from tag inference to prevent `sync` from bogging down on slow/huge directories.
+
+- ✨ Tag inference can now be completely disabled with the new setting, `enableSiblingInference=false`.
+
+- 🐛 beta.10 didn't properly migrate `libraryPath`, and for docker users, the prior behavior defaulted writing settings directly into `/ps/config`, but [beta.10/11 wanted to write to `/ps/config/PhotoStructure`](https://forum.photostructure.com/t/v1-0-0-beta-10-and-v1-0-0-beta-11-released/806/16?u=mrm), which resulted in people [unexpectedly seeing the welcome page](https://forum.photostructure.com/t/v1-0-0-beta-10-and-v1-0-0-beta-11-released/806/9?u=mrm) or `Error: code ENOENT: ENOENT: no such file or directory, open '/ps/config/PhotoStructure/settings.toml'`. The old and new configuration directories will be automatically merged the first time beta.12 runs.
+
+- 🐛 [Lifted droopy traffic lights on macOS](https://forum.photostructure.com/t/v1-0-0-beta-10-and-v1-0-0-beta-11-released/806/6?u=mrm)
+
+- 📦 macOS now has `/opt/homebrew/bin` and `/opt/homebrew/sbin` added to the `toolPaths` setting default.
+
+- 📦 `minDiskFreeGb` can now be set to 0 to [disable free disk space health checks](https://forum.photostructure.com/t/photostructure-stuck-at-processing/538/14?u=mrm).
+
+- 📦 Large library databases will automatically increase `maxMemoryMb` and `maxRssMemoryMb` values to accommodate larger SQLite caches. If non-default values have been set by the user, though, they will be respected.
+
+- 📦 Upgraded all outdated dependencies, including SQLite [3.36.0](https://sqlite.org/releaselog/3_36_0.html)
+
 ## v1.0.0-beta.11
 
 **2021-07-14**
 
-- 🐛 [Fixed "Cannot set service name twice" error](https://forum.photostructure.com/t/v1-0-0-beta-10-released/806/3?u=mrm)
+- 🐛 [Fixed "Cannot set service name twice" error on launch](https://forum.photostructure.com/t/v1-0-0-beta-10-released/806/3?u=mrm)
 
 ## v1.0.0-beta.10
 
