@@ -108,7 +108,10 @@ html(lang="en")
                     .details (
                       if ea.label
                         | #{ea.label}, 
-                      | #{ea.free} available)
+                      | #{ea.free} available
+                      if ea.remote
+                        | &nbsp;on #{ea.remoteShare}@#{ea.remoteHost}
+                      | )
 
               else
                 p.warning No drives were found on your computer with at least #{minFreeAvailable} free disk space.
