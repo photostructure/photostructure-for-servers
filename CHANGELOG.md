@@ -34,6 +34,47 @@ This is a detailed list of changes per version.
 
 <a id="v1.0.0"></a>
 
+## v1.0.0-beta.13
+
+**2021-08-01**
+
+- 🐛 Fix sorting to be reverse chronological order for child asset galleries (prior builds had inadvertently changed order of child assets to chronological order). Thanks for the report, `mariomare22`!
+
+- 🐛 Prior versions of macOS volume parsing would completely ignore `quarantine` and `nobrowse` mountpoints, but this would cause PhotoStructure to have an incomplete and incorrect view of volumes, leading to invalid Asset File URIs.
+
+- 🐛 Windows upgrades after beta.13 [should restart automatically](https://forum.photostructure.com/t/beta-12-windows-desktop-didnt-restart/822).
+
+- 🐛 Simplify `sync` to check every hour for pending volumes to sync.
+
+- 🐛 Free disk space now uses `realpath` to ensure symlinks and crossmounts (common in macOS) look at the correct volume.
+
+- 🐛 Duplicate mountpoint volumes from `GVFS` and `df` are now merged
+
+- 📦 `copyToLibraryMimetypes`: support for selective automatic organization (say, to only copy raw images into your library). When "automatic organization" is enabled, files whose mimetypes are included in this list will be copied into your originals directory.Note that mimetypes can include an asterisk to do glob-matching. See the related system setting "copyAssetsToLibrary". Defaults to `["image/*", "video/*"]`.
+
+- 📦 `matchSidecarsFuzzily`: set to `false` to disable [fuzzy sidecar matching](https://forum.photostructure.com/t/incorrect-tags-assigned/842/6?u=mrm). If set to true, PhotoStructure will look for sidecar files that match the basename of the asset, plus some common suffixes (like "-edit", "-edited", or variant copies, like "-2"). This setting only impacts .XMP, .MIE, and .EXIF sidecars. PhotoStructure always matches .JSON files fuzzily, as that is required to handle Google Takeouts properly. Defaults to `false` (to be conservative with sidecar matching).
+
+- 📦 Suggested library directory improvements
+
+  - Root mountpoints and direct child directories are checked for prior libraries
+  - Suggested directories are verified that they should be read/writable
+  - `info --suggested-libraries` exposes these volumes on the command line now.
+
+- 📦 New `siblingInferenceBasenameCoeff` setting controls siblingInferenceBasenameCoeff
+
+- 📦 Volume metadata is now automatically cached for up to a day, based on the amount of free disk space is available. [Thanks for the suggestion, Rodger!](https://forum.photostructure.com/t/1-0-0-beta-2-error-failed-to-scan-system-volumes/581/25?u=mrm). Use `info --volumes-ttl --debug` to see what PhotoStructure thinks.
+
+- 🐛/📦 `volumes()` and `mountpoints()` results are now cached, so if the OS times out or a disk is flaky, the prior successful result will be returned (instead of crashing).
+
+- 🐛/📦 Timezone improvements
+
+  - check for `.tz` and `ExifDateTime` fields in self and siblings
+  - prevent the current TZ from “leaking” into unspecified captured-at times
+  - respect `enableSiblingInference`
+  - when inferred, the `capturedAt.src` now contains information about where the timezone came from
+
+- 📦 New `debugTimeouts` setting which logs debug information whenever any operation times out. Defaults to false.
+
 ## v1.0.0-beta.12
 
 **2021-07-20**
