@@ -34,6 +34,22 @@ This is a detailed list of changes per version.
 
 <a id="v1.0.0"></a>
 
+## v1.0.0-beta.14
+
+**2021-08-05**
+
+- 🐛 PhotoStructure could fail to launch on case-insensitive filesystems due to `userdir` merging code. Thanks for the report, [awojtas](https://forum.photostructure.com/t/v1-0-0-beta-13-released/850/3?u=mrm) and [bjarte](https://forum.photostructure.com/t/error-when-installing-setup-timed-out-after-0-40/856?u=mrm)!
+
+- 🐛 Cleanup jobs (like removing old logfiles, image caches, and readdir caches) are properly scheduled now. Thanks for the bug report, [bdillahu](https://forum.photostructure.com/t/docker-log-file-cleanup/854?u=mrm)!
+
+- 🐛 `opened-by` lockfiles from prior versions are automatically cleaned up (to avoid [these](https://forum.photostructure.com/t/upgraded-to-alpha-photostructure-wont-start/406) [errors](https://forum.photostructure.com/t/sort-by-folder/857/8?u=mrm)).
+
+- 🐛 Library write tests were run more often in beta.13, but any network fileshare hiccups could cause PhotoStructure to shut down. We now only run the write test once, at startup, only on the `main` process. Thanks for the reports, [tkohh](https://forum.photostructure.com/t/v1-0-0-beta-13-released/850/7?u=mrm) and [awojtas](https://forum.photostructure.com/t/v1-0-0-beta-13-released/850/9?u=mrm).
+
+- 🐛 Cross-volume database backups could fail, causing PhotoStructure to shut down after several hours. This was from beta.13 switching from `fs-extra.move()` to `fs.rename()`, and was reverted in beta.14.
+
+- 📦 Is your library stored on a remote volume? The new `maxSyncFileJobsWhenRemote` (which defaults to `2`) should avoid overwhelming the I/O on slower NASes, which can cause `sync` to crash (especially when PhotoStructure is running on high-core-count servers). [See this post for more details](https://forum.photostructure.com/t/is-the-library-writable/862/2?u=mrm). Thanks for the idea, [Mike](https://www.mklibrary.com/)! 
+
 ## v1.0.0-beta.13
 
 **2021-08-01**
@@ -140,8 +156,6 @@ This is a detailed list of changes per version.
 - 🐛 Filepath tags [don't show volume SHAs anymore](https://forum.photostructure.com/t/volume-id-shows-as-a-tag/754)
 
 - 🐛 File paths in the Asset Info panel [could have rendering issues](https://forum.photostructure.com/t/image-filepath-not-correct-synology-docker-compose-alpha-branch/545/4)
-
-- 🐛 `opened-by` lockfiles from prior versions are automatically cleaned up (to avoid [these errors](https://forum.photostructure.com/t/upgraded-to-alpha-photostructure-wont-start/406))
 
 - 🐛/📦 macOS Big Sur versions are now rendered properly on m1 machines
 
