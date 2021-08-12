@@ -85,6 +85,26 @@ html
               each ok in health.ok
                 li.ok= ok
 
+    if syncPaths
+      .sync-paths
+        h2 Sync information
+        table
+          tr
+            th.path path
+            th.status status
+            th.last-started last started
+            th.last-completed last completed
+          each ea in syncPaths
+            tr(class=ea.status title=ea.status)
+              td.path(
+                class=ea.library ? "library icon" : ""
+                title=ea.library ? "This is your library directory" : ""
+              ) !{ea.path}
+              td.status.icon(class=ea.status)= ea.status
+              td.last-started= ea.lastStarted
+              td.last-completed= ea.lastCompleted
+        .details.center Edit this in the <a href="/settings#scan-path-section">"Where else are your photos and videos?" settings section</a>.
+
     if volumes
       .volumes
         h2 Volume information
@@ -108,6 +128,7 @@ html
               td.label= vol.label
                 if vol.remote
                   tt.unc= "//" + vol.remote.host + "/" + vol.remote.share
+
 
   script(src="/app/about.js" nonce=nonce)
   if (subTier != "lite" && !subTrial)
