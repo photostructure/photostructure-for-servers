@@ -31,8 +31,62 @@ This is a detailed list of changes per version.
 <!-- TODO: -->
 <!-- - ✨/🐛/📦/🚫☠ For most cases, PhotoStructure no longer "fails fast." [Read more here](https://forum.photostructure.com/t/disable-photostructure-from-failing-fast/501). -->
 <!-- - ✨ Logs are now viewable in the UI -->
+<!-- - 🐛 [Tag reparenting doesn't seem to work properly on rebuilds](https://forum.photostructure.com/t/who-tags-are-incorrectly-excluded-from-keywords/676/6?u=mrm). -->
+
+<!-- - 🐛 Sync resume (after pause) on mac via the menubar (not the main window nav button) doesn't seem to support "resume" properly -->
+
+<!-- - 🐛 Bug reporting via Sentry is broken  -->
+
+<!-- - 🐛 [Incremental syncs find new folders](https://forum.photostructure.com/t/source-directory-not-scanned-after-beta-13-update/867) (I believe this was due to the auto sync-paths but) -->
+
 
 <a id="v1.0.0"></a>
+
+## v1.0.0-beta.15
+
+**2021-08-11**
+
+- ✨ Added new sync information section to the About page
+
+- 🐛 [Search works again](https://forum.photostructure.com/t/v1-0-0-beta-13-released/850/3?u=mrm). Thanks for the [report](https://forum.photostructure.com/t/browser-error-on-every-search-option/873?u=mrm), @Sergi! 
+
+- 🐛 Improved back-button navigation on tag and search pages (previous restoration of scroll position between tags didn't work correctly)
+
+- 🐛 Replaced `rem` CSS references with `px` to make browser rendering more consistent
+
+- 🐛 Rewrote rendering of [paths in the asset info panel](https://forum.photostructure.com/t/v1-0-0-beta-10-and-v1-0-0-beta-11-released/806/2?u=mrm).
+
+- **"Auto-collapsing" child tag improvements**:
+
+  (When navigating tag galleries, if a tag has only one direct child tag and no direct assets, PhotoStructure will "fast forward" to the child tag to save you clicks/confusion. [See the forum post for more context](https://forum.photostructure.com/t/volume-id-shows-as-a-tag/754/5?u=mrm).
+
+  - 🐛 Fixed [paging bug](https://forum.photostructure.com/t/v1-0-0-beta-12-released/820/8?u=mrm).
+
+  - 📦 Added `fastForwardEmptyTags` setting to support disabling this behavior if you find it confusing.
+
+- 📦 Added `hostname` setting to support explicitly setting the hostname (as another workaround to OSes that change hostname arbitrarily, and a way to pass the hostname into docker containers).
+
+- 🐛 Fixed automatic sync volume scheduling. Thanks for the assist, @tkohhh!
+
+- 📦 Sync path scheduling heuristics were adjusted to ensure every path will get synced, even if `sync` takes longer than `syncIntervalHours`. We now return:
+
+  1. the last-updated sync path, if it was recently worked on, or
+  2. the first listed sync path that's never been started before
+  3. the first listed sync path that's never been completed before
+  4. the least recently completed sync path that hasn't been completed in the last `syncIntervalHours`
+
+- 🐛/📦 Filesystem caches are now flushed at the beginning of sync to ensure new directories and files are seen (which should help `sync` from missing newly-created directories)
+
+- 📦 Opened-by locks are now matched by `hostname` *or* by system UID (which may help docker and macOS, both of which change host names arbitrarily)
+
+- 📦 PhotoStructure for Desktops now takes a library database backup when the library is on a remote filesystem and the system is going down to suspend or shutdown, unless `backupRemoteDbOnSuspend` is set to `false`. This may help macOS which can disconnect remote filesystems during powernaps.
+
+- 📦 When the system is shutting down or suspending, library database backups now skip CPU or disk intensive tasks (like VACUUM, OPTIMIZE, or db maintenance tasks), which should help ensure the backup completes quickly and successfully.
+
+- 📦 Searches with no results show a flash message to that effect.
+
+- 📦 `currentLibraryLockOwner` and `libraryHasSettings` caches no longer expire (which should reduce PhotoStructure shutting down due to filesystem hiccups)
+
 
 ## v1.0.0-beta.14
 
@@ -48,7 +102,9 @@ This is a detailed list of changes per version.
 
 - 🐛 Cross-volume database backups could fail, causing PhotoStructure to shut down after several hours. This was from beta.13 switching from `fs-extra.move()` to `fs.rename()`, and was reverted in beta.14.
 
-- 📦 Is your library stored on a remote volume? The new `maxSyncFileJobsWhenRemote` (which defaults to `2`) should avoid overwhelming the I/O on slower NASes, which can cause `sync` to crash (especially when PhotoStructure is running on high-core-count servers). [See this post for more details](https://forum.photostructure.com/t/is-the-library-writable/862/2?u=mrm). Thanks for the idea, [Mike](https://www.mklibrary.com/)! 
+- 📦 Is your library stored on a remote volume? The new `maxSyncFileJobsWhenRemote` (which defaults to `2`) should avoid overwhelming the I/O on slower NASes, which can cause `sync` to crash (especially when PhotoStructure is running on high-core-count servers). [See this post for more details](https://forum.photostructure.com/t/is-the-library-writable/862/2?u=mrm). Thanks for the idea, [Mike](https://www.mklibrary.com/)!
+
+- 📦 Added `movflags +faststart` to the default `ffmpegTranscodeArgs`. Thanks for the suggestion, [Zirro](https://discord.com/channels/818905168107012097/818907922767544340/872836920948961381)!
 
 ## v1.0.0-beta.13
 
