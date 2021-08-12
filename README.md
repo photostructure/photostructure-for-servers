@@ -5,11 +5,7 @@
 PhotoStructure is your new home for all your photos and videos. Installation
 should only take a couple minutes.
 
-Please see <https://photostructure.com/server> for more instructions on
-installation and running this software, including instructions for running under
-Docker.
-
-## Accept the license
+## Step 1: Accept the license
 
 **Please read and accept the [end-user license agreement](https://photostructure.com/eula).**
 
@@ -20,11 +16,11 @@ Installing and running PhotoStructure indicates your agreement to all terms in t
 PhotoStructure for Servers requires:
 
 - a 64-bit Intel or AMD CPU
-- either Ubuntu LTS (18.04) or macOS (High Sierra or later)
+- either Ubuntu LTS (18.04) or macOS (Mojave or later)
 
 ## Installation instructions
 
-See <https://photostructure.com/server/photostructure-for-servers/>
+Please see <https://photostructure.com/server/photostructure-for-servers> for installation instructions.
 
 ## Feedback and support
 
