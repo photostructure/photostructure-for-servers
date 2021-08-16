@@ -35,12 +35,43 @@ This is a detailed list of changes per version.
 
 <!-- - 🐛 Sync resume (after pause) on mac via the menubar (not the main window nav button) doesn't seem to support "resume" properly -->
 
-<!-- - 🐛 Bug reporting via Sentry is broken  -->
-
 <!-- - 🐛 [Incremental syncs find new folders](https://forum.photostructure.com/t/source-directory-not-scanned-after-beta-13-update/867) (I believe this was due to the auto sync-paths but) -->
 
-
 <a id="v1.0.0"></a>
+
+## v1.1.0
+
+**2021-08-15**
+
+- ✨ Want to see if a similar image is already in your library? The new `./photostructure list --looks-like /path/to/image.jpg` switch shows existing, imported assets that share the same SHA or image hash as `/path/to/image.jpg`. [See the forum discussion for more details](https://forum.photostructure.com/t/additional-search-filter-types/895/5?u=mrm).
+
+- ✨ Deduplication improvement: JPEG+RAW pairs with different sets of camera serial number tags are now matched properly. [Thanks for the report, bdillahu!](https://forum.photostructure.com/t/jpeg-raw-bundles/265/5?u=mrm)
+
+- 🐛/💔 The PhotoStructure for Desktops setting, `openAtLogin`, was deleted. **The "Open at login" menu option is still available on macOS and Windows, though!**
+
+  What we _wanted_ was to have the "Open at login" menu option reflect the current state of the system, and if toggled, sets the system to match that state.
+
+  By having this backed by a setting _and_ the system state, though, the persisted setting would _overwrite_ the system setting whenever PhotoStructure launched. The setting was simply unnecessary.
+
+- 🐛 The about page and `info` tool no longer crash if the library is missing.
+
+- 🐛 Squelched `ENOENT` errors from expected `readdir` failures.
+
+- 🐛 Flushed prior caches for directories that have been `touch`ed or `unlink`ed.
+
+- 📦 `docker container run photostructure/server ...` doesn't require a `/ps/config` bind mount to run.
+
+- 📦 New `ffmpegThreads` setting supports customizing the value passed to `ffmpeg -threads`. A new, more conservative default should also help prevent `ffmpeg` from chowing all your CPU and then some.
+
+## v1.0.0
+
+**2021-08-12**
+
+🎉 PhotoStructure is out of beta! 🎉
+
+[Read more about version 1.0.0, PhotoStructure's biggest release ever.](https://photostructure.com/about/v-1-0/)
+
+Note that version 1.0.0 includes all changes made in -alpha and -beta pre-releases.
 
 ## v1.0.0-beta.15
 
@@ -48,7 +79,7 @@ This is a detailed list of changes per version.
 
 - ✨ Added new sync information section to the About page
 
-- 🐛 [Search works again](https://forum.photostructure.com/t/v1-0-0-beta-13-released/850/3?u=mrm). Thanks for the [report](https://forum.photostructure.com/t/browser-error-on-every-search-option/873?u=mrm), @Sergi! 
+- 🐛 [Search works again](https://forum.photostructure.com/t/v1-0-0-beta-13-released/850/3?u=mrm). Thanks for the [report](https://forum.photostructure.com/t/browser-error-on-every-search-option/873?u=mrm), @Sergi!
 
 - 🐛 Improved back-button navigation on tag and search pages (previous restoration of scroll position between tags didn't work correctly)
 
@@ -77,7 +108,7 @@ This is a detailed list of changes per version.
 
 - 🐛/📦 Filesystem caches are now flushed at the beginning of sync to ensure new directories and files are seen (which should help `sync` from missing newly-created directories)
 
-- 📦 Opened-by locks are now matched by `hostname` *or* by system UID (which may help docker and macOS, both of which change host names arbitrarily)
+- 📦 Opened-by locks are now matched by `hostname` _or_ by system UID (which may help docker and macOS, both of which change host names arbitrarily)
 
 - 📦 PhotoStructure for Desktops now takes a library database backup when the library is on a remote filesystem and the system is going down to suspend or shutdown, unless `backupRemoteDbOnSuspend` is set to `false`. This may help macOS which can disconnect remote filesystems during powernaps.
 
@@ -86,7 +117,6 @@ This is a detailed list of changes per version.
 - 📦 Searches with no results show a flash message to that effect.
 
 - 📦 `currentLibraryLockOwner` and `libraryHasSettings` caches no longer expire (which should reduce PhotoStructure shutting down due to filesystem hiccups)
-
 
 ## v1.0.0-beta.14
 
