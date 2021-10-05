@@ -1,32 +1,15 @@
 
 This is a detailed list of changes per version.
 
-- Releases sometimes have separate posts that describe new features, like for
-  [version 0.6](https://photostructure.com/about/v-0-6/), [version 0.8](https://photostructure.com/about/v-0-8/), and [version
-  0.9](https://photostructure.com/about/v-0-9/)).
+- Major version releases have posts summarizing bigger changes. See [the posts tagged with "release notes"](/tags/release-notes/).
 
-- Visit [**what's next**](https://photostructure.com/about/whats-next/) to get a sneak peak into what
-  we're going to be working on next.
+- **Stable, released versions are recommended.** [See the forum post for details about alpha, beta, and stable releases.](https://forum.photostructure.com/t/alpha-beta-stable-and-latest-what-should-you-use/274)
 
-## Please note
+- "Pre-release" builds (those that end with `alpha` or `beta`) have not been thoroughly tested, and may not even launch.
 
-- **Stable, released versions are recommended.**
+- Only run `alpha` or `beta` builds if you have [recent backups](/faq/how-do-i-safely-store-files/).
 
-- See [Alpha, beta, stable, and latest; What should you
-  use?](https://forum.photostructure.com/t/alpha-beta-stable-and-latest-what-should-you-use/274)
-  for more information.
-
-- "Pre-release" builds (those that end with `alpha` or `beta`) have not been
-  thoroughly tested, and may not even launch.
-
-- Only run `alpha` or `beta` builds if you have [recent
-  backups](https://photostructure.com/faq/how-do-i-safely-store-files/).
-
-- If you update to an alpha or beta build and you want to downgrade to a prior
-  version, know that older versions of PhotoStructure may not be able to open
-  libraries created by newer versions of PhotoStructure. You will probably need
-  to [restore your library from a database
-  backup](https://photostructure.com/faq/restore-db-from-backup/).
+- If you update to an alpha or beta build and you want to downgrade to a prior version, know that older versions of PhotoStructure may not be able to open libraries created by newer versions of PhotoStructure. You will probably need to [restore your library from a database backup](/faq/restore-db-from-backup/).
 
 <!-- TODO: -->
 <!-- - ✨/🐛/📦/🚫☠ For most cases, PhotoStructure no longer "fails fast." [Read more here](https://forum.photostructure.com/t/disable-photostructure-from-failing-fast/501). -->
@@ -37,7 +20,98 @@ This is a detailed list of changes per version.
 
 <!-- - 🐛 [Incremental syncs find new folders](https://forum.photostructure.com/t/source-directory-not-scanned-after-beta-13-update/867) (I believe this was due to the auto sync-paths but) -->
 
-<a id="v1.0.0"></a>
+## v2.0.0-alpha.1
+
+**to be released**
+
+- ✨ Initial support for [💖 liking](https://forum.photostructure.com/t/ability-to-quickly-favorite-a-photo-while-browsing/411), [🙈 archiving, ⏏️ removing, and 🗑️ deleting assets](https://forum.photostructure.com/t/deleting-hiding-photos/55)! <a href="/pricing" class="plus-pill" title="This new feature is only available to PhotoStructure PLUS subscribers">plus only</a>
+
+  [See the new FAQ page on **archive, remove, and delete** for details, including instructions on how to enable these features.](/faq/archive-remove-delete)
+
+- ✨ Added new ["copy path" option in the asset info panel](https://forum.photostructure.com/t/copy-path-button-link/924).
+
+- ✨ [(Re)-added a small zoom-on-hover in gallery pages.](https://forum.photostructure.com/t/hover-effect-on-asset-thumbnails-is-gone/412?u=mrm) This can be disabled by setting [prefers-reduced-motion](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion) in your browser.
+
+- ✨ [Full screen mode](https://forum.photostructure.com/t/ui-button-for-fullscreen/318)! Tap the toggle button in the header or the `f` key to toggle fullscreen mode.
+
+  A new mode specific to Safari on iPad with a taller header had to be added (it's pretty!). Note that Safari on iPhones don't have fullscreen support, but you can get the same effect by navigating to your library, click "share", pick "Add to Home Screen", and launch from that icon. [See the forum for details](https://forum.photostructure.com/t/ios-homescreen-support/162).
+
+- ✨ **PhotoStructure learned how to talk!** Client and server code can now show informational and error messages (or "[toasts](https://en.wikipedia.org/wiki/Pop-up_notification)" to let you undo some actions, notify you of network problems, tell you when you need to upgrade, and more.
+
+- ✨ Rebuilt UX view persistence to be dramatically faster thanks to proper component keying and smarter fetch heuristics: clicking the "back" button is instantaneous, and prior scroll positions are [correctly](https://forum.photostructure.com/t/home-scroll-position/1021) retained.
+
+- ✨ Asset rendering at high resolutions is now dramatically faster. Prior builds didn't trust the database for rotation metadata, which led to a (potentially expensive) exif parsing step before streaming the original asset to the browser.
+
+  If you see any unexpected errors, please do report them in Discord or on the [forum](https://forum.photostructure.com/)!
+
+- ✨ Search results now include a sticky top banner with asset count (and possibly an "empty trash" or "remove assets" button, depending on the view).
+
+- ✨/💔 Rotating via the PhotoStructure UI would write `Orientation` to a sidecar by default. Unfortunately, many applications ignore sidecars. A new `sidecarTagBlocklist` setting, which defaults to just `["Orientation"]`, allows most other tags to be written to sidecars (to avoid touching original files), but still write tags (like `Orientation`) to the image itself.
+
+- 🐛 Scroll positions in the search and tag views should now be restored properly when clicking the back and forward buttons.
+
+- 🐛 Tag redirects to non-empty child tags could result in a blank page. The tag fast-forward code wasn't properly urlencoding tag paths, which caused issues if the leaf tag name included a "/" (like many lens models do!)
+
+- 🐛/📦 Fixed ["neon" video colorspace rendering](https://forum.photostructure.com/t/trouble-transcoding-iphone8-video-possibly-stalling-progress-of-library-import/1003/8).
+
+- 🐛/📦 Tag galleries add a banner to distinguish between child tag samples and direct assets
+
+- 🐛 If `scanPaths` was empty, a library health check warning would be raised ("nothing to scan"), which would [erroneously pause the sync process](https://forum.photostructure.com/t/scans-library-forever-ui-documentation-issue/1047).
+
+- 🐛 Fixed "[unexpected missing asset file id](https://forum.photostructure.com/t/assetfileimporter-error-unexpected-missing-asset-file-id/1009/2)"
+
+- 📦 Background color was changed to 14% white (from 20% white) to accommodate high-gamut displays (both are pretty dark for SDR displays).
+
+- 🐛/📦 Invalid durations from sidecars are [now ignored](https://forum.photostructure.com/t/videos-duration-wildly-inaccurate/999).
+
+- 🐛/📦 Progress panel fetching wasn't paused properly when navigating away from the home panel, which caused unnecessary load on the webserver.
+
+- 📦 File operations at startup now include the path of the operation (this should de-mystify the "Computing SHA of" messages for large libraries on slow disks).
+
+- 📦 Header buttons and search input change background color to show focus. Search input autofocuses.
+
+- 📦 Switched to vue-powered modal dialogs.
+
+- 📦 Made font sizes across the UI more consistent. I hope you like `14px`!
+
+- 🐛 Dropdown menus now dismiss by clicking anywhere away from the menu (and, critically, that click isn't passed through to anything underneath): the non-standard dropdown close button was removed as well. 
+ 
+- 🐛 Fixed `"bad startAtNativePath: ignoring"` error that could cause `sync` to mistakenly skip over scan paths.
+
+- 🐛/📦 Asset rotation code was refactored and [should be more reliable](https://forum.photostructure.com/t/rotating-assets-sometimes-doesnt-show-the-correct-orientation/429): also, if anything goes wrong now, we now show an error explaining what happened.
+
+- 📦 Upgraded dependencies (including sharp, electron and a new version of node in the docker image). These changes are non-trivial enough to warrant [an alpha release-candidate build](https://forum.photostructure.com/t/alpha-beta-stable-and-latest-what-should-you-use/274).
+
+- 📦 Added `--silent` to PhotoStructure for Node's call to `npx yarn install`, which hides messages like `The platform "linux" is incompatible with this module."` [Thanks for the suggestion, mnaoumov](https://forum.photostructure.com/t/confusing-message-in-photostructure-for-node-js/886?u=mrm)!
+
+- 📦 PhotoStructure for Node's `./start.sh` now echoes the shutdown messages emitted from `main` after trapping SIGINT/`ctrl-c` (prior builds killed the `tee` which meant you didn't know why PhotoStructure wasn't giving you back your prompt).
+
+- 📦 PhotoStructure for Server process names are now named `photostructure main`, `photostructure sync`, ... to make them easier to grep for.
+
+- 📦 Example searches aren't added to the "prior searches" list
+
+- 📦 Long tag names in the asset info panel are now truncated (rather than confusingly scrolling to the right)
+
+- 📦 `keywordDelimiters` can be set to the empty string, [to avoid splitting on commas or semicolons](https://forum.photostructure.com/t/incorrect-handling-of-keywords-with-comma/992)
+
+- 📦 PhotoStructure for Servers emits the library path as a URL on startup. To open the directory in a finder window on linux, just ctrl-click the URL. On macOS, right-click the URL and pick `Open URLcdf`.
+
+- 📦 PhotoStructure for Servers now renders this on startup if `--expose` isn't enabled:
+
+```
+PhotoStructure is ready: <http://localhost:1787/>
+See <https://photostructure.com/faq/remote-access/> to enable non-localhost access.
+```
+
+Several tool improvements:
+
+- 📦 Add `--is-library` switch to `info` which runs a set of tests to verify that a given library is satisfactory.
+
+- 📦 Add `--flat` switch to `info` to only emit values of objects with only one key (useful when used with `--filter` to pluck out a specific value for use by another script).
+
+- 📦 Several tools erroneously included options that weren't necessary or relevant, and have been removed.
+
+- 📦 `--help` verbiage has been improved for all tools, including some URLs to relevant documentation.
 
 ## v1.1.0
 
@@ -62,6 +136,8 @@ This is a detailed list of changes per version.
 - 📦 `docker container run photostructure/server ...` doesn't require a `/ps/config` bind mount to run.
 
 - 📦 New `ffmpegThreads` setting supports customizing the value passed to `ffmpeg -threads`. A new, more conservative default should also help prevent `ffmpeg` from chowing all your CPU and then some.
+
+- 📦 Twiddled `autoUpdater.quitAndInstall()` to use defaults: we'll see in v1.2.0 if that allows upgrades to re-launch properly.
 
 ## v1.0.0
 
