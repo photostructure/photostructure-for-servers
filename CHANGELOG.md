@@ -20,9 +20,43 @@ This is a detailed list of changes per version.
 
 <!-- - 🐛 [Incremental syncs find new folders](https://forum.photostructure.com/t/source-directory-not-scanned-after-beta-13-update/867) (I believe this was due to the auto sync-paths but) -->
 
+<a id="v200-alpha2"></a>
+
+## v2.0.0-beta.1
+
+**Released 2021-10-24** 
+
+- ✨ On computers with at least 6 CPUs, preview images are now optimized with [`mozjpeg` defaults](https://sharp.pixelplumbing.com/api-output#jpeg), which reduces images by up to 30% with minimal reduction in visible quality. See the new `jpegMinimized` setting for details. 
+
+- 🐛 Sync should now automatically pick up new files. There were a couple issues:
+
+  - v1.0 changed how PhotoStructure keeps track of sync progress, and prior progress metadata would "trick" sync into thinking there was nothing to do for subsequent runs. New sync jobs started after a completed job will start with new metadata, rather than adopting the prior run metadata.
+  
+  - v1.0 added `readdir` caching, and those cached directory contents could prevent new files in existing directories from being picked up. `sync` now deletes the `readdir` cache properly after an import completes. 
+
+- 🐛 Fixed [`unexpected missing asset file id`](https://forum.photostructure.com/t/first-sync-is-behaving-very-odd/1101/5?u=mrm) error, which could prevent file variations from being imported properly
+
+- 🐛 Stale opened-by lockfiles are now properly deleted on startup, and we reduced the default value for the `openLockStaleMinutes` setting from 1 hour to 5 minutes. This should resolve [issues like this](https://forum.photostructure.com/t/your-library-is-already-open/635).
+
+- 🐛 For docker users or libraries stored on remote volumes, lock contention could result in the local replica being overwritten with an empty library database. Lock directories are retained much longer now, and replica `mtime` and db sizes are now used to determine if replicas are "stale." Local db replicas are now stored in library-uuid-specific subdirectories to prevent overwrites when multiple library are open concurrently.
+
+- 🐛 Restored title bars that [got lost in v2.0.0-alpha.1](https://forum.photostructure.com/t/first-alpha-build-of-version-2-0-is-now-available/1068/3)
+
+- 🐛 PhotoStructure for Desktop macOS icons [don't fight with the traffic lights any more](https://forum.photostructure.com/t/first-alpha-build-of-version-2-0-is-now-available/1068/8?u=mrm).
+
+- 🐛 Fixed [undraggable windows](https://github.com/electron/electron/issues/30788)
+
+- 🐛 Monthly vs annual pricing is now handled in the Stripe Checkout page to make initial subscription setup simpler.
+
+- 📦 SHAs of files that have been determined to be invalid are now added to the `ShaBlocklist` table, so future `sync` jobs don't try to re-import invalid files.
+
+- 📦 Added `info --read-settings /path/to/settings.toml` to help debug settings file permission and encoding issues.
+
+- 📦 Frontend javascript now targets ES2015 to support older devices (like iPads).
+
 ## v2.0.0-alpha.1
 
-**to be released**
+**2021-10-05**
 
 - ✨ Initial support for [💖 liking](https://forum.photostructure.com/t/ability-to-quickly-favorite-a-photo-while-browsing/411), [🙈 archiving, ⏏️ removing, and 🗑️ deleting assets](https://forum.photostructure.com/t/deleting-hiding-photos/55)! <a href="/pricing" class="plus-pill" title="This new feature is only available to PhotoStructure PLUS subscribers">plus only</a>
 
@@ -74,8 +108,8 @@ This is a detailed list of changes per version.
 
 - 📦 Made font sizes across the UI more consistent. I hope you like `14px`!
 
-- 🐛 Dropdown menus now dismiss by clicking anywhere away from the menu (and, critically, that click isn't passed through to anything underneath): the non-standard dropdown close button was removed as well. 
- 
+- 🐛 Dropdown menus now dismiss by clicking anywhere away from the menu (and, critically, that click isn't passed through to anything underneath): the non-standard dropdown close button was removed as well.
+
 - 🐛 Fixed `"bad startAtNativePath: ignoring"` error that could cause `sync` to mistakenly skip over scan paths.
 
 - 🐛/📦 Asset rotation code was refactored and [should be more reliable](https://forum.photostructure.com/t/rotating-assets-sometimes-doesnt-show-the-correct-orientation/429): also, if anything goes wrong now, we now show an error explaining what happened.

@@ -20,12 +20,17 @@
         box-sizing: border-box;
       }
 
-      body * {
+      main {
+        margin: 18vh auto;
+      }
+
+      .draggable {
         -webkit-app-region: drag;
       }
 
-      main {
-        margin: 18vh auto;
+      /* allows text selection */
+      .no-draggable {
+        -webkit-app-region: no-drag;
       }
 
       svg {
@@ -193,8 +198,8 @@
   </head>
 
   <body class="animate">
-    <div id="bg"></div>
-    <main>
+    <div id="bg" class="draggable"></div>
+    <main class="draggable">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="417.964"
@@ -255,7 +260,7 @@
         />
       </svg>
     </main>
-    <footer>
+    <footer class="no-draggable">
       <div class="message"></div>
       <div class="version"></div>
     </footer>
