@@ -1,15 +1,6 @@
-![PhotoStructure Logo](https://photostructure.com/img/2019/08/bokeh-logo-2048w.jpg)
+<img alt="PhotoStructure" src="https://photostructure.com/img/logo-horizontal-black-on-white-800w.png" width=400>
 
-# PhotoStructure™ for Servers
-
-PhotoStructure is your new home for all your photos and videos. Installation
-should only take a couple minutes.
-
-## Step 1: Accept the license
-
-**Please read and accept the [end-user license agreement](https://photostructure.com/eula).**
-
-Installing and running PhotoStructure indicates your agreement to all terms in the license.
+Welcome to your new home for all your photos and videos!
 
 ## Prerequisites
 
@@ -20,8 +11,10 @@ PhotoStructure for Servers requires:
 
 ## Installation instructions
 
-Please see <https://photostructure.com/server/photostructure-for-servers> for installation instructions.
+1. Read and accept the [**end-user license agreement**](https://photostructure.com/eula), then 
 
-## Feedback and support
+2. check out instructions for [**docker**](https://photostructure.com/server/photostructure-for-docker/) or [**docker-compose**](https://photostructure.com/server/photostructure-for-docker-compose/).
 
-Please send an email to support@photostructure.com with questions or feedback.
+## Join us!
+
+Visit the [**official PhotoStructure forum**](https://forum.photostructure.com) for product support, release announcements, and discuss new features.

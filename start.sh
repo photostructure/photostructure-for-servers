@@ -5,8 +5,10 @@
 # BY RUNNING THIS SOFTWARE YOU AGREE TO ALL THE TERMS OF THIS LICENSE:
 # <https://photostructure.com/eula>
 
-# See <https://photostructure.com/server> for instructions and
-# <https://forum.photostructure.com/> for support.
+# Run `./start.sh --help` and `./start.sh main --help` for usage.
+
+# See <https://photostructure.com/server> for general instructions and
+# visit <https://forum.photostructure.com/> for support.
 
 # SYNTAX NOTE TO FUTURE SELF:
 # function foo {...} # < doesn't work with /bin/sh
@@ -18,9 +20,13 @@ die() {
   exit 1
 }
 
+# Turns a SemVer-esque version into a string that can be asciibetically sorted
+# or compared: "1.2.3" becomes "0001000200030000" (we currently only check tools
+# that need to pad to 2, but to support CalVer (2021.08.18) and Chrome
+# (92.0.4515.131) we pad to 4.
 version() {
   # Support "1.2", "1.2.3", "1.2.3.4", and "01.23.001":
-  echo "$@" | awk -F. '{ printf("%03d%03d%03d%03d\n", $1,$2,$3,$4); }'
+  echo "$@" | awk -F. '{ printf("%04d%04d%04d%04d\n",$1,$2,$3,$4); }'
 }
 
 cd "$(dirname "$0")" || die "failed to cd"
@@ -94,9 +100,13 @@ if [ "$NODE_VERSION" -lt "$(version "14.16.0")" ]; then
   die "Please install Node.js v14.16.0 or later"
 fi
 
-# Make sure we're always running the latest version of our branch
-git stash --include-untracked
-git pull || die "git pull failed."
+# set NOGIT=1 to disable auto-update:
+
+if [[ "$NOGIT" != "1" ]]; then
+  # Make sure we're always running the latest version of our branch
+  git stash --include-untracked
+  git pull || die "git pull failed."
+fi
 
 PS_CONFIG_DIR=${PS_CONFIG_DIR:-$HOME/.config/PhotoStructure}
 mkdir -p "$PS_CONFIG_DIR"
@@ -120,16 +130,16 @@ argv=("$@")
 
 # We run `npx yarn install` because `npm install` provides no way to silence
 # all the dependency compilation warnings and other console spam.
-npx yarn install || die "Dependency installation failed."
 
-$NODE ./photostructure "${argv[@]}" 2>&1 | tee start.log
+# Adding --silent hides the potentially scary "...is incompatible with this
+# module..." messages. <https://forum.photostructure.com/t/886?u=mrm>
+npx yarn install --silent || die "Dependency installation failed."
+
+# We used to `tee` to a runlog, but by propagating ctrl-c, the tee would get
+# killed and shutdown messages would be omitted from stdout.
+$NODE ./photostructure "${argv[@]}"
 exit_code=$?
 
 if [ $exit_code -ne 0 ]; then
-  echo "Unexpected non-zero exit status."
-  echo
-  echo "Please post to <https://forum.photostructure.com/c/support/6> with the error and the following information:"
-  set +x
-  npx envinfo --binaries --languages --system --utilities
-  cat start.log
+  echo "If this error persists, please see <https://forum.photostructure.com>."
 fi
