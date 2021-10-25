@@ -41,9 +41,13 @@ jobs:
           images: photostructure/server,ghcr.io/photostructure/server
           tags: |
             type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
+            type=ref,event=tag
+            type=semver,pattern=v{{version}}
+            type=semver,pattern=v{{major}}.{{minor}}
+            type=semver,pattern=v{{major}}
+            type=match,pattern=beta,value=alpha
+            type=match,pattern=main,value=alpha
+            type=match,pattern=main,value=beta
 
       - name: Log in to Docker Hub
         if: github.event_name != 'pull_request'
