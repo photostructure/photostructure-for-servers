@@ -20,9 +20,9 @@ This is a detailed list of changes in each version.
 
 <!-- - 🐛 [Incremental syncs find new folders](https://forum.photostructure.com/t/source-directory-not-scanned-after-beta-13-update/867) (I believe this was due to the auto sync-paths but) -->
 
-## v2.1.0-alpha.1
+## v2.1.0-alpha.0
 
-**To be released**
+**Released 2022-05-05**
 
 We're skipping a release of 2.0, as the changes in this release are substantial enough to return to "alpha" status.
 
