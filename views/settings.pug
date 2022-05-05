@@ -32,8 +32,11 @@ html(lang="en")
                   | Before continuing, please 
                   a(href="https://photostructure.com/getting-started/video-support/") follow these steps. It’ll only take a minute.
                   //- we don’t have the "reload" button here so people (like Jim L) don’t lose their form entries.
+              .buttons.card-nav
+                a.next.btn-small(href="#section1" rel="next") Next 
 
-          .section
+
+          .section#section1
             h2 Your PhotoStructure plan
 
             if (subTier != "lite")
@@ -56,7 +59,10 @@ html(lang="en")
               //- .relative
               //-   blockquote.andrew-lewis If you are not paying for it, you’re not the customer; <br> you’re the product being sold.
               //-     .cite – <a href="https://photostructure.com/faq/why-photostructure/#upfront-revenue-source">Andrew Lewis</a>
-          .section
+            .buttons.card-nav
+              a.next.btn-small(href="#section2" rel="next") Next 
+              
+          .section#section2
             if isDocker
               h2 Your PhotoStructure library
               if currentLibraryDir
@@ -95,11 +101,10 @@ html(lang="en")
 
             if !isDocker
               if suggestedLibraryDirs
-                h3 Suggested library directories
                 each ea, index in suggestedLibraryDirs
                   p
                   label(for="libraryDir" + index)
-                    input(name="libraryDirRadio" type="radio" value=ea.path checked=(index == 0) id="libraryDir" + index)
+                    input(name="libraryDirRadio" type="radio" value=ea.nativePath checked=(index == 0) id="libraryDir" + index)
                     .wbrpath !{ea.wbrPath}
                     if ea.isCurrentLibrary
                       .details This is your current PhotoStructure library.
@@ -116,21 +121,26 @@ html(lang="en")
               else
                 p.warning No drives were found on your computer with at least #{minFreeAvailable} free disk space.
 
-              h3 Custom library directory
+              p
               label(for="libraryDirCustom" name="libraryDir").path-component
                 input#libraryDirCustom(name="libraryDirRadio" type="radio" value="libraryDirCustom")
 
                 input#libraryDirCustomInput.select-directory-path(
                   name="libraryDir"
                   type="text"
-                  placeholder="Path to your library"
+                  placeholder="Custom library directory"
                   max=1024
                   value=libraryDir 
                 )
+                p.only-electron
                 button.select-directory.btn-small.hidden.only-electron(
                   type="button"
                   data-title="Choose a directory to store your PhotoStructure library")
-                  <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none"/><path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg> Select
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none"/><path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg> Select custom library directory
+                  
+            .buttons.card-nav
+              a.back.btn-small(href="#section1" rel="prev") Back
+              a.next.btn-small(href="#scan-path-section" rel="next") Next 
 
           .section#scan-path-section
             h2 Where else are your photos and videos?
@@ -176,10 +186,13 @@ html(lang="en")
                   title="Click to add a directory to scan for photos and videos"
                   data-properties="openDirectory,createDirectory"
                   ) 
-                  <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M20 6h-8l-2-2H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-1 8h-3v3h-2v-3h-3v-2h3V9h2v3h3v2z"/></svg> Add
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M20 6h-8l-2-2H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-1 8h-3v3h-2v-3h-3v-2h3V9h2v3h3v2z"/></svg> Add
+            .buttons.card-nav
+              a.back.btn-small(href="#section2" rel="prev") Back
+              a.next.btn-small(href="#section4" rel="next") Next 
 
 
-          .section
+          .section#section4
             h2 May PhotoStructure organize your photos and videos?
             details
               summary.more-details(title="Click to toggle details")
@@ -222,9 +235,12 @@ html(lang="en")
                 i.emj.thumbs-down
                 | No thanks, I like my photos and videos where they already are. <br>
                 
+            .buttons.card-nav
+              a.back.btn-small(href="#scan-path-section" rel="prev") Back
+              a.next.btn-small(href="#section5" rel="next") Next 
 
 
-          .section
+          .section#section5
 
             h2 Error reporting
             p PhotoStructure's error reports help us detect, triage, and fix issues (<a href="https://photostructure.com/faq/error-reports/">learn more</a>).
@@ -241,8 +257,11 @@ html(lang="en")
                 i.emj.thumbs-down
                 | No thanks, do not send any error reports.
             
+            .buttons.card-nav
+              a.back.btn-small(href="#section4" rel="prev") Back
+              a.next.btn-small(href="#section6" rel="next") Next 
 
-          .section
+          .section#section6
             h2 PhotoStructure license
             
             details(open=welcome)
@@ -251,6 +270,9 @@ html(lang="en")
                 include eula.html
             p
               b By clicking Start you agree to all terms of this license.
+            .buttons.card-nav
+              a.back.btn-small(href="#section5" rel="prev") Back
+
 
           .buttons.section(class={stickybottom: !welcome})
             unless welcome

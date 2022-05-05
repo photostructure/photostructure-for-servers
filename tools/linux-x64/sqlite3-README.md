@@ -1,9 +1,9 @@
-Applied on Ubuntu 20.04:
+Applied on Ubuntu 20.04 x64:
 
 ```
-VER=3360000
+export VER=3380200
 cd ~/src
-curl -o - https://sqlite.org/2021/sqlite-autoconf-$VER.tar.gz | tar xz
+curl -o - https://sqlite.org/2022/sqlite-autoconf-$VER.tar.gz | tar xz
 cd sqlite-autoconf-$VER
 ./configure --enable-static --enable-readline
 make -j24

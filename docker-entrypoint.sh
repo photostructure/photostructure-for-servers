@@ -11,12 +11,6 @@
 # Propagate ctrl-c while we're still in this script:
 trap 'exit 130' INT
 
-# Tell PhotoStructure that we're running in a docker container:
-export PS_IS_DOCKER="1"
-
-# Tell node to run in production:
-export NODE_ENV="production"
-
 # Node was already installed into /usr/local/bin:
 export PATH="${PATH}:/usr/local/bin:/ps/app:/ps/app/bin"
 
@@ -34,17 +28,24 @@ DEFAULT_UID=$(stat -c %u /ps/config/settings.toml 2>/dev/null || echo 1000)
 DEFAULT_GID=$(stat -c %g /ps/config/settings.toml 2>/dev/null || echo 1000)
 
 # Accept either UID or PUID:
-export UID=${UID:-${PUID:-${DEFAULT_UID}}}
+export UID="${UID:-${PUID:-${DEFAULT_UID}}}"
 
 # Accept either GID or PGID:
-export GID=${GID:-${PGID:-${DEFAULT_GID}}}
+export GID="${GID:-${PGID:-${DEFAULT_GID}}}"
 
 # Accept UMASK:
 umask "${UMASK:-0022}"
 
-if [ -x "$PS_RUN_AT_STARTUP" ] ; then
+if [ -x "$PS_RUN_AT_STARTUP" ]; then
   "$PS_RUN_AT_STARTUP"
 fi
+
+maybe_chown() {
+  if [ -d "$0" ] && [ "$(stat -c '%u' "$0")" != "$UID" ]; then
+    chown --silent --recursive node:node "$0"
+  fi
+
+}
 
 # Let the user shell into the container:
 if [ "$*" = "sh" ] || [ "$*" = "dash" ] || [ "$*" = "bash" ]; then
@@ -61,9 +62,24 @@ else
   usermod --non-unique --uid "$UID" node >/dev/null
   groupmod --non-unique --gid "$GID" node
 
-  # Always make sure the settings, opened-by, and models directories are
-  # read/writable by node:
-  chown --silent --recursive node:node /ps/library/.photostructure/settings.toml /ps/library/.photostructure/opened-by /ps/library/.photostructure/models
+  if [ -z "$PS_NO_PUID_CHOWN" ]; then
+    # Always make sure the settings, opened-by, and models directories are
+    # read/writable by node:
+    for dir in /ps/library/.photostructure/settings.toml \
+      /ps/library/.photostructure/opened-by \
+      /ps/library/.photostructure/models \
+      /ps/config \
+      /ps/logs \
+      /ps/default; do
+      maybe_chown "$dir"
+    done
+
+    # Special handling so we don't do something terrible if someone bind-mounts /tmp to /ps/tmp
+    if [ -d /ps/tmp ]; then
+      mkdir -p "/ps/tmp/.cache-$UID"
+      maybe_chown "/ps/tmp/.cache-$UID"
+    fi
+  fi
 
   # Start photostructure as the user "node" instead of root.
 

@@ -1,0 +1,1 @@
+Extracted from https://sqlite.org/2022/sqlite-tools-win32-x86-3380200.zip

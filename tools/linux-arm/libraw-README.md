@@ -1,11 +1,14 @@
 # Static build of `dcraw_emu`
 
-To reproduce on Ubuntu 20.04 LTS:
+To reproduce on a Raspberry Pi 4 running Debian Bullseye:
 
 ```sh
 sudo apt install build-essential autogen autoconf libtool pkg-config libjpeg-dev zlib1g-dev
 
 wget https://www.libraw.org/data/LibRaw-0.20.2.tar.gz
+
+# sha256sum should say "OK":
+echo dc1b486c2003435733043e4e05273477326e51c3ea554c6864a4eafaff1004a6  LibRaw-0.20.2.tar.gz | sha256sum --check
 
 tar xvzf LibRaw-0.20.2.tar.gz
 
@@ -13,9 +16,9 @@ cd LibRaw-0.20.2
 
 autoreconf -fiv
 
-./configure --enable-static --disable-lcms --disable-openmp -DUSE_OLD_VIDEOCAMS
+./configure --enable-static --disable-lcms --disable-openmp
 
-make -j24
+make -j4
 
 # With lcms? Nope: fails with /usr/bin/ld: cannot find -llcms2
 
@@ -38,6 +41,6 @@ strip bin/dcraw_emu
 strip bin/raw-identify
 
 # And we're done. #woot.
-cp bin/dcraw_emu ~/src/photostructure/tools/linux-x64/libraw
-cp bin/raw-identify ~/src/photostructure/tools/linux-x64/libraw
+cp bin/dcraw_emu ~/src/photostructure/tools/linux-arm/libraw
+cp bin/raw-identify ~/src/photostructure/tools/linux-arm/libraw
 ```

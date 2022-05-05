@@ -2,6 +2,5 @@
 .github
 .gitignore
 Dockerfile
-# binaries in tools/* are compiled with glibc,
-# but Alpine needs musl, so skip it:
-tools
+# binaries in tools/* are compiled with glibc, but Alpine uses musl, so skip:
+tools/
