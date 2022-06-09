@@ -20,9 +20,55 @@ This is a detailed list of changes in each version.
 
 <!-- - 🐛 [Incremental syncs find new folders](https://forum.photostructure.com/t/source-directory-not-scanned-after-beta-13-update/867) (I believe this was due to the auto sync-paths but) -->
 
-## v2.1.0-alpha.0
+## v2.1.0-alpha.2
 
-**Released 2022-05-05**
+**To be released**
+
+- ✨ PhotoStructure now supports powerful "include" and "exclude" patterns via [the new `globs` setting](https://forum.photostructure.com/t/new-in-v2-1-file-globbing/1458) which replaces the `neverIgnored` setting.
+
+- ✨ Added a link to the asset header to download the original asset
+
+- 🐛 On Linux and macOS, `sync` no longer walks into nested mountpoints (this broke sync status and post-sync cleanup operations, like detecting deleted files).
+
+- 🐛 Fixed Windows launch bug `%SYSTEMROOT% not set`. PhotoStructure now uses case-insensitive environment key lookups on Windows.
+
+- 🐛 Fixed Windows `missing Z:\proc\cpuinfo` fatal error.
+
+- 🐛 On macOS, the default Apple Photos library is now appended to the "include" glob patterns.
+
+- 🐛 `ffmpeg`'s `singlejpeg` support was dropped in new builds. Adjusted PhotoStructure's frame extraction command to suit.
+
+- 💔 Several web security settings were changed. [See the forum for details.](https://forum.photostructure.com/t/version-2-1-0-alpha-is-ready-for-testing/1456/12)
+
+  - 📦 The `trustProxy` setting default was changed from `false` to `loopback`. If you use PhotoStructure via a reverse proxy, please refer to the documentation associated to the setting, visit <http://expressjs.com/en/guide/behind-proxies.html>, or ping us on Discord for help.
+
+  - 📦 The `upgradeInsecureRequests` setting defaults to `false`. If any `https` request is detected, however, PhotoStructure changes the default to `true`. **If you access your library via both `http` and `https`, explicitly set this setting to `false`.**
+
+  - 📦 The `enableWebSecurity` setting was confusing, and was deleted.
+
+  - 📦 All web security settings are now all gathered in a new `Security` category
+
+- 📦 `logtail` now accepts a log directory to tail recursively
+
+- 📦 Docker multistage builds took 40+ minutes on GitHub Actions. A [new cached base image](https://github.com/photostructure/base-tools) speeds up rebuilds to be just a minute or two.
+
+- 📦 The `info` tool now lists all `.JSON`, `.XMP`, `.MIE`, and other sidecar files for the file(s) being examined. [See the forum for details.](https://forum.photostructure.com/t/increasing-confidence-in-the-import/1476/5)
+
+- 📦 File watching is now debounced and can squelches stat changes if the SHA doesn't change. See the new `watchDebounceMs` setting for details. This fixes the mountpoints watcher from declaring "detected change in /proc/mounts" every minute on linux systems.
+
+- 📦 A bunch of [settings](https://photostructure.com/getting-started/advanced-settings/) housecleaning:
+
+  - The `Volumes` and `Files` categories were merged into a new `Filesystem` category
+  - The `Timeouts` category was deleted, and contents moved into proper categories (like `maxSyncFileTimeoutMs` moved to `Sync`)
+  - A new `Security` category was added (see above)
+  - `maxEmbeddedBuffer` moved to `Previews`
+  
+
+<a id="v210-alpha0"></a>
+
+## v2.1.0-alpha.1
+
+**[Released 2022-05-05](https://forum.photostructure.com/t/version-2-1-0-alpha-is-ready-for-testing/1456?u=mrm)**
 
 We're skipping a release of 2.0, as the changes in this release are substantial enough to return to "alpha" status.
 
@@ -221,7 +267,7 @@ The `sync` process now supports `--progress`, which exposes real-time import pro
 
 - 📦 New `ignoredFilesystemTypes` Linux-only setting lets you tell PhotoStructure not to walk into non-fs mountpoints. The default of `["cgroup", "debugfs", "gvfsd-fuse", "none", "sunrpc", "sysfs", "tracefs"]` should work for most people. If you need to edit this, please pop into the forum or Discord and tell us!
 
-- 📦 Cache dirs `rm -rf`ed when database migrations are applied. This will fix incorrectly-rotated cached preview HEIFs. 
+- 📦 Cache dirs `rm -rf`ed when database migrations are applied. This will fix incorrectly-rotated cached preview HEIFs.
 
 ## Prior release notes
 

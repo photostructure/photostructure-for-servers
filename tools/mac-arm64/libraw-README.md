@@ -1,20 +1,21 @@
 # Static build of `dcraw_emu`
 
-To reproduce on a Raspberry Pi 4 running Debian Bullseye:
+To reproduce on macOS:
 
 ```sh
-sudo apt install build-essential autogen autoconf libtool pkg-config libjpeg-dev zlib1g-dev
+brew install autogen autoconf automake libtool pkg-config libjpeg zlib
 
 mkdir -p ~/src
 cd ~/src
 git clone https://github.com/LibRaw/LibRaw.git --depth 3
 cd LibRaw
 git checkout --force 01a2b7f3545705f38cfd4e9a3eee152ea8d1f967 
-autoreconf -fiv
 
+export LDFLAGS="-L/opt/homebrew/lib"
+autoreconf -fiv
 ./configure --enable-static --disable-lcms --disable-openmp
 
-make -j4
+make -j8
 
 # With lcms? Nope: fails with /usr/bin/ld: cannot find -llcms2
 
@@ -25,14 +26,14 @@ make -j4
 
 # This line is created by taking the line that libtool links dcraw_emu, and adding "-all-static" after "g++":
 
-/bin/bash ./libtool  --tag=CXX   --mode=link g++ -all-static -g -O2   -o bin/dcraw_emu samples/bin_dcraw_emu-dcraw_emu.o lib/libraw.la -ljpeg -lz -lm
+/bin/bash ./libtool  --tag=CXX   --mode=link g++ -all-static -g -O2   -o bin/dcraw_emu samples/bin_dcraw_emu-dcraw_emu.o lib/libraw.la /opt/homebrew/opt/jpeg/lib/libjpeg.a -lz -lm
 
-/bin/bash ./libtool  --tag=CXX   --mode=link g++ -all-static -g -O2   -o bin/raw-identify samples/bin_raw_identify-raw-identify.o lib/libraw.la -ljpeg -lz -lm
+/bin/bash ./libtool  --tag=CXX   --mode=link g++ -all-static -g -O2   -o bin/raw-identify samples/bin_raw_identify-raw-identify.o lib/libraw.la /opt/homebrew/opt/jpeg/lib/libjpeg.a -lz -lm
 
-# ldd should report "not a dynamic executable:" (thanks to "-all-static")
-ldd bin/dcraw_emu
+otool -L bin/dcraw_emu
 
-# Before strip: 7.5M, after: 3.2M:
+# Should not reference anything in homebrew (like /opt/homebrew/opt/jpeg/lib/libjpeg.9.dylib)
+
 strip bin/dcraw_emu
 strip bin/raw-identify
 

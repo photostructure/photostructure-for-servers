@@ -20,20 +20,20 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.3.4
+        uses: actions/checkout@v3.0.2
 
       - name: Set up QEMU
         id: qemu
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v2
         with:
           platforms: arm64
 
       - name: Set up Buildx
         id: buildx
-        uses: docker/setup-buildx-action@v1.3.0
+        uses: docker/setup-buildx-action@v2.0.0
 
       - name: Cache layers
-        uses: actions/cache@v2.1.5
+        uses: actions/cache@v3.0.2
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ github.sha }}
@@ -42,7 +42,7 @@ jobs:
 
       - name: Docker meta
         id: meta
-        uses: docker/metadata-action@v3.2.0
+        uses: docker/metadata-action@v4.0.1
         with:
           images: photostructure/server,ghcr.io/photostructure/server
           tags: |
@@ -52,13 +52,20 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
+            # "v1.2.3-alpha.4" should be tagged with :alpha 
+            type=match,pattern=alpha,value=alpha
+            # "v1.2.3-beta.4" should be tagged with both :alpha and :beta 
             type=match,pattern=beta,value=alpha
-            type=match,pattern=main,value=alpha
-            type=match,pattern=main,value=beta
+            type=match,pattern=beta,value=beta
+            # "v1.2.3" should update :alpha, :beta, :stable, and :latest
+            type=match,pattern=/^v?[\d\.]+$/i,value=alpha
+            type=match,pattern=/^v?[\d\.]+$/i,value=beta
+            type=match,pattern=/^v?[\d\.]+$/i,value=stable
+            type=match,pattern=/^v?[\d\.]+$/i,value=latest
 
       - name: Log in to Docker Hub
         if: github.event_name != 'pull_request'
-        uses: docker/login-action@v1.9.0
+        uses: docker/login-action@v2.0.0
         with:
           registry: docker.io
           username: ${{ secrets.DOCKERHUB_USER }}
@@ -66,14 +73,14 @@ jobs:
 
       - name: Log in to GitHub Container Registry
         if: github.event_name != 'pull_request'
-        uses: docker/login-action@v1.9.0
+        uses: docker/login-action@v2.0.0
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push
-        uses: docker/build-push-action@v2.4.0
+        uses: docker/build-push-action@v3.0.0
         with:
           context: .
           file: ./Dockerfile

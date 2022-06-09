@@ -221,13 +221,13 @@ html(lang="en")
               ul
                 li this setting is ignored: PhotoStructure won't copy new files into your library. 
                 li Existing files in your library will remain in their current location.
+            p Copy my photos and videos into my PhotoStructure library when I have an active <span class="plus">plus</span> subscription.
 
             p
               label(for="copyEnabled")
                 input#copyEnabled(name="copyAssets" type="radio" value="copyEnabled" checked=(copyAssets || welcome))
                 i.emj.thumbs-up
-                | Yes, please copy my photos and videos into my PhotoStructure Library.
-                span.pill.plus(title="This feature is only available to PhotoStructure plus subscribers") plus&nbsp;only
+                | Yes, please
 
             p
               label(for="copyDisabled")

@@ -1,0 +1,1 @@
+Extracted from https://www.libraw.org/data/LibRaw-0.20.2-Win64.zip
