@@ -83,6 +83,10 @@ else
 
   # Start photostructure as the user "node" instead of root.
 
-  # We `exec` to replace the current shell so nothing is between tini and node:
-  exec su --preserve-environment node --command "/usr/local/bin/node /ps/app/photostructure $*"
+  # We `exec` to replace the current shell so nothing is between tini and
+  # node. 
+  
+  # BTW: Alpine's busybox-powered `su` doesn't support --preserve-environment
+  # (-p), or --command (-c).
+  exec su -p node -c "/usr/local/bin/node /ps/app/photostructure $*"
 fi
