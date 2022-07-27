@@ -1,7 +1,7 @@
 To reproduce on a Raspberry Pi 4 running Debian Bullseye:
 
 ```
-export VER=3380500
+export VER=3390100
 cd ~/src
 curl -o - https://sqlite.org/2022/sqlite-autoconf-$VER.tar.gz | tar xz
 cd sqlite-autoconf-$VER

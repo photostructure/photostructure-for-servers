@@ -20,13 +20,120 @@ This is a detailed list of changes in each version.
 
 <!-- - 🐛 [Incremental syncs find new folders](https://forum.photostructure.com/t/source-directory-not-scanned-after-beta-13-update/867) (I believe this was due to the auto sync-paths but) -->
 
-## v2.1.0-alpha.2
+<!-- incorrect sync status on the about page -->
+<!-- progress report shows asset ids https://forum.photostructure.com/t/2-1-0-alpha-1-rebuilding/1473 -->
 
-**To be released**
+## v2.1.0-alpha.4
 
-- ✨ PhotoStructure now supports powerful "include" and "exclude" patterns via [the new `globs` setting](https://forum.photostructure.com/t/new-in-v2-1-file-globbing/1458) which replaces the `neverIgnored` setting.
+**(to be released)**
 
-- ✨ Added a link to the asset header to download the original asset
+- 💔 PhotoStructure for Docker users: If your docker or docker-compose scripts used `$UID`, please switch to using `$PUID`. If you used `$GID`, please switch to `$PGID`.
+
+  Prior releases tried to be "nice" and support **both** `$UID` and `$PUID` (as well as both `$GID` and `$PGID`), but this turned out to be a _bad idea_. `bash` and other commands consider `$UID` and `$GID` to be reserved, read-only, and trustable environment variables, which could cause issues. We'll just stick with the linuxserver.io standard. Details: <https://photostructure.com/go/pgid>
+
+- ✨ Support for remote TCP [GELF-compatible](https://docs.graylog.org/v1/docs/gelf) logging servers via the new `PS_LOG_SERVER` and `PS_LOG_SERVER_LEVEL` settings.
+
+- ✨/📦 "Friendly" duration strings are now supported (after I typoed the fourth ISO duration string). See <https://photostructure.com/getting-started/advanced-settings#duration> for details.
+
+- ✨/📦 Prior versions of PhotoStructure compiled the front-end javascript against an ES5 target, which caused older, unsupported iOS devices to not render the frontend. When we heard that [Nighthawk](https://forum.photostructure.com/u/nighthawk/summary)'s Grandma's iPad didn't work, though, **this had to be fixed**. We know build against ES3, and should support ancient versions of Safari. 
+
+- ✨/📦/🐛 The prior build (`alpha.2` and `alpha.3`) introduced `globs`, but having both `scanPaths` and `globs` resulted in confusion (and several bugs). File exclusion patterns were completely revisited in this build. [Implementation details and usage are explained in this forum post](https://forum.photostructure.com/t/new-in-v2-1-exclude-files-with-globs/1458).
+
+- ✨/🐛 Sidecar handling was improved: `photo.JPEG` now matches up with `photo.JPG.xmp`.
+
+- ✨ When PhotoStructure copies files on macOS and Windows, it now retains file "birthtime" metadata. This isn't a field that exists on standard Linux filesystems, so it's not supported there. Set `retainFileBirthtimes=false` to disable this new behavior. 
+
+- ✨ Lazy loading is now configurable, via the new `lazyLoadExtraVh` setting. Use a smaller value if you're serving your library over a constrained network.
+
+- ✨/🐛 Several [sync report](https://photostructure.com/go/sync-reports) improvements:
+
+  - The sync report directory can be opened via the nav menu (if accessed via localhost), or on PhotoStructure for Desktops, via the tray and system menus.
+
+  - The README.txt now includes a comprehensive list of "states" for files and directories.
+  
+  - Added a new "at" column that's ISO-date-time formatted, because most spreadsheet apps don't know how to parse millis-from-common-epoch.
+
+  - Sync reports no longer worryingly state that all sidecars were skipped--the sync report now states what file(s) the sidecar will be associated with, and only marked as excluded if they don't match with any sibling photo or video file.
+  
+  - Sync reports now include a "started" state emitted after being dequeued from the work queue.
+  
+  - Prior sync report CSVs could contain a "details" cell that included newlines. Although Excel and LibreOffice parse these CSVs properly, Google Sheets don't, and there was discussion asking if these newlines could be avoided. _Good news, everyone_, `/\r?/n/g` is replaced with `": "` in the details column now!
+  
+  - If automatic organization is enabled (see the `copyAssetsToLibrary` setting), a new sync report row will be added when photos and videos are copied into your library.
+
+- ✨/🐛 When sync finishes for a given path, and `retryEnqueued` is `true`, `sync` will look at the last day of sync reports for paths that are "stuck"--paths that have a "enqueued" entry, but no subsequent "synced", "timeout", or "failed" entry, and retry them.
+
+- 🐛 A bug in URI root encoding caused `alpha.2` through `alpha.4` to have several sync reporting and progress panel-related errors, which should now be resolved.
+
+- 🐛 Depending on how PhotoStructure was shut down, the `sync` process could have been force-killed while still closing the database, which would result in `SQLITE_CORRUPT`. A new `syncExitTimeoutMs` setting has been added, which defaults to 1 minute--this should be enough to close SQLite even on the slowest remote HDDs and largest libraries, but now you can extend this if you must.`
+
+- 🐛 Work-in-progress files, (hidden files starting with `.WIP-`), used by metadata extraction and transcoding ops, now use a filesystem mutex to avoid race conditions (this caused random import failures on high-CPU-count servers).
+
+- 🐛 Filesystem watches for the same path are now shared within a given process (Node.js quietly fails when watch is invoked more than 3 times for the same path. Again, this would only impact users with high-CPU-count servers).
+
+- 🐛 Videos and images are no longer considered for aggregation (to avoid spurious live photo matches). (PhotoStructure will revert this when Live Photos are properly aggregated).
+
+- 🐛 PhotoStructure for Desktops has a "pre-flight check" of the library directory at startup. Prior versions could fall into an infinite loop if the directory permissions were wrong.
+
+- 🐛 Library directory suggestions now filter out any directories that are not read-write by the current user.
+
+- 🐛 The "🌩 Not Connected" dialog no longer flashes epi(lepti)cally when the library server isn't available. 
+
+- 🐛 Backend state, liked current running version, isPaused, and current plan is now synchronized with the front-end after every XHR request.
+
+- 🐛 Fixed `./photostructure main --tail` (prior versions would erroneously report the arg as being invalid).
+
+- 🐛 PhotoStructure for Desktop billing links now open in the current window
+
+- 🐛 Due to an unclosed http response, the webserver would hang if previews were missing
+
+- 🐛 Fixed `includedPreviewTags` setting's `capturedAt` and `exposureSettings` support for non-standard tag locations. Preview images are tagged to let Apple Preview and Eye of Gnome properly extract exposure settings.
+
+- 🐛/📦 Reduced db mutex contention during backups by pausing work item dequeues--this could cause tasks to "time out" when they were just waiting for the backup to complete.
+
+- 🐛 The "your library is already open" and "your library is missing" preflight check dialog buttons for PhotoStructure for Desktops didn't work properly. We use the new electron API properly now.
+
+- 🐛 File copies could erroneously timeout under heavy I/O, causing larger file imports to fail randomly. We now use a progress watchdog instead of a hard timeout.
+
+- 🐛/📦 Wrapped PhotoStructure for Desktops launch block in a try/catch to ensure errors got rendered to a user-visible dialog
+
+- 📦 PhotoStructure for Docker: If `$PUID` or `$PGID` aren't "effective" (either the current effective user id doesn't match `$PUID`, or current effective group id doesn't match `$PGID`), all commands (`main`, `sync`, `web`, ...) will now emit a warning with a link to the forum post with the solution: <https://forum.photostructure.com/t/1597/2>.
+
+- 📦 Process shutdown was refactored a bit: 
+
+  - To avoid premature shutdown (and dreaded `SQLITE_CORRUPT` errors), we now fully rely on "endable" component timeouts, rather than having a single top-level timeout. If, say, the db takes a while to shut down, the new code will be patient and wait for it now. Shutdown may take a bit longer, but in testing I haven't measured slower shutdowns.
+  
+  - Child processes now listen on `stdout` for `--exit`, process signals, and the new `exit` shared-state event to initiate shutdown.
+
+- 📦 Volume and mountpoint parsing now uses the `validateMountpoints` setting to only return user-`rX` directories.
+
+- 📦 Expired subscription licenses are now auto-refreshed after upgrading to a new major/minor version.
+
+- 📦 Multiprocess state sharing is now lockless to avoid multi-process deadlocks in `alpha.3`.
+
+- 📦 Advisory locks use filesystem mutexes, rather than relying on SQLite unique constraints.
+
+- 📦 Improved `info --exclude-globs` output
+
+- 📦 File SHAs are cached and invalidated only if `fs.Stats` `size` or `mtimeMs` change. Prior versions would invalidate previously-cached SHAs too aggressively, which could result in the entire file being re-read several times unnecessarily.
+
+- 📦 Pulled in latest versions of Electron, sharp, node, typescript, ExifTool, and other third-party libraries.
+
+## v2.1.0-alpha.3 (server)
+
+**[Released 2022-06-08](https://forum.photostructure.com/t/version-2-1-0-alpha-2-is-ready-for-testing/1507)**
+
+- 🐛 This version was only released on server editions, and fixes the `su` error in `docker-entrypoint.sh`.
+
+## v2.1.0-alpha.2 (desktop)
+
+**[Released 2022-06-08](https://forum.photostructure.com/t/version-2-1-0-alpha-2-is-ready-for-testing/1507)**
+
+- ✨ A separate, native Apple Silicon build is now available for macOS users (we didn't go with a universal, or "fat" build, as the "thin" builds are twice as fast to download and take up half of the disk space--a universal build would have been close to 500MB, uncompressed!).
+
+- ✨ PhotoStructure now supports powerful "include" and "exclude" patterns via [the new `globs` setting](https://forum.photostructure.com/t/new-in-v2-1-file-globbing/1458). This replaces the prior `neverIgnored` setting.
+
+- ✨ The asset header now supports direct downloading of the original asset
 
 - 🐛 On Linux and macOS, `sync` no longer walks into nested mountpoints (this broke sync status and post-sync cleanup operations, like detecting deleted files).
 
@@ -46,6 +153,8 @@ This is a detailed list of changes in each version.
 
   - 📦 The `enableWebSecurity` setting was confusing, and was deleted.
 
+  - 📦 A new `disabledHelmetMiddleware` setting supports configuration of [Helmet](https://github.com/helmetjs/helmet#reference).
+
   - 📦 All web security settings are now all gathered in a new `Security` category
 
 - 📦 `logtail` now accepts a log directory to tail recursively
@@ -63,6 +172,11 @@ This is a detailed list of changes in each version.
   - A new `Security` category was added (see above)
   - `maxEmbeddedBuffer` moved to `Previews`
   
+- 📦 `./photostructure info --cleanup` (whose process is normally performed automatically by `sync`) now vacuums stale image caches, readdir caches, shared state, previews, advisory locks, and logfiles. Add `--info` to see what it's doing.
+
+- 📦 [Third-party tools were
+  rebuilt](https://github.com/photostructure/photostructure-for-servers/tree/alpha/tools),
+  and compilation instructions were added as READMEs.
 
 <a id="v210-alpha0"></a>
 
@@ -92,7 +206,7 @@ The `sync` process now supports `--progress`, which exposes real-time import pro
 
   - DB vacuuming, tag, and search maintenance is now rate-limited with dynamic TTLs based on the size of the library
 
-- ✨ New sync reports are now emitted into `$library/.photostructure/sync-reports/`. [See the forum post for more details.](https://forum.photostructure.com/t/show-more-import-and-sync-details/218/9?u=mrm)
+- ✨ New sync reports are now emitted into `$library/.photostructure/sync-reports/`. [See the forum post for more details.](https://photostructure.com/go/sync-reports)
 
 - ✨/🐛 Deduplication improvements:
 
@@ -134,19 +248,7 @@ The `sync` process now supports `--progress`, which exposes real-time import pro
 
 - ✨ Newer versions of Firefox and Chrome don't like non-https websites with CSP and CORS headers: PhotoStructure will automatically disable those headers for PhotoStructure for Desktops, or if `exposeNetworkWithoutAuth` is `false`, but you can specify the correct setting with the new `enableWebSecurity` setting.
 
-- ✨ All settings ending in `Ms` (for **M**illi**s**econds) and `Duration` now accept [ISO 8601 duration strings](https://en.wikipedia.org/wiki/ISO_8601#Durations), as well as numeric values which will be interpreted as milliseconds.
-
-  These strings certainly aren't the _prettiest_ to look at, but they're well-specified, you don't have to waste your time counting zeros or dividing by 60.
-
-  - 8601 duration strings always start with `P`.
-  - Hour, minute, and second values follow a `T`.
-  - PhotoStructure lets you use lowercase, if you prefer.
-
-  Here are some examples:
-
-  - `P1D` is 1 day
-  - `PT20M` is 20 minutes
-  - `p4dt5h6m7.890s` is 4 days, 5 hours, 6 minutes, 7 seconds, and 890 milliseconds.
+- ✨ All settings ending in `Ms` (for **M**illi**s**econds) and `Duration` now accept [ISO 8601 duration strings](https://en.wikipedia.org/wiki/ISO_8601#Durations), "friendly" durations, as well as numeric values which will be interpreted as milliseconds. See <https://photostructure.com/getting-started/advanced-settings#duration> for details.
 
 - ✨ **Stable inferred tags for library copies**. PhotoStructure uses "sibling" files to backfill missing metadata. When photos and videos are copied into your library, there may not be siblings to restore the "inferred" metadata, and that could cause issues with tagging and imports.
 

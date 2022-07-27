@@ -9,17 +9,21 @@ binaries from SQLite. See <https://support.apple.com/en-us/HT208436>.
 
 Compiled using all defaults:
 
-
 ```sh
-bash # to avoid zsh
-
-brew install curl
 xcode-select --install
 sudo xcode-select --reset
+```
+
+run under bash to avoid zsh issues:
+
+```sh
+bash
+
+brew install curl
 
 mkdir -p ~/src
 cd ~/src
-export VER=3380500
+export VER=3390100
 curl -o - https://sqlite.org/2022/sqlite-autoconf-$VER.tar.gz | tar xz
 cd sqlite-autoconf-$VER
 ./configure --enable-static --enable-readline

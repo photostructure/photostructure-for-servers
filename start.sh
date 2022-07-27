@@ -73,17 +73,13 @@ else
   echo "WARNING: this isn't a supported platform."
 fi
 
-# Version 1.0.0 includes all the binaries from PhotoStructure for Desktop in
-# PhotoStructure for Node because the system libraries (like libraw and sqlite)
-# are probably out of date.
-
 # We really just need node and git at this point:
 
 for i in git $NODE; do
   command -v $i >/dev/null || die "Please install $i"
 done
 
-# And warn people if they don't have ffmpeg:
+# Warn people if they don't have ffmpeg:
 
 if ! command -v ffmpeg >/dev/null; then
   printf "WARNING: ffmpeg is required for video support.\nSee <https://photostructure.com/getting-started/video-support/#ubuntu-installation>\n\n"
@@ -94,10 +90,10 @@ fi
 
 NODE_VERSION="$(version "$($NODE -p process.versions.node)")"
 
-# Node 14 has (many!) important security and performance improvements
+# Node 14 has (many!) important security and performance improvements. We recommend Node 16 (LTS).
 
-if [ "$NODE_VERSION" -lt "$(version "14.16.0")" ]; then
-  die "Please install Node.js v14.16.0 or later"
+if [ "$NODE_VERSION" -lt "$(version "14.20.0")" ]; then
+  die "Please install Node.js v14.20.0 or later"
 fi
 
 # set NOGIT=1 to disable auto-update:

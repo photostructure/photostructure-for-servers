@@ -14,9 +14,12 @@ Compiled using all defaults:
 
 ```sh
 bash # to avoid zsh
+
+brew install curl
+
 mkdir -p ~/src
 cd ~/src
-export VER=3380200
+export VER=3390100
 curl -o - https://sqlite.org/2022/sqlite-autoconf-$VER.tar.gz | tar xz
 cd sqlite-autoconf-$VER
 ./configure --enable-static --enable-readline
@@ -43,4 +46,17 @@ And that it compiled a 64-bit binary:
 ```sh
 $ file sqlite3
 sqlite3: Mach-O 64-bit executable x86_64
+```
+
+```sh
+mrm@mini sqlite-autoconf-3390100 % ./sqlite3
+SQLite version 3.39.1 2022-07-13 19:41:41
+Enter ".help" for usage hints.
+Connected to a transient in-memory database.
+Use ".open FILENAME" to reopen on a persistent database.
+sqlite> .version
+SQLite 3.39.1 2022-07-13 19:41:41 7c16541a0efb3985578181171c9f2bb3fdc4bad6a2ec85c6e31ab96f3eff201f
+zlib version 1.2.11
+clang-13.1.6
+sqlite> ^D
 ```
