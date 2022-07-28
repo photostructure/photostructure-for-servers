@@ -1,13 +1,13 @@
 {
-  "version": "2.1.0-alpha.5",
+  "version": "2.1.0-alpha.6",
   "versionMajor": 2,
   "versionMinor": 1,
   "versionPatch": 0,
   "versionPrerelease": [
     "alpha",
-    5
+    6
   ],
-  "release": "2.1.0-alpha.5+20220727172737",
-  "gitSha": "7a29a43ed15edd8b990bd80f9b44d39aa64763bd",
-  "gitDate": "2022-07-28T00:27:37.000Z"
+  "release": "2.1.0-alpha.6+20220727204238",
+  "gitSha": "2568a006d81963717874b343f61bcff98728db5c",
+  "gitDate": "2022-07-28T03:42:38.000Z"
 }
