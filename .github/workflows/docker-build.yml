@@ -41,6 +41,9 @@ jobs:
             # always include the full semver (v1.2.3-alpha.1)
             type=semver,pattern={{version}}
             
+            # tag as a prealpha build if it is such
+            type=raw,value=prealpha,enable=${{ contains(github.ref_name, 'prealpha') }}
+            
             # unless this is a prealpha build, update the alpha tag
             type=raw,value=alpha,enable=${{ !contains(github.ref_name, 'prealpha') }}
             
