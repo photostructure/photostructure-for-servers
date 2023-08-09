@@ -1,0 +1,1 @@
+-- This file will run db/Migrations.fix_root_tags

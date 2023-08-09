@@ -1,0 +1,2 @@
+ALTER TABLE AssetFile
+ADD COLUMN rating INTEGER;

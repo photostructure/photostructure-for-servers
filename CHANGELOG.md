@@ -1,377 +1,239 @@
 
 This is a detailed list of changes in each version.
 
-- Major version releases have posts summarizing bigger changes. See [the posts tagged with "release notes"](/tags/release-notes/).
+- Major releases have posts summarizing bigger changes. See [the posts tagged with "release notes"](/tags/release-notes/).
+
+- New releases, starting in 2023, use "calendar versioning," or [CalVer](https://calver.org/), using scheme `YY.MM.MINOR`.
 
 - **Stable, released versions are recommended.** [See the forum post for details about alpha, beta, and stable releases.](https://forum.photostructure.com/t/alpha-beta-stable-and-latest-what-should-you-use/274)
 
-- "Pre-release" builds (those that end with `alpha` or `beta`) have not been thoroughly tested, and may not even launch.
+- "Pre-release" builds (those that include `alpha` or `beta`) have not been thoroughly tested, and may not even launch.
 
 - Only run `alpha` or `beta` builds if you have [recent backups](/faq/how-do-i-safely-store-files/).
 
 - If you update to an alpha or beta build and you want to downgrade to a prior version, know that older versions of PhotoStructure may not be able to open libraries created by newer versions of PhotoStructure. You will probably need to [restore your library from a database backup](/faq/restore-db-from-backup/).
 
 <!-- TODO: -->
-<!-- - ✨/🐛/📦/🚫☠ For most cases, PhotoStructure no longer "fails fast." [Read more here](https://forum.photostructure.com/t/disable-photostructure-from-failing-fast/501). -->
 <!-- - ✨ Logs are now viewable in the UI -->
 <!-- - 🐛 [Tag reparenting doesn't seem to work properly on rebuilds](https://forum.photostructure.com/t/who-tags-are-incorrectly-excluded-from-keywords/676/6?u=mrm). -->
 
 <!-- - 🐛 Sync resume (after pause) on mac via the menubar (not the main window nav button) doesn't seem to support "resume" properly -->
 
-<!-- - 🐛 [Incremental syncs find new folders](https://forum.photostructure.com/t/source-directory-not-scanned-after-beta-13-update/867) (I believe this was due to the auto sync-paths but) -->
+<!-- fix "tag context" for "next previous" context. I'd always done a search, clicked a thumb, and then clicked esc to go back to the search results. But...  if you click a thumb from a search,  and then click "next" or "previous", it ignores that you can from a search, and does the chronological next asset, which is very confusing/irritating. -->
 
-<!-- incorrect sync status on the about page -->
-<!-- progress report shows asset ids https://forum.photostructure.com/t/2-1-0-alpha-1-rebuilding/1473 -->
+<a id="v2.1.0-alpha.8"></a>
+<a id="23.5.0-prealpha.1"></a>
+<a id="23.6.0-prealpha.1"></a>
+<a id="23.7.0-prealpha.1"></a>
 
-## v2.1.0-alpha.4
+## 23.8.0-prealpha.1
 
 **(to be released)**
 
-- 💔 PhotoStructure for Docker users: If your docker or docker-compose scripts used `$UID`, please switch to using `$PUID`. If you used `$GID`, please switch to `$PGID`.
+_(This version's contents had previously been listed as_ `v2.1.0-alpha.8` _, but we're switching to [CalVer](https://calver.org/), using scheme_ `YY.MM.MINOR` _.)_
 
-  Prior releases tried to be "nice" and support **both** `$UID` and `$PUID` (as well as both `$GID` and `$PGID`), but this turned out to be a _bad idea_. `bash` and other commands consider `$UID` and `$GID` to be reserved, read-only, and trustable environment variables, which could cause issues. We'll just stick with the linuxserver.io standard. Details: <https://photostructure.com/go/pgid>
+### ✨ **PhotoStructure no longer "fails fast."**
 
-- ✨ Support for remote TCP [GELF-compatible](https://docs.graylog.org/v1/docs/gelf) logging servers via the new `PS_LOG_SERVER` and `PS_LOG_SERVER_LEVEL` settings.
+_What's that mean?_
 
-- ✨/📦 "Friendly" duration strings are now supported (after I typoed the fourth ISO duration string). See <https://photostructure.com/getting-started/advanced-settings#duration> for details.
+PhotoStructure will try to always stay up and running, even if your library isn't available, or something's amiss, like a misconfiguration or something broken on the system.
 
-- ✨/📦 Prior versions of PhotoStructure compiled the front-end javascript against an ES5 target, which caused older, unsupported iOS devices to not render the frontend. When we heard that [Nighthawk](https://forum.photostructure.com/u/nighthawk/summary)'s Grandma's iPad didn't work, though, **this had to be fixed**. We know build against ES3, and should support ancient versions of Safari. 
+If anything prevents your library from being open, PhotoStructure will automatically redirect to a new `/health` page that list several handfuls of health checks to help people diagnose what's amiss, and in some cases, buttons that can attempt to repair what's wrong.
 
-- ✨/📦/🐛 The prior build (`alpha.2` and `alpha.3`) introduced `globs`, but having both `scanPaths` and `globs` resulted in confusion (and several bugs). File exclusion patterns were completely revisited in this build. [Implementation details and usage are explained in this forum post](https://forum.photostructure.com/t/new-in-v2-1-exclude-files-with-globs/1458).
+{{< figure src="/img/2023/05/health.png" caption="PhotoStructure's new health check page" >}}
 
-- ✨/🐛 Sidecar handling was improved: `photo.JPEG` now matches up with `photo.JPG.xmp`.
+This means people running PhotoStructure for Docker without reading the instructions will be presented with a friendly screen with direct links to the relevant documentation.
 
-- ✨ When PhotoStructure copies files on macOS and Windows, it now retains file "birthtime" metadata. This isn't a field that exists on standard Linux filesystems, so it's not supported there. Set `retainFileBirthtimes=false` to disable this new behavior. 
+This change also meant I could put the `/about` page on a diet--it only holds fairly cheap and cached content now, so it shouldn't disconcertinly hang anymore (prior versions ran several "health checks" that were run synchronously whenever the about page was requested).
 
-- ✨ Lazy loading is now configurable, via the new `lazyLoadExtraVh` setting. Use a smaller value if you're serving your library over a constrained network.
+This change also means PhotoStructure [stays up even if your library hard drive gets periodically disconnected](https://forum.photostructure.com/t/support-for-often-unplugging-my-ps-library/52).
 
-- ✨/🐛 Several [sync report](https://photostructure.com/go/sync-reports) improvements:
+There are now more than 15 health checks which cover common setup issues, including
 
-  - The sync report directory can be opened via the nav menu (if accessed via localhost), or on PhotoStructure for Desktops, via the tray and system menus.
+- file or directory permission errors
+- missing volume UUIDs
+- database schema validation
+- misspelled or misconfigured settings
+- external tool verifications
 
-  - The README.txt now includes a comprehensive list of "states" for files and directories.
-  
-  - Added a new "at" column that's ISO-date-time formatted, because most spreadsheet apps don't know how to parse millis-from-common-epoch.
+[Read more about this change on the forum](https://forum.photostructure.com/t/disable-photostructure-from-failing-fast/501).
 
-  - Sync reports no longer worryingly state that all sidecars were skipped--the sync report now states what file(s) the sidecar will be associated with, and only marked as excluded if they don't match with any sibling photo or video file.
-  
-  - Sync reports now include a "started" state emitted after being dequeued from the work queue.
-  
-  - Prior sync report CSVs could contain a "details" cell that included newlines. Although Excel and LibreOffice parse these CSVs properly, Google Sheets don't, and there was discussion asking if these newlines could be avoided. _Good news, everyone_, `/\r?/n/g` is replaced with `": "` in the details column now!
-  
-  - If automatic organization is enabled (see the `copyAssetsToLibrary` setting), a new sync report row will be added when photos and videos are copied into your library.
+Note that any (and all!) health checks can be disabled with the new `PS_SKIP_HEALTH_CHECK_IDS` setting.
 
-- ✨/🐛 When sync finishes for a given path, and `retryEnqueued` is `true`, `sync` will look at the last day of sync reports for paths that are "stuck"--paths that have a "enqueued" entry, but no subsequent "synced", "timeout", or "failed" entry, and retry them.
+### ✨ SQLite improvements
 
-- 🐛 A bug in URI root encoding caused `alpha.2` through `alpha.4` to have several sync reporting and progress panel-related errors, which should now be resolved.
+- PhotoStructure now automatically figures out the best value for [PS_FORCE_LOCAL_DB_REPLICA](https://forum.photostructure.com/t/whats-ps-force-local-db-replica/837). Previously, we simply defaulted all docker installs to use a local db replica, whose implementation was problematic with prior versions. This determination is also run within a filesystem advisory lock, to prevent concurrent db setup collisions.
 
-- 🐛 Depending on how PhotoStructure was shut down, the `sync` process could have been force-killed while still closing the database, which would result in `SQLITE_CORRUPT`. A new `syncExitTimeoutMs` setting has been added, which defaults to 1 minute--this should be enough to close SQLite even on the slowest remote HDDs and largest libraries, but now you can extend this if you must.`
+- Database backups are now always taken "hot." Prior versions required acquiring a halt-the-world mutex to prevent cold backups from causing SQLite corruption (and prior versions had some codepaths that didn't acquire the lock durably). Prior versions could also miss copying over the `-wal` write-ahead log, which could also cause SQLite corruption.
 
-- 🐛 Work-in-progress files, (hidden files starting with `.WIP-`), used by metadata extraction and transcoding ops, now use a filesystem mutex to avoid race conditions (this caused random import failures on high-CPU-count servers).
+- The new db health check now validates file integrity, foreign keys, and that the schema comprehensively matches expectations for the current version.
 
-- 🐛 Filesystem watches for the same path are now shared within a given process (Node.js quietly fails when watch is invoked more than 3 times for the same path. Again, this would only impact users with high-CPU-count servers).
+### ✨ PhotoStructure for Desktops improvements
 
-- 🐛 Videos and images are no longer considered for aggregation (to avoid spurious live photo matches). (PhotoStructure will revert this when Live Photos are properly aggregated).
+- The main window now preserves placement (even across screens) and dimensions between runs.
 
-- 🐛 PhotoStructure for Desktops has a "pre-flight check" of the library directory at startup. Prior versions could fall into an infinite loop if the directory permissions were wrong.
+- The `View` menu now has links to go back, open the log and sync reports directories, the system `settings.toml`, and the library `settings.toml`
 
-- 🐛 Library directory suggestions now filter out any directories that are not read-write by the current user.
+### ✨ PhotoStructure for Servers improvements
 
-- 🐛 The "🌩 Not Connected" dialog no longer flashes epi(lepti)cally when the library server isn't available. 
+- Docker and node editions now have a splash screen to see wth is going on at startup (without having to tail logs). (This page only shows if your library is quite large, your computer is quite slow, or a combination of both).
 
-- 🐛 Backend state, liked current running version, isPaused, and current plan is now synchronized with the front-end after every XHR request.
+- If PhotoStructure can't open the current library, instead of crashing, a new "PhotoStructure Status" page will be shown with diagnostics to help debug what went wrong and links to how to fix it. This should be a lot more friendly (especially as a first impression) for most people.
 
-- 🐛 Fixed `./photostructure main --tail` (prior versions would erroneously report the arg as being invalid).
+- PhotoStructure's binaries and supporting files were moved from `/ps/app` to `/opt/photostructure`. This move shouldn't impact anyone, and was made to avoid people being confused by mounting anything to `/ps` and hiding the entire installation.
 
-- 🐛 PhotoStructure for Desktop billing links now open in the current window
+### ✨/🐛/🏗️ Image deduplication improvements
 
-- 🐛 Due to an unclosed http response, the webserver would hang if previews were missing
+- Dominant color extraction now uses adaptive greyscale prefiltering, iterative k-means clustering, and returns percent coverage per color. **This change required a database migration** (that will be applied automatically) **and a library rebuild** (that will be scheduled automatically). See the new `dominantColorPixels`, `dominantColorKmeansRuns`, `dominantColorMergeThreshold`, and `dominantColorGreyThreshold` settings.
 
-- 🐛 Fixed `includedPreviewTags` setting's `capturedAt` and `exposureSettings` support for non-standard tag locations. Preview images are tagged to let Apple Preview and Eye of Gnome properly extract exposure settings.
+- Prior builds relied on a single (mean) image hash algorithm. This build adds two additional, novel [CIELAB](https://en.wikipedia.org/wiki/CIELAB_color_space)-based approaches (gradient diff and DCT). Having 3 different hashes dramatically helps both [precision and recall](https://en.wikipedia.org/wiki/Precision_and_recall).
 
-- 🐛/📦 Reduced db mutex contention during backups by pausing work item dequeues--this could cause tasks to "time out" when they were just waiting for the backup to complete.
+- Image hashes now use higher-quality resizing interpolation.
 
-- 🐛 The "your library is already open" and "your library is missing" preflight check dialog buttons for PhotoStructure for Desktops didn't work properly. We use the new electron API properly now.
+- New settings to control correlation thresholds: `minImageCoeffPct`, `minColorCoeffPct`, `imageHashFuzzyDateDelta`, `imageHashFuzzyDateDelta`, `imageHashRotationDelta`, `imageHashDifferentMimetypesDelta`, and `imageHashGreyscaleDelta`.
 
-- 🐛 File copies could erroneously timeout under heavy I/O, causing larger file imports to fail randomly. We now use a progress watchdog instead of a hard timeout.
+- When comparing two files, if either one of the files has an "imprecise" or "fuzzy" captured-at value (if the source is from the filename, inferred or from `Stats`), the image hash is always used, and the captured-at can be different. Disable this behavior by setting `strictDeduping=true`. Prior builds would skip the image hash comparison in some cases. **This change will require libraries to be rebuilt when upgraded to this build**.
 
-- 🐛/📦 Wrapped PhotoStructure for Desktops launch block in a try/catch to ensure errors got rendered to a user-visible dialog
+### ✨/🐛 Time parsing improvements
 
-- 📦 PhotoStructure for Docker: If `$PUID` or `$PGID` aren't "effective" (either the current effective user id doesn't match `$PUID`, or current effective group id doesn't match `$PGID`), all commands (`main`, `sync`, `web`, ...) will now emit a warning with a link to the forum post with the solution: <https://forum.photostructure.com/t/1597/2>.
+- Video files are _notoriously_ hard to get correct captured-at timezone offset values. Videos [regularly encode the `CreateDate` tag in UTC](https://github.com/photostructure/exiftool-vendored.js/issues/113) (even when the file wasn't captured in UTC!). This results in videos from prior versions of PhotoStructure being wrong by several hours. PhotoStructure now tries to "repair" the UTC timezone into the correct timezone by using either GPS metadata or a timezone offset inferrable via the filename. PhotoStructure also now has prioritized tag extraction: see the `capturedAtTags` and new `capturedAtTagsFallback` settings. Note that some Quicktime tags are not reliably stored as UTC, so we look for more reliable tags before resorting to these problematic tags. **If you find a video doesn't have the correct time in your PhotoStructure library, please email us an example.**
 
-- 📦 Process shutdown was refactored a bit: 
+- Timezone parsing has been improved to support both IANA and ISO offset formats (both of which have been found in the wild 😠).
 
-  - To avoid premature shutdown (and dreaded `SQLITE_CORRUPT` errors), we now fully rely on "endable" component timeouts, rather than having a single top-level timeout. If, say, the db takes a while to shut down, the new code will be patient and wait for it now. Shutdown may take a bit longer, but in testing I haven't measured slower shutdowns.
-  
-  - Child processes now listen on `stdout` for `--exit`, process signals, and the new `exit` shared-state event to initiate shutdown.
+- PhotoStructure handles missing timezones and differing timestamp precision more intelligently now: see `minCapturedAtPrecision` and `fuzzyDatePrecisionCoeff` for explanations.
 
-- 📦 Volume and mountpoint parsing now uses the `validateMountpoints` setting to only return user-`rX` directories.
+- Google Takeout JSON sidecar timestamps no longer (incorrectly) inherit the current system timezone.
 
-- 📦 Expired subscription licenses are now auto-refreshed after upgrading to a new major/minor version.
+### Other improvements and bugfixes
 
-- 📦 Multiprocess state sharing is now lockless to avoid multi-process deadlocks in `alpha.3`.
+- ✨ Tag galleries now support both square crops as well as aspect-respecting thumbnails. The toggle is in the upper right corner of all tag galleries.
 
-- 📦 Advisory locks use filesystem mutexes, rather than relying on SQLite unique constraints.
+- ✨ Asset file aggregation is stricter. Previous versions of PhotoStructure attached file variations to existing assets as long as they matched _any_ asset file associated to the asset. PhotoStructure will now aggregate new asset files only if they match all asset file variations. Set the new `assetAggregation` setting to `union` to restore prior behavior.
 
-- 📦 Improved `info --exclude-globs` output
+- ✨ Both [Alpine](https://www.alpinelinux.org/) and [Ubuntu](https://ubuntu.com/download/server) Docker images are now available. There are pros and cons to both images:
 
-- 📦 File SHAs are cached and invalidated only if `fs.Stats` `size` or `mtimeMs` change. Prior versions would invalidate previously-cached SHAs too aggressively, which could result in the entire file being re-read several times unnecessarily.
+  - Alpine images are less than half the size of the Ubuntu-based images
+  - Ubuntu's `ffmpeg` package supports (many!) more video codecs
+  - Ubuntu has better GPU acceleration support
+  - Performance between the two images is roughly equivalent
 
-- 📦 Pulled in latest versions of Electron, sharp, node, typescript, ExifTool, and other third-party libraries.
+- ✨ `psnet:` [asset file URIs](/faq/what-is-a-volume/#volume-uuids-save-the-day) now support `sshfs`-mounted partitions
 
-## v2.1.0-alpha.3 (server)
+- ✨ A new `transcodeMaxResolution` setting allows transcoded videos to not exceed a specific resolution threshold. [See the forum post for details](/https://forum.photostructure.com/t/specifying-video-transcoding-resolution/1903).
 
-**[Released 2022-06-08](https://forum.photostructure.com/t/version-2-1-0-alpha-2-is-ready-for-testing/1507)**
+- ✨/🐛 Prior versions on Windows and Raspberry Pi on slow disk could result in invalid file lock timeouts, which could prevent some file types (like large HEIFs) from being imported. This could show up as `EBUSY` or `ENOENT` errors in your sync report or logs.
 
-- 🐛 This version was only released on server editions, and fixes the `su` error in `docker-entrypoint.sh`.
+- ✨/🐛 Some camera models (like the Galaxy S8+) can produce images that have JPEG encoding errors. Prior builds would prevent importing of these images. (Thanks for the example images, [@nighthawk!](https://forum.photostructure.com/u/nighthawk/summary))
 
-## v2.1.0-alpha.2 (desktop)
+  Handling these images required a couple changes:
 
-**[Released 2022-06-08](https://forum.photostructure.com/t/version-2-1-0-alpha-2-is-ready-for-testing/1507)**
+  1. A new setting, `imageFailOn`, lets you import images that have minor encoding defects by default, but still reject images that have been truncated.
 
-- ✨ A separate, native Apple Silicon build is now available for macOS users (we didn't go with a universal, or "fat" build, as the "thin" builds are twice as fast to download and take up half of the disk space--a universal build would have been close to 500MB, uncompressed!).
+  2. Default values for the image validation patterns, `validationErrorBlocklist` and `validationErrorAllowlist`, now handle more corruption patterns.
 
-- ✨ PhotoStructure now supports powerful "include" and "exclude" patterns via [the new `globs` setting](https://forum.photostructure.com/t/new-in-v2-1-file-globbing/1458). This replaces the prior `neverIgnored` setting.
+- 💔/🐛 The `processPriority` setting no longer supports `AboveNormal`. If your settings used this value, `processPriority` will resort to the default, `Idle`. `AboveNormal` only worked if PhotoStructure was running as root (which it never should do!)
 
-- ✨ The asset header now supports direct downloading of the original asset
+- ✨/📦 The `/site.webmanifest` file is now dynamically generated, and includes a proper `start_url` (so every launch will pick a new seed) and defaults to `display: fullscreen`.
 
-- 🐛 On Linux and macOS, `sync` no longer walks into nested mountpoints (this broke sync status and post-sync cleanup operations, like detecting deleted files).
+- ✨/📦 [`info` tool](https://phstr.com/go/info) improvements:
 
-- 🐛 Fixed Windows launch bug `%SYSTEMROOT% not set`. PhotoStructure now uses case-insensitive environment key lookups on Windows.
+  - Image hash comparison information, including all correlations, deltas, and thresholds, are now included for files (which may help tune `imageHash*Delta` settings values).
 
-- 🐛 Fixed Windows `missing Z:\proc\cpuinfo` fatal error.
+  - Dominiant colors now include friendly names and percent image coverage.
 
-- 🐛 On macOS, the default Apple Photos library is now appended to the "include" glob patterns.
+  - Limit output to only image hash metadata with the new `--image-hash` filter.
 
-- 🐛 `ffmpeg`'s `singlejpeg` support was dropped in new builds. Adjusted PhotoStructure's frame extraction command to suit.
+  - `pathToLibraryAsset` is now rendered for every file to help debug the `assetPathnameFormat` setting.
 
-- 💔 Several web security settings were changed. [See the forum for details.](https://forum.photostructure.com/t/version-2-1-0-alpha-is-ready-for-testing/1456/12)
+  - When given more than one file applies clustering on the entire array and will return the files provided to ARGV, grouped by asset.
 
-  - 📦 The `trustProxy` setting default was changed from `false` to `loopback`. If you use PhotoStructure via a reverse proxy, please refer to the documentation associated to the setting, visit <http://expressjs.com/en/guide/behind-proxies.html>, or ping us on Discord for help.
+  - Several additional switches were added to `info` to help customer support, including `--read-settings`, `--suggested-libraries`, and `--child-env`.
 
-  - 📦 The `upgradeInsecureRequests` setting defaults to `false`. If any `https` request is detected, however, PhotoStructure changes the default to `true`. **If you access your library via both `http` and `https`, explicitly set this setting to `false`.**
+- ✨/🐛 Files with extensions that don't match their mimetype (say, JPEG-encoded images named `image.dng`, which Google Takeouts likes to do) are now imported gracefully.
 
-  - 📦 The `enableWebSecurity` setting was confusing, and was deleted.
+- ✨/🐛 `settings.toml` and `.psenv` files are now read correctly when BOM-encoded as UTF-8 or UTF16-LE.
 
-  - 📦 A new `disabledHelmetMiddleware` setting supports configuration of [Helmet](https://github.com/helmetjs/helmet#reference).
+- 🐛 [Glob exclusion patterns](https://forum.photostructure.com/t/new-in-v2-1-exclude-files-with-globs/1458) were not being applied correctly on Windows
 
-  - 📦 All web security settings are now all gathered in a new `Security` category
+- 🐛 Newer linux distributions could pull in a version of `heif-convert` that has a buggy filename parser. PhotoStructure invokes this tool in such a way that this bug is avoided.
 
-- 📦 `logtail` now accepts a log directory to tail recursively
+- 🐛 Prior builds would cache the absence of `heif-convert` until restart, which caused confusion for some users. PhotoStructure will now detect newly-installed `heif-convert` binaries within a minute.
 
-- 📦 Docker multistage builds took 40+ minutes on GitHub Actions. A [new cached base image](https://github.com/photostructure/base-tools) speeds up rebuilds to be just a minute or two.
+- 🐛 Fixed docker `:alpha`, `:beta`, and `:stable` tagging ([see the simplified example](https://github.com/mceachen/gha-test/blob/cb1a0c76a0be5bbcca6a002d5b41f76fa40031ae/.github/workflows/docker-build.yml#L39))
 
-- 📦 The `info` tool now lists all `.JSON`, `.XMP`, `.MIE`, and other sidecar files for the file(s) being examined. [See the forum for details.](https://forum.photostructure.com/t/increasing-confidence-in-the-import/1476/5)
+- 🐛 Rewrote how tools (like `ffmpeg`, `heif-convert`, and `jpegtran`) are detected on the system. Rather than spawning `which`, or asking PowerShell for the binary path, we now walk `$PATH` looking for binaries with `rx` access. If `$PATH` is somehow truncated or invalid, we also walk some default paths (like `%SYSTEMROOT%` on Windows, and `/usr/bin` and `/usr/local/bin` on macOS and Linux).
 
-- 📦 File watching is now debounced and can squelches stat changes if the SHA doesn't change. See the new `watchDebounceMs` setting for details. This fixes the mountpoints watcher from declaring "detected change in /proc/mounts" every minute on linux systems.
+  This fixes `sqlite.exe not found` and `jpegtran.exe not found` errors on Windows, and should fix SQLite backups on Windows.
 
-- 📦 A bunch of [settings](https://photostructure.com/getting-started/advanced-settings/) housecleaning:
+- 🐛 Fixed [o.toLocal is not a function](https://forum.photostructure.com/t/2-1-0-alpha-7-library-build-fails-sync-report-mentions-typeerror-o-tolocal-is-not-a-function/1638), caused if an asset file fails to extact a captured-at time. (Thanks for reporting, @pmocek!)
 
-  - The `Volumes` and `Files` categories were merged into a new `Filesystem` category
-  - The `Timeouts` category was deleted, and contents moved into proper categories (like `maxSyncFileTimeoutMs` moved to `Sync`)
-  - A new `Security` category was added (see above)
-  - `maxEmbeddedBuffer` moved to `Previews`
-  
-- 📦 `./photostructure info --cleanup` (whose process is normally performed automatically by `sync`) now vacuums stale image caches, readdir caches, shared state, previews, advisory locks, and logfiles. Add `--info` to see what it's doing.
+- 🐛 Fix `AssetFile` constraint violation during the asset file cleanup in rebuilds. This could prevent library rebuilds from completing successfully.
 
-- 📦 [Third-party tools were
-  rebuilt](https://github.com/photostructure/photostructure-for-servers/tree/alpha/tools),
-  and compilation instructions were added as READMEs.
+- 🐛 If an Apache reverse proxy closed the SSE socket, PhotoStructure would pop up a "🌩 Not connected" error. This build skips showing that error and tries to quietly restore the SSE socket when broken. [See this forum post for details.](https://forum.photostructure.com/t/repeated-not-connected-toast-message-when-running-behind-reverse-proxy/1694)
 
-<a id="v210-alpha0"></a>
+- 🐛 PhotoStructure can now [allow drives to go to sleep](https://forum.photostructure.com/t/photostructure-doesnt-let-your-drives-go-to-sleep/18/3). It should "just work," but to set `volumeMetadataTtlMs=0` and `mountpointsTtlMs=0` to force this behavior on platforms that don't have mountpoint-change-watcher functionality. `mountpointsTtlMs` defaults to 0 on docker now, btw.
 
-## v2.1.0-alpha.1
+- 🐛 Fixed off-center home icon on Safari (the `displayPath` for the root tag was `[ null ]`, oops)
 
-**[Released 2022-05-05](https://forum.photostructure.com/t/version-2-1-0-alpha-is-ready-for-testing/1456?u=mrm)**
+- 🐛 Note: file picker dialogs on PhotoStructure for Desktops that use Linux Gnome can pop-under as a "feature" of Gnome. See <https://github.com/electron/electron/issues/32857> for details.
 
-We're skipping a release of 2.0, as the changes in this release are substantial enough to return to "alpha" status.
+- ✨/📦 System load is now exposed in the about page and the `info` tool.
 
-A lot has changed behind the scenes, including a substantial refactor of process scheduling that should address sync and database issues several users have reported, and better sync visibility, thanks to the new sync reports.
+- ✨/📦 File I/O was reduced a bit--permission checks now directly use the `Stats` object if cached, rather than requiring a separate `access()` I/O call.
 
-Note for PhotoStructure for Servers users: `sync-file` is no longer an available command. Prior commands that used `sync-file` should switch to using `sync`.
+- ✨/📦 "Actual path" resolution on case-insensitive systems now ensure the correctly-cased pathname is used for URIs. Incorrect case could prevent cross-platform asset file correlation.
 
-The `sync` process now supports `--progress`, which exposes real-time import progress.
+- ✨/📦 The new `fsCacheSlowMs` setting supports sharing work, like image hashing and metadata parsing and inference, between processes, which can avoid duplicating work during asset importing.
 
-<!-- TODO: -->
+- ✨/📦 The new `siblingInference` setting helps PhotoStructure work around (very) large directories. See the setting for details.
 
-- ✨ Sync imports should be substantially faster, especially for larger libraries.
+- 📦 PhotoStructure now requires at least Node.js v16, and is tested on 18 and 20.
 
-  - The `syncIntervalHours` setting was renamed to `syncNewIntervalHours`. This setting ensures detection of _new_ photos and videos happen daily (by default).
+- 📦 System load on macOS and Linux now average together both proc/cpu metrics as well as loadavg(), which should help PhotoStructure throttle work more accurately.
 
-  - A new `syncChangedIntervalHours` setting, which defaults to weekly, detects _changes_ made to previously imported photos or videos.
+- 📦 Control SQLite's [synchronous mode](https://sqlite.org/pragma.html#pragma_synchronous) via the new `dbSynchronousMode` setting.
 
-  - Typical `sync`s should take several orders of magnitude less disk I/O to complete, as they only have to `readdir` every directory, and not `stat` every file.
+- 📦 If file copies are problematic (you'd see `warn` log entries to this effect), you can now force PhotoStructure to use `cp -af` (on macOS and Linux) or `Copy-Item` (on Windows) by setting the new `onlyNativeFileCopy` setting to `true`.
 
-  - System profiling identified several hotspots, including tag recounting, which has been optimized (the 10-15s process now completes in under a second)
+- 📦 Control PowerShell child process concurrency via the new `powerShellProcs` setting
 
-  - DB vacuuming, tag, and search maintenance is now rate-limited with dynamic TTLs based on the size of the library
+- 📦 Added support for newer NEF and old KDC image formats
 
-- ✨ New sync reports are now emitted into `$library/.photostructure/sync-reports/`. [See the forum post for more details.](https://photostructure.com/go/sync-reports)
+- 📦 New setting `twoDigitCutoffYear`: sets the cutoff year after which a string encoding a year as two digits is interpreted to occur in the current century. As an example, a value of "50" would make "49" be interpreted as 1949, and "50" as 2050. See <https://moment.github.io/luxon/api-docs/index.html#settingstwodigitcutoffyear> for details. This defaults to 3 years in the future (modulus 100) and is updated automatically.
 
-- ✨/🐛 Deduplication improvements:
+- 📦 Some string handling previously used now-deprecated `.substr()`. PhotoStructure now uses locale-aware grapheme splitting where available, which should prevent high-unicode text from being corrupted.
 
-  - If the file extension matches, we respect the millisecond captured-at precision. If the file extension doesn't match, the precision minimum is set to 1 second, as some DSLR encode RAW/JPEG pairs with slightly (< 1s) different captured-at times.
+- 📦 Volume UUID files, .JSON files, and .TOML files all now support UTF-8, UTF-8-with-BOM, and UTF-16LE-with-BOM encodings, and are now normalized before `volsha()`'ed (so `{abc-012-789}` will be considered equivalent to `abc012789`)
 
-  - The `imageId` and `cameraId` EXIF UID values now support "synonym groups", like `ImageNumber`/`ShutterCount` and `CameraSerialNumber`/`SerialNumber`.
+- 📦 Added 20 new serial-to-model-name translations for recently released smartphones and cameras
 
-  - `cameraId`, `imageId`, and `lensId` tag synonyms are now coalesced (Nikon uses `ImageNumber` on JPG and `ShutterCount` on NEF).
+- 📦 Pulled in latest versions of Electron, sharp, node, TypeScript, ExifTool, and other third-party libraries.
 
-  - Lens matching now uses a normalized lens information value. This allows for Nikon JPG/RAW pairs to be matched correctly. (Nikon's latest bodies encode _a different value for the same lens_ when looking at `.NEF` vs `.JPG`).
+- 📦 When spinning up the `photostructure/server` docker image, better error messages are now emitted when `/ps/library` is missing.
 
-  - Bogus `ShutterCount:1` and `0000000` tag values are ignored.
+- 📦 Mountpoint and volume extraction is now more configurable. See the new `excludedFilesystemTypes`, `excludedRootDirectories` and `excludedMountpoints` settings. `isExcludedMountpoint()` now debug-logs _why_ a given mountpoint is excluded, to help tune these settings.
 
-- ✨ New `assetPathnameFormat` setting to customize automatic organization, which supports `BASE`, `NAME`, `EXT`, `PARENT`, and `ISO` tokens. See [this forum post for more details](https://forum.photostructure.com/t/how-to-change-the-naming-structure/1184/2?u=mrm).
+- 📦 Process `renice`-ing and management should be more efficient, as PhotoStructure now defaults to libuv and only resorts to external tooling on failure.
 
-- ✨ New filter setting `respectFileExtensions`: Normally PhotoStructure uses file extensions (like `.JPEG` or `.MP4`) to perform initial file filtering, which is much faster than having to open and examine the initial bytes of every file. If you have files that don't use valid file extensions, you can set this to false, but know that file imports will be much slower.
+- 📦 Supported file extensions and mimetypes are now defined in a single dictionary to ensure they are kept in synchronization. Due to the prior design, several more obscure file extensions (like `.KDC`) weren't handled properly.
 
-- ✨ New filter setting:`maxVideoDurationSec`, the maximum number of seconds that a video can be and still be imported. If this is set to 0 or unset (the default), no maximum duration limit will be applied.
+- 📦 Removed `--progress` from `sync` (it wasn't used, and was an unnecessary third-party dependency)
 
-- ✨ `sync` now supports `--progress` which shows the real-time status of every concurrent file import. Note that this mode requires an ANSI-color terminal.
+- 📦 Most URLs in text files and emitted to stdout were wrapped in angle brackets, but some apps would interpret the trailing `>` was part of the URL (looking at you, UnRaid terminal), which 404ed. All wrapped URLs are just plaintext, separated with whitespace.
 
-- ✨ `info` now has `--cleanup` and `--recount-all-tags` switches to manually run periodic maintenance tasks, including tag count updates, search index rebuilds, and database optimization, vacuuming, verification, and backup. These tasks are normally done by `sync`.
+- 📦 Replaced "open library" locks with critical section file mutexes. This should avoid "this library is already open on \$host" startup errors while still preventing concurrent system access. This means the `--force-open` argument for many of the tools is now gone.
 
-- ✨ `info` now has `--mountpoints` to show... _mountpoints_.
+- 📦 [Volume UUIDs](https://photostructure.com/faq/what-is-a-volume/#-logical-volume-uuids) are now customizable, and support multiple paths. See the new `volumeUuidFilePaths` Setting for details.
 
-- ✨ `info --filter` supports "deep" value picks, like `info --filter "paths.libraryDir"`, which can be handy with `--flat`.
+- 📦 Camera and lens UUIDs are whitespace-normalized before being hashed (as RAW and JPG variants can sometimes only differ in spaces (!!))
 
-- ✨ `info --validate` supports command-line file validation.
+- 📦 Added Make/Model support for 20+ new flagship cameras
 
-- ✨ New ["easy mode" for Docker bind-mounts](https://forum.photostructure.com/t/new-easy-mode-for-docker-coming-in-v2-1/1278/1).
-
-- ✨ New ["quick (and dirty) mode"](/server/photostructure-for-rpi/) for Raspberry Pis. RPi detection and licensing were improved (and works within Docker now).
-
-- ✨ Automatic sync throttling: when importing assets on slower disks and servers with many (8+) cores, imports can lead to PhotoStructure hitting disks "too hard" and the import process can get "stuck". PhotoStructure will now automatically throttle back concurrency to approach `maxConcurrentImportsWhenRemote` as we get disk I/O timeouts, to try to avoid hammering disks.
-
-- ✨ "Re-sync this asset" now looks for deleted, rejected, or filtered files and removes those references from the synced asset.
-
-- ✨ Support excluding photos and videos tagged with specific keywords with the new `keywordBlocklist` setting: [see the forum for details](https://forum.photostructure.com/t/excluding-media-with-specific-tags/1351).
-
-- ✨ Newer versions of Firefox and Chrome don't like non-https websites with CSP and CORS headers: PhotoStructure will automatically disable those headers for PhotoStructure for Desktops, or if `exposeNetworkWithoutAuth` is `false`, but you can specify the correct setting with the new `enableWebSecurity` setting.
-
-- ✨ All settings ending in `Ms` (for **M**illi**s**econds) and `Duration` now accept [ISO 8601 duration strings](https://en.wikipedia.org/wiki/ISO_8601#Durations), "friendly" durations, as well as numeric values which will be interpreted as milliseconds. See <https://photostructure.com/getting-started/advanced-settings#duration> for details.
-
-- ✨ **Stable inferred tags for library copies**. PhotoStructure uses "sibling" files to backfill missing metadata. When photos and videos are copied into your library, there may not be siblings to restore the "inferred" metadata, and that could cause issues with tagging and imports.
-
-  This version will write inferred tags to the `History` XMP tag, so when metadata is missing in your library assets, PhotoStructure can recover that prior inference work.
-
-- ✨ The new `defaultCopyright` (which is disabled by default) gives a default value to the `Copyright` tag.
-
-- ✨ **Preview images can now retain original metadata**. Prior versions of PhotoStructure would strip all metadata from preview images to speed up rendering. The new `includedPreviewTags` setting (which defaults to `AttributionName`, `AttributionURL`, `capturedAt`, `Copyright`, `License`, `Make`, `Model`, `Permits`, `Prohibits`, `Requires`, `Source`, and `UseGuidelines`) will use a few more bytes for every preview image, but avoid metadata-less images. Set this setting to `""` to disable this feature.
-
-- ✨ The new `writeSourceTagToLibraryCopies` setting (which defaults to `false`) will write a sidecar containing the `Source` tag for all new files copied into your PhotoStructure library whose value is the full native path to the source file.
-
-- ✨ Setting `cpuLoadPercent` to `1` or `0` now puts sync into "single-threaded mode", which minimizes forking and memory consumption.
-
-- ✨ New `strictDeduping` "meta" setting requires exact-match captured-at values
-  (changing this value requires a library rebuild to re-aggregate your assets). It also
-  enables `useImageHashes`, and cranks up `minExposureSettingsCoeffPct` to 98,
-  `minImageCoeffPctWithExactDate` to 95, `minImageCoeffPctWithFuzzyDate` to 95,
-  `minGreyscaleImageCoeffPct` to 95, `minColorCoeffPct` to 95, `minMeanCoeffPct`
-  to 95, `modeCorrCieDiffWeight` to 1, and `modeCorrIndexDiffWeight` to 1
-
-- ✨/🐛/📦 Fixed/improved timezone handling: See the update to [exiftool-vendored](https://github.com/photostructure/exiftool-vendored.js/blob/main/CHANGELOG.md#v1600) for details.
-
-- ✨/📦 Several additional lenses are now properly parsed, including Nikon VR and ZEISS Batis glass.
-
-- ✨/📦 The `main` and `info` services verify that `PS_*` environment variables are known PhotoStructure environment variables. If any incorrect settings are found, the closest-named setting is suggested. This is only a warning emitted to `stdout`.
-
-- ✨/📦 Docker containers can now safely bind-mount `/tmp` to `/ps/tmp`: PhotoStructure will automatically add a subdirectory, chmod'ed to `700`, when running in Docker. [See this forum post for details](https://forum.photostructure.com/t/cant-mount-my-photos-share/1249/3?u=mrm).
-
-- ✨/📦 Added `.env` support via `PS_ENV_FILE`: [read more here](/faq/environment-variables/#PS_ENV_FILE)
-
-- ✨/📦 File path to URI construction is more reliable, delegating to previously cached volume metadata.
-
-- ✨/📦 Added [Next/Back buttons to the settings page](https://forum.photostructure.com/t/moving-photostructure-to-a-new-computer/1065/7?u=mrm)
-
-- ✨/📦 `logtail` and `logcat` are dramatically faster for very large inputs, and handle stream buffering gracefully (handy if you pipe contents through `less`)
-
-- ✨/📦 Deprecated settings (currently `scanMyPictures`, `assetSubdirectoryDatestampFormat`, and `syncIntervalHours`) are now automatically migrated to the setting that replaced them (if those settings are unset).
-
-- 🐛 Restored the title bar on PhotoStructure for Desktops's About page
-
-- 🐛 Progress panels on the home page are now restored.
-
-- 🐛 A new database migration was added to unset any invalid `Asset.excludedAt` or `Asset.deletedAt` column values, avoiding spuriously-removed or deleted assets.
-
-- 🐛 CSP directives had to be adjusted due to new Chrome `form-action` enforcement. See the `cspDirective` and `cspReportOnly` settings for details.
-
-- 🐛 Zoom widgets aren't hidden on touchscreen laptops anymore
-
-- 🐛 Improved is-file-deleted detection (volume SHAs are now used in addition to native paths to ensure we're referencing the same path)
-
-- 🐛 [GIO](<https://en.wikipedia.org/wiki/GIO_(software)>) volumes are now properly extracted on Ubuntu 20+.04.
-
-- 🐛 Fixed zooming into rotated non-JPEG images (prior versions could incorrectly rotate image-actual)
-
-- 🐛/📦 Cleaned up network error message "toasts" to be consistent.
-
-- 🐛/📦 Work to [reduce `SQLITE_BUSY` errors](https://forum.photostructure.com/t/initial-library-build-processing-pauses/1266/2?u=mrm): `sync` now uses threads rather than `sync-file` processes, and only `sync` reads and writes to the library database. This results in more work done by the `sync` process, but all CPU-intensive work (like image validation and preview generation) is offloaded to threads and a new child `worker` process., and overall sync throughput should be higher, especially on high-core machines and larger libraries where write contention can wedge `sync`.
-
-- 🐛/📦 Photos and videos copied into the library are now both checked for previously-existing SHA clones both by using the library and by looking at directory ancestors' files that contain common core filename basenames.
-
-- 🐛/📦 The "Skipping to first non-empty child tag…" tag only shows once for a specific tag redirect (thanks for the suggestion, Aidan!)
-
-- 🐛/📦 Work to prevent DB corruption:
-
-  - Database janitorial work is now only done by `sync`
-
-  - `main` doesn't open DB connections anymore
-
-  - DB backups are only done by `sync`
-
-  - Code that could have resulted in a partial DB replica copy now uses the work-in-progress file copier
-
-- 🐛/📦 System profiling found that `readdir` was a hotspot, but the prior caching approach overwhelmed the garbage collector. The new caching `readdir` avoids filesystem caching if `readdir()` returns quickly, resulting in a 10x speedup (!!)
-
-- 🐛/📦 The `rpcPort` setting (and all inter-process RPC ports) were deleted. All shared state between processes is now coordinated via a new `$config_dir/shared-state.json` file, where `$config_dir` is the same directory that stores [system settings](https://photostructure.com/getting-started/advanced-settings/#system-settings). This both simplifies the codebase and allows any process to broadcast persistent or transient events at any time.
-
-- 🐛/📦 Sidecar matching has been improved to unicode-normalize strings and match file copies with numeric copy suffixes
-
-- 📦 `sync-file` has been removed, as it is no longer used by `sync`. Manual file and directory imports can be done via the `sync` tool.
-
-- 📦 `MetadataDate` was removed from the default set of "captured-at" tags, as this tag encodes the _last time metadata was edited_, not the time that the asset was captured.
-
-- 📦 Volume metadata is now cached on the filesystem (in both the library and the system config directory) to let PhotoStructure handle kernel hiccups where volume metadata goes missing (like with macOS after suspend, or Windows when it feels sad).
-
-- 📦 `PS_MOUNTPOINTS_TTL_MS` now defaults to 0 on Linux and macOS, and 15 minutes on Windows. This reduces no-op work for scanning mount points.
-
-- 📦 Added a couple of new splash backgrounds because why not
-
-- 📦 Reduced `sync` GC load and memory consumption by more than 2x by refactoring several performance hotspots including caching, filesystem iteration, mutexes, and bounded concurrency.
-
-- 📦 Docker container license validation is a bit more robust now. Apologies if you needed to re-authenticate: if you see this happen, [please report it](https://forum.photostructure.com/t/how-often-should-i-have-to-reauthenticate/1200)!
-
-- 📦 Hung child processes (like `df` when eth0 drops) are proactively cleaned up
-
-- 📦 Improved test coverage: several hundred additional test suites were added, especially around tag management, DB transactions under heavy write contention, and concurrency management
-
-- 📦 Error events are now written with month (not day) resolution, to prevent the same error reported more than once a month.
-
-- 📦 Moved `scanLibraryFirst` and `scanLibraryLast` to library "sync" settings category, and renamed them `syncLibraryFirst` and `syncLibraryLast`. The previous names were added as aliases, so prior configuration changes will be migrated to the new names. The `syncLibraryFirst` setting now defaults to `true` if `copyFilesIntoLibrary` is true, to make sure we know what's in your library before copying more stuff in there.
-
-- 📦 Memory and CPU metadata now respect container quotas (like when under Kubernetes). Thanks for the suggestion, [Stephonovich](https://www.reddit.com/r/PhotoStructure/comments/sn68f9/comment/hw4bqmj/)!
-
-- 📦 [`streamFlushMillis`](https://photostructure.github.io/batch-cluster.js/classes/BatchClusterOptions.html#streamFlushMillis) can be adjusted as a setting, and will automatically be increased if PhotoStructure detects stderr/stdout synchronization issues due to slow/overwhelmed systems.
-
-- 📦 Mountpoint watching is more reliable on Ubuntu and Alpine. We now use both a file watcher on `/proc/mounts` and `findmnt --poll` if available, and parse the content directly, rather than forking `mount` and parsing that content.
-
-- 📦 PhotoStructure's (extensive!) continuous integration test suite now runs on macOS, Windows, Ubuntu, and Alpine (prior versions didn't include Alpine)
-
-- 📦 Upgraded Docker container to Alpine 3.15/Node 16 LTS and the latest stable, audited release for all third-party code.
-
-- 📦 Deleted `logElapsedMs` setting to simplify log formatting code
-
-- 📦 New `minDelayBetweenSpawnMs` setting allows for adjustment of process load ramps
-
-- 📦 New `enableWebSecurity` setting supports disabling CSP and CORS when on localhost. See the setting for details.
-
-- 📦 New `maxRetries` setting lets `sync` retry file imports. If you have a flaky network, or if your computer shows up late for work because it had a hard drive, this can help ensure imports are comprehensive. The default is `1`. Set this to `0` to disable retries.
-
-- 📦 New `ignoredFilesystemTypes` Linux-only setting lets you tell PhotoStructure not to walk into non-fs mountpoints. The default of `["cgroup", "debugfs", "gvfsd-fuse", "none", "sunrpc", "sysfs", "tracefs"]` should work for most people. If you need to edit this, please pop into the forum or Discord and tell us!
-
-- 📦 Cache dirs `rm -rf`ed when database migrations are applied. This will fix incorrectly-rotated cached preview HEIFs.
+- 📦 Added `.Make` backfiller from `Software` and `CreatorTool` tags (useful for scanners)
 
 ## Prior release notes
+
+- [**Release notes from 2022**](/about/2022-release-notes)
 
 - [**Release notes from 2021**](/about/2021-release-notes)
 

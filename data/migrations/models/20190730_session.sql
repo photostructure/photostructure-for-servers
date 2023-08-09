@@ -1,0 +1,6 @@
+CREATE TABLE
+  IF NOT EXISTS Session (
+    sid VARCHAR(255) NOT NULL PRIMARY KEY,
+    expired BIGINT NOT NULL,
+    sess VARCHAR(2048) NOT NULL
+  );

@@ -9,7 +9,7 @@ mkdir -p ~/src
 cd ~/src
 git clone https://github.com/LibRaw/LibRaw.git --depth 3
 cd LibRaw
-git checkout --force 01a2b7f3545705f38cfd4e9a3eee152ea8d1f967 
+git checkout --force 6fffd414bfda63dfef2276ae07f7ca36660b8888 
 autoreconf -fiv
 
 ./configure --enable-static --disable-lcms --disable-openmp

@@ -1,0 +1,3 @@
+-- This file will run db/Migrations.rebuild_videos
+-- Video timezone inference was improved in v2.1-alpha.8, so we need to
+-- re-parse those tags.

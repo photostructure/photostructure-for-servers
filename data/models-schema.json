@@ -1,0 +1,872 @@
+{
+  "info": "This is used in validating PhotoStructure library databases after repair and restore operations.",
+  "tableInfo": [
+    {
+      "tableName": "AdvisoryLock",
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": true
+        },
+        {
+          "name": "name",
+          "type": "VARCHAR(255)",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "lockId",
+          "type": "VARCHAR(255)",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "acquired",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "createdAt",
+          "type": "BIGINT",
+          "notnull": true,
+          "pk": false
+        }
+      ]
+    },
+    {
+      "tableName": "Asset",
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": true
+        },
+        {
+          "name": "capturedAtLocal",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "shown",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "hidden",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "rating",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "version",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "createdAt",
+          "type": "BIGINT",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "updatedAt",
+          "type": "BIGINT",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "updateCount",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "deletedAt",
+          "type": "BIGINT",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "durationMs",
+          "type": "BIGINT",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "excludedAt",
+          "type": "BIGINT",
+          "notnull": false,
+          "pk": false
+        }
+      ]
+    },
+    {
+      "tableName": "AssetFile",
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": true
+        },
+        {
+          "name": "assetId",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "shown",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "uri",
+          "type": "VARCHAR(2048)",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "mountpoint",
+          "type": "VARCHAR(1024)",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "mtime",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "fileSize",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "mimetype",
+          "type": "VARCHAR(64)",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "sha",
+          "type": "VARCHAR(64)",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "capturedAtLocal",
+          "type": "BIGINT",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "capturedAtOffset",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "capturedAtPrecisionMs",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "capturedAtSrc",
+          "type": "VARCHAR(8)",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "focalLength",
+          "type": "VARCHAR(16)",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "aperture",
+          "type": "FLOAT",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "shutterSpeed",
+          "type": "VARCHAR(16)",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "iso",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "width",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "height",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "rotation",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "make",
+          "type": "VARCHAR(16)",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "model",
+          "type": "VARCHAR(16)",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "cameraId",
+          "type": "VARCHAR(64)",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "imageId",
+          "type": "VARCHAR(64)",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "lensId",
+          "type": "VARCHAR(64)",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "durationMs",
+          "type": "BIGINT",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "fps",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "geohash",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "meanHash",
+          "type": "VARCHAR(64)",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "mode0",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "mode1",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "mode2",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "mode3",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "mode4",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "mode5",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "mode6",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "version",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "createdAt",
+          "type": "BIGINT",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "updatedAt",
+          "type": "BIGINT",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "updateCount",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "rating",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "mode0pct",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "mode1pct",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "mode2pct",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "mode3pct",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "mode4pct",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "mode5pct",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "mode6pct",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "dctHash",
+          "type": "VARCHAR(36)",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "diffHash",
+          "type": "VARCHAR(36)",
+          "notnull": false,
+          "pk": false
+        }
+      ]
+    },
+    {
+      "tableName": "AssetRevision",
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": true
+        },
+        {
+          "name": "assetId",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "createdAt",
+          "type": "BIGINT",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "field",
+          "type": "VARCHAR(255)",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "op",
+          "type": "VARCHAR(8)",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "_priorValueJson",
+          "type": "VARCHAR(255)",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "_newValueJson",
+          "type": "VARCHAR(255)",
+          "notnull": false,
+          "pk": false
+        }
+      ]
+    },
+    {
+      "tableName": "AssetTag",
+      "columns": [
+        {
+          "name": "assetId",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "tagId",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        }
+      ]
+    },
+    {
+      "tableName": "ChangedTag",
+      "columns": [
+        {
+          "name": "tagId",
+          "type": "IDINTEGER",
+          "notnull": true,
+          "pk": true
+        },
+        {
+          "name": "updatedAt",
+          "type": "BIGINT",
+          "notnull": false,
+          "pk": false
+        }
+      ]
+    },
+    {
+      "tableName": "Example",
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": true
+        },
+        {
+          "name": "name",
+          "type": "VARCHAR(255)",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "isExample",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "createdAt",
+          "type": "BIGINT",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "updatedAt",
+          "type": "BIGINT",
+          "notnull": true,
+          "pk": false
+        }
+      ]
+    },
+    {
+      "tableName": "Heartbeat",
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": true
+        },
+        {
+          "name": "name",
+          "type": "VARCHAR(255)",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "createdAt",
+          "type": "BIGINT",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "updatedAt",
+          "type": "BIGINT",
+          "notnull": true,
+          "pk": false
+        }
+      ]
+    },
+    {
+      "tableName": "Operation",
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": true
+        },
+        {
+          "name": "name",
+          "type": "VARCHAR(255)",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "value",
+          "type": "VARCHAR(255)",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "version",
+          "type": "BIGINT",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "createdAt",
+          "type": "BIGINT",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "updatedAt",
+          "type": "BIGINT",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "completedAt",
+          "type": "BIGINT",
+          "notnull": false,
+          "pk": false
+        }
+      ]
+    },
+    {
+      "tableName": "Progress",
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": true
+        },
+        {
+          "name": "uri",
+          "type": "VARCHAR(255)",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "hostname",
+          "type": "VARCHAR(255)",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "pid",
+          "type": "BIGINT",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "volume",
+          "type": "VARCHAR(255)",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "state",
+          "type": "VARCHAR(255)",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "hed",
+          "type": "VARCHAR(255)",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "dekJSON",
+          "type": "VARCHAR(255)",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "completePct",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "incompletePct",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "scanningPct",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "createdAt",
+          "type": "BIGINT",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "updatedAt",
+          "type": "BIGINT",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "completedAt",
+          "type": "BIGINT",
+          "notnull": false,
+          "pk": false
+        }
+      ]
+    },
+    {
+      "tableName": "ProgressMeta",
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": true
+        },
+        {
+          "name": "progressId",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "name",
+          "type": "VARCHAR(255)",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "value",
+          "type": "VARCHAR(255)",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "createdAt",
+          "type": "BIGINT",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "updatedAt",
+          "type": "BIGINT",
+          "notnull": true,
+          "pk": false
+        }
+      ]
+    },
+    {
+      "tableName": "Session",
+      "columns": [
+        {
+          "name": "sid",
+          "type": "VARCHAR(255)",
+          "notnull": true,
+          "pk": true
+        },
+        {
+          "name": "expired",
+          "type": "BIGINT",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "sess",
+          "type": "VARCHAR(2048)",
+          "notnull": true,
+          "pk": false
+        }
+      ]
+    },
+    {
+      "tableName": "ShaBlocklist",
+      "columns": [
+        {
+          "name": "sha",
+          "type": "VARCHAR(64)",
+          "notnull": true,
+          "pk": true
+        }
+      ]
+    },
+    {
+      "tableName": "Tag",
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": true
+        },
+        {
+          "name": "parentId",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "_path",
+          "type": "VARCHAR(2048)",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "ordinal",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "createdAt",
+          "type": "BIGINT",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "updatedAt",
+          "type": "BIGINT",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "assetCount",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "assetFileCount",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "_displayName",
+          "type": "VARCHAR(1024)",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "description",
+          "type": "VARCHAR(1024)",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "releasedAt",
+          "type": "NUMBER",
+          "notnull": false,
+          "pk": false
+        }
+      ]
+    },
+    {
+      "tableName": "migrations",
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": true
+        },
+        {
+          "name": "name",
+          "type": "VARCHAR(255)",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "migration_time",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        }
+      ]
+    }
+  ]
+}

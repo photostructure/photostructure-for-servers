@@ -2,16 +2,13 @@ name: Build Docker Images
 
 on:
   push:
-    branches:
-      - main
-      - alpha
-      - beta
+    # We only need to build on tags. If we include branches, we build twice.
+    # branches:
+    #   - main
+    #   - alpha
+    #   - beta
     tags:
       - v*
-  pull_request:
-    branches:
-      - main
-  workflow_dispatch:
 
 jobs:
   build:
@@ -23,37 +20,38 @@ jobs:
         uses: actions/checkout@v3.0.2
 
       - name: Set up QEMU
-        id: qemu
         uses: docker/setup-qemu-action@v2
         with:
           platforms: arm64
 
       - name: Set up Buildx
-        id: buildx
         uses: docker/setup-buildx-action@v2.0.0
+
+      # https://github.com/docker/metadata-action#tags-input
+      # https://docs.github.com/en/actions/learn-github-actions/contexts#github-context
 
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v4.0.1
         with:
-          images: photostructure/server,ghcr.io/photostructure/server
+          images: photostructure/server,ghcr.io/photostructure/photostructure-for-servers
+          flavor: |
+            latest=false
           tags: |
-            type=ref,event=branch
-            type=ref,event=tag
-            type=ref,event=pr
+            # always include the full semver (v1.2.3-alpha.1)
             type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
-            # "v1.2.3-alpha.4" should be tagged with :alpha 
-            type=match,pattern=alpha,value=alpha
-            # "v1.2.3-beta.4" should be tagged with both :alpha and :beta 
-            type=match,pattern=beta,value=alpha
-            type=match,pattern=beta,value=beta
-            # "v1.2.3" should update :alpha, :beta, :stable, and :latest
-            type=match,pattern=/^v?[\d\.]+$/i,value=alpha
-            type=match,pattern=/^v?[\d\.]+$/i,value=beta
-            type=match,pattern=/^v?[\d\.]+$/i,value=stable
-            type=match,pattern=/^v?[\d\.]+$/i,value=latest
+            
+            # always update the alpha tag, so people on :alpha get the latest build:
+            type=raw,value=alpha,enable=true
+            
+            # always update the beta tag unless it's an alpha build, so people on :beta get the beta and stable builds:
+            type=raw,value=beta,enable=${{ !contains(github.ref_name, 'alpha') }}
+            
+            # if it's not alpha or beta, update :stable, :latest, and version tags.
+            type=raw,value=stable,enable=${{ !contains(github.ref_name, 'alpha') && !contains(github.ref_name, 'beta') }}
+            type=raw,value=latest,enable=${{ !contains(github.ref_name, 'alpha') && !contains(github.ref_name, 'beta') }}
+            type=semver,pattern=v{{major}},enable=${{ !contains(github.ref_name, 'alpha') && !contains(github.ref_name, 'beta') }}
+            type=semver,pattern=v{{major}}.{{minor}},enable=${{ !contains(github.ref_name, 'alpha') && !contains(github.ref_name, 'beta') }}
 
       - name: Log in to Docker Hub
         if: github.event_name != 'pull_request'

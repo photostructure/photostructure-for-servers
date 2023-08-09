@@ -9,7 +9,7 @@ cd /tmp
 rm -rf LibRaw
 git clone https://github.com/LibRaw/LibRaw.git
 cd LibRaw
-git checkout --force fde7ad289c3ec218bdfa064b28fe301428b38a01
+git checkout --force 6fffd414bfda63dfef2276ae07f7ca36660b8888
 
 # wget https://www.libraw.org/data/LibRaw-0.20.2.tar.gz
 # sha256sum should say "OK":
@@ -21,7 +21,7 @@ autoreconf -fiv
 
 ./configure --enable-static --disable-lcms --disable-openmp
 
-make -j24
+make -j$(nproc)
 
 # With lcms? Nope: fails with /usr/bin/ld: cannot find -llcms2
 

@@ -1,7 +1,7 @@
 # sqlite3
 
 This SQLite binary was created from
-<https://sqlite.org/2021/sqlite-autoconf-3370100.tar.gz> and compiled on macOS
+<https://sqlite.org/> and compiled on macOS
 10.15 (Catalina)
 
 Unfortunately, the binaries published on sqlite.org are 32-bit, and macOS 10.13
@@ -19,10 +19,12 @@ brew install curl
 
 mkdir -p ~/src
 cd ~/src
-export VER=3390100
-curl -o - https://sqlite.org/2022/sqlite-autoconf-$VER.tar.gz | tar xz
-cd sqlite-autoconf-$VER
-./configure --enable-static --enable-readline
+
+source <(egrep "^(YEAR|VERSION)=" /home/mrm/src/photostructure/src/library/node_modules/better-sqlite3/deps/download.sh)
+
+curl -o - https://sqlite.org/$YEAR/sqlite-autoconf-$VERSION.tar.gz | tar xz
+cd sqlite-autoconf-$VERSION
+./configure --enable-static-shell --enable-static --disable-readline --disable-shared
 make -j6
 strip sqlite3
 arch=$(node -e "console.log(require('os').arch())")

@@ -1,26 +1,25 @@
 # syntax=docker/dockerfile:1
 
-# Howdy, need help? See
-# <https://photostructure.com/server/photostructure-for-docker/> and
-# <https://forum.photostructure.com/>
+# Howdy! Need help? See
+# <https://photostructure.com/server/photostructure-for-docker/>
 
-# See <https://hub.docker.com/_/node/>
-
-# See <https://github.com/photostructure/base-tools>
 FROM photostructure/base-tools as builder
 
 # https://docs.docker.com/develop/develop-images/multistage-build/
 
 # https://docs.docker.com/engine/reference/builder/#workdir
-WORKDIR /ps/app
+WORKDIR /opt/photostructure
 
 COPY package.json yarn.lock ./
 
+# base-tools will install build-essential and libraries that native node
+# packages require to be compiled.
+
 RUN yarn install --frozen-lockfile --production --no-cache
 
-FROM node:lts-alpine
+# This must match the base image from base-tools:
+FROM node:18-alpine3.17
 
-# Busybox's commands are a bit too bare-bones:
 # procps provides a working `ps -o lstart`
 # coreutils provides a working `df -kPl`
 # glib is for gio (for mountpoint monitoring)
@@ -34,9 +33,11 @@ FROM node:lts-alpine
 
 # https://pkgs.alpinelinux.org/contents
 
-RUN apk update ; apk upgrade ;\
-  apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/latest-stable/community musl-locales ;\
-  apk add --no-cache \
+RUN apk update \
+  && apk upgrade \
+  && apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/latest-stable/community musl-locales \
+  && apk add --no-cache \
+  bash \
   coreutils \
   ffmpeg \
   glib \
@@ -51,19 +52,17 @@ RUN apk update ; apk upgrade ;\
   sqlite \
   tini \
   tzdata \
-  util-linux
+  util-linux \
+  && npm install --force --location=global npm yarn
+#    ^ fetch any recent updates to npm or yarn 
 
-# Sets the default path to be inside /ps/app when running `docker exec -it`:
-WORKDIR /ps/app
+# Sets the default path to be inside /opt/photostructure when running `docker exec -it`:
+WORKDIR /opt/photostructure
 
 COPY --chown=node:node . ./
 
-# Overwrite source with builder results (node_modules and tools/bin):
-COPY --from=builder --chown=node:node /ps/app ./
-
-# Tell PhotoStructure that we're running in a docker container:
-ENV PS_IS_DOCKER=true
-ENV NODE_ENV=production
+# Copy in builder results (/opt/photostructure/tools, /opt/photostructure/node_modules):
+COPY --from=builder --chown=node:node /opt/photostructure ./
 
 # Your library is exposed by default to <http://localhost:1787>
 # This can be changed by setting the PS_HTTP_PORT environment variable.
@@ -74,6 +73,5 @@ HEALTHCHECK CMD wget --quiet --output-document - http://localhost:1787/ping
 
 # https://docs.docker.com/engine/reference/builder/#understand-how-cmd-and-entrypoint-interact
 
-# docker-entrypoint.sh handles dropping privileges down to the "node" user in order
-# to support custom PUID/PGID
-ENTRYPOINT [ "/sbin/tini", "--", "/ps/app/docker-entrypoint.sh" ]
+# docker-entrypoint.sh handles custom $PUID/$PGID
+ENTRYPOINT [ "/sbin/tini", "--", "/opt/photostructure/docker-entrypoint.sh" ]

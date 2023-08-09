@@ -1,0 +1,2 @@
+ALTER TABLE ChangedTag
+ADD COLUMN updatedAt BIGINT;

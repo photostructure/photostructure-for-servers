@@ -1,7 +1,8 @@
 # sqlite3
 
-This SQLite binary was created from <https://sqlite.org/> and compiled on macOS
-12.4 (Monterey)
+This SQLite binary was created from
+<https://sqlite.org/> and compiled on macOS
+10.15 (Catalina)
 
 Unfortunately, the binaries published on sqlite.org are 32-bit, and macOS 10.13
 and later complain about 32-bit binaries, so we can't use the precompiled
@@ -9,28 +10,28 @@ binaries from SQLite. See <https://support.apple.com/en-us/HT208436>.
 
 Compiled using all defaults:
 
-```sh
-xcode-select --install
-sudo xcode-select --reset
-```
-
-run under bash to avoid zsh issues:
+(if curl fails due to curl: (60) SSL certificate problem: certificate has expired, `brew install curl`.)
 
 ```sh
-bash
+bash # to avoid zsh
 
 brew install curl
 
-mkdir -p ~/src
-cd ~/src
-export VER=3390100
-curl -o - https://sqlite.org/2022/sqlite-autoconf-$VER.tar.gz | tar xz
-cd sqlite-autoconf-$VER
-./configure --enable-static --enable-readline
-make -j6
-strip sqlite3
-arch=$(node -e "console.log(require('os').arch())")
-cp sqlite3 ~/src/photostructure/tools/mac-$arch/sqlite3
+YEAR=2022
+VERSION=3400000
+
+mkdir -p /tmp/sqlite \
+  && cd /tmp/sqlite \
+  && curl https://sqlite.org/$YEAR/sqlite-autoconf-$VERSION.tar.gz | tar -xz --strip 1 \
+  && ./configure --enable-static-shell --enable-static --disable-readline --disable-shared \
+	&& make clean \
+  && make -j `sysctl -n hw.physicalcpu` \
+  && strip sqlite3 \
+  && cp sqlite3 ~/src/photostructure/tools/mac-arm64/sqlite3
+  && make clean \
+  && arch -x86_64 make -j `sysctl -n hw.physicalcpu` \
+  && strip sqlite3 \
+  && cp sqlite3 ~/src/photostructure/tools/mac-x64/sqlite3
 ```
 
 Validated that required dynamic libraries seem reasonable:
@@ -41,13 +42,13 @@ $ otool -L sqlite3
 sqlite3:
 	/usr/lib/libedit.3.dylib (compatibility version 2.0.0, current version 3.0.0)
 	/usr/lib/libncurses.5.4.dylib (compatibility version 5.4.0, current version 5.4.0)
-	/usr/lib/libz.1.dylib (compatibility version 1.0.0, current version 1.2.11)
-	/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1311.100.3)
+	/usr/lib/libz.1.dylib (compatibility version 1.0.0, current version 1.2.5)
+	/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1226.10.1)
 ```
 
 And that it compiled a 64-bit binary:
 
 ```sh
 $ file sqlite3
-sqlite3: Mach-O 64-bit executable arm64
+sqlite3: Mach-O 64-bit executable x86_64
 ```
