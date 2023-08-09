@@ -41,8 +41,8 @@ jobs:
             # always include the full semver (v1.2.3-alpha.1)
             type=semver,pattern={{version}}
             
-            # always update the alpha tag, so people on :alpha get the latest build:
-            type=raw,value=alpha,enable=true
+            # unless this is a prealpha build, update the alpha tag
+            type=raw,value=alpha,enable=${{ !contains(github.ref_name, 'prealpha') }}
             
             # always update the beta tag unless it's an alpha build, so people on :beta get the beta and stable builds:
             type=raw,value=beta,enable=${{ !contains(github.ref_name, 'alpha') }}

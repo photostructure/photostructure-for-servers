@@ -1,13 +1,13 @@
 {
-  "version": "23.8.0-prealpha.2",
+  "version": "23.8.0-prealpha.3",
   "versionMajor": 23,
   "versionMinor": 8,
   "versionPatch": 0,
   "versionPrerelease": [
     "prealpha",
-    2
+    3
   ],
-  "release": "23.8.0-prealpha.2+20230809122745",
-  "gitSha": "e647b1a70771c385aa1ed054a54ab613fa3cddff",
-  "gitDate": "2023-08-09T19:27:45.000Z"
+  "release": "23.8.0-prealpha.3+20230809131450",
+  "gitSha": "624e81c6637dd8f40c5818f9c6dad119a7d5fa3a",
+  "gitDate": "2023-08-09T20:14:50.000Z"
 }

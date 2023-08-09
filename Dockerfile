@@ -18,7 +18,7 @@ COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile --production --no-cache
 
 # This must match the base image from base-tools:
-FROM node:18-alpine3.17
+FROM node:20-alpine3.18
 
 # procps provides a working `ps -o lstart`
 # coreutils provides a working `df -kPl`
