@@ -21,6 +21,30 @@ This is a detailed list of changes in each version.
 
 <!-- fix "tag context" for "next previous" context. I'd always done a search, clicked a thumb, and then clicked esc to go back to the search results. But...  if you click a thumb from a search,  and then click "next" or "previous", it ignores that you can from a search, and does the chronological next asset, which is very confusing/irritating. -->
 
+## 23.8.0-prealpha.2-6
+
+**Released 2023 August 10**
+
+- 🐛 Remove spurious "missing volume UUID for `/`" on docker ([details](https://discord.com/channels/818905168107012097/1138934056587886672/threads/1139071622100303923))
+
+- 🐛 Attempt to fix FK error in Tag ([details](https://discord.com/channels/818905168107012097/1139180240845942876))
+    - disable Tag instance caching
+    - assign NULL values from the db back to the models
+
+- 📦 Downgrade levels for a heap of `.warn` and `.info` logs
+
+## 23.8.0-prealpha.2-5
+
+**Released 2023 August 9**
+
+- 🐛 Support `$PUID` and `$PGID` values of 1000 (which collides with the docker image `node` user and group) ([details](https://discord.com/channels/818905168107012097/1139006067087527936))
+
+- 🐛 Upgrade Dockerfile to Node.js v20
+
+- 🐛 Disable `proc-not-superuser` health check on Windows by default: everyone always runs as an admin user.
+
+- 🐛 Fix github actions to properly tag `:prealpha` builds
+
 <a id="v2.1.0-alpha.8"></a>
 <a id="23.5.0-prealpha.1"></a>
 <a id="23.6.0-prealpha.1"></a>
@@ -28,7 +52,7 @@ This is a detailed list of changes in each version.
 
 ## 23.8.0-prealpha.1
 
-**(to be released)**
+**Released 2023 August 8**
 
 _(This version's contents had previously been listed as_ `v2.1.0-alpha.8` _, but we're switching to [CalVer](https://calver.org/), using scheme_ `YY.MM.MINOR` _.)_
 
