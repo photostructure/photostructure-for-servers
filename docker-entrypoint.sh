@@ -122,10 +122,15 @@ elif [ "$PUID" = "0" ] || [ "$(id --real --user)" != "0" ]; then
   exec /usr/local/bin/node /opt/photostructure/photostructure "$@"
 else
 
+  # We want to run as userid $PUID and groupid $PGID. Unfortunately, those IDs
+  # may already be in use by the container (probably by the "node" user and
+  # group, both which use 1000), so we need to use `groupadd` and `useradd`,
+  # which have the (very!) handy `--non-unique` option.
+
   # Create a new "photostructure" user and group to match PUID/PGID:
 
-  addgroup --gid "$PGID" photostructure
-  adduser --uid "$PUID" --gid "$PGID" photostructure
+  groupadd --non-unique --gid "$PGID" photostructure
+  useradd --non-unique --uid "$PUID" --gid "$PGID" photostructure
 
   # Ensure the new "photostructure" user is in the "node" group so it can run
   # node and everything in /opt/photostructure:
