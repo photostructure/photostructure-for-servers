@@ -90,16 +90,15 @@ html(lang="en")
               h2 <i class="emj med library"></i> Where would you like your PhotoStructure library stored?
               details(open)
                 summary.more-details(title="Click to toggle details")
+                p Your <a href="https://photostructure.com/faq/library/">PhotoStructure Library</a> holds
+                  |
+                  ul
+                    li a metadata database of your photos and videos,
+                    li web-safe previews of your images and videos,
+                    li and, if you enable <a href="#auto-organize">automatic organization</a>, a copy of all your original photos and videos.
+                p A couple more things to note:
                 ul
-                  li Your <a href="https://photostructure.com/faq/library/">PhotoStructure Library</a> holds
-                    |
-                    ul
-                      li a database of your photos and videos,
-                      li web-safe previews of your images and videos,
-                      li and, if you enable <a href="#auto-organize">automatic organization</a>, a copy of all your original photos and videos.
-                  li This directory must have
-                    |
-                    | <a href="https://photostructure.com/getting-started/how-much-disk-space-do-i-need-for-my-photostructure-library/">lots of free space</a>.
+                  li This directory must have <a href="https://photostructure.com/getting-started/how-much-disk-space-do-i-need-for-my-photostructure-library/">lots of free space</a>.
                   li This can be an existing directory.
                   li PhotoStructure always scans your library directory for photos and videos.
             else
@@ -173,12 +172,8 @@ html(lang="en")
             details
               summary.more-details(title="Click to toggle details")
               ul
-                li PhotoStructure automatically ignores
-                  |
-                  a(
-                    href="https://photostructure.com/faq/how-to-hide-directories/"
-                  ) hidden, system, application, and NoMedia directories.
-                li PhotoStructure's imports are <em>additive</em>. Changing what paths are scanned will not remove assets already in your library.
+                li PhotoStructure automatically ignores <a href="https://photostructure.com/faq/how-to-hide-directories/">hidden, system, application, and NoMedia directories</a>.
+                li PhotoStructure's imports are <em>additive</em>. <br>In other words, changing what paths are scanned will not remove assets already in your library.
                 li PhotoStructure always scans your library directory.
 
             p

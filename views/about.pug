@@ -67,9 +67,6 @@ html
                     tr
                       td.count= metric.count
                       td.desc= metric.desc
-            else if ea.termURL
-              td
-                a.dd(href=ea.termURL, title=ea.defnTitle, class=ea.defnClass)= ea.defn
             else
               td.dd(class=ea.defnClass)= ea.defn
 

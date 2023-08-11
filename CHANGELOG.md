@@ -21,15 +21,26 @@ This is a detailed list of changes in each version.
 
 <!-- fix "tag context" for "next previous" context. I'd always done a search, clicked a thumb, and then clicked esc to go back to the search results. But...  if you click a thumb from a search,  and then click "next" or "previous", it ignores that you can from a search, and does the chronological next asset, which is very confusing/irritating. -->
 
-## 23.8.0-prealpha.2-6
+## 23.8.0-prealpha.7
+
+**Released 2023 August 11**
+
+- 🐛 Fixed Windows volume status parsing (thanks for the assist, mackid1993!)
+
+- 📦 Added log level and directory to the about page
+
+- 📦 Fixed font weight rendering and upgraded Roboto and Roboto mono to latest versions thanks to [Google Fonts Helper](https://gwfh.mranftl.com/fonts)
+
+## 23.8.0-prealpha.6
 
 **Released 2023 August 10**
 
 - 🐛 Remove spurious "missing volume UUID for `/`" on docker ([details](https://discord.com/channels/818905168107012097/1138934056587886672/threads/1139071622100303923))
 
 - 🐛 Attempt to fix FK error in Tag ([details](https://discord.com/channels/818905168107012097/1139180240845942876))
-    - disable Tag instance caching
-    - assign NULL values from the db back to the models
+
+  - disable Tag instance caching
+  - assign NULL values from the db back to the models
 
 - 📦 Downgrade levels for a heap of `.warn` and `.info` logs
 
