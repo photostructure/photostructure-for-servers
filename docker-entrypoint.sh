@@ -57,7 +57,7 @@ trap 'exit 130' INT
 # nothing within PhotoStructure assumes /opt/photostructure is in the PATH,
 # but in case someone runs "photostructure" anywhere in the image, I'd rather
 # it work.
-export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/photostructure:/opt/photostructure/tools/bin"
+export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/photostructure:/opt/photostructure/bin:/opt/photostructure/tools/bin"
 
 # PhotoStructure uses this environment variable to know that it's running in a
 # docker container, and make a bunch of docker-specific setup, like health
@@ -127,11 +127,7 @@ elif [ "$PUID" = "0" ] || [ "$(id --real --user)" != "0" ]; then
   # - these don't need to be full pathnames to the binaries: $PATH should be
   #   set up reasonably already. This simply to be explicit.
 
-  # - although /opt/photostructure/photostructure has a valid shebang line, we
-  #   can avoid spawning an extra `sh` by exec'ing node directly and make
-  #   launching a bit faster.
-
-  exec /usr/local/bin/node /opt/photostructure/photostructure "$@"
+  exec /opt/photostructure/bin/photostructure.js "$@"
 else
 
   # We want to run as userid $PUID and groupid $PGID. Unfortunately, those IDs
@@ -159,7 +155,8 @@ else
   }
 
   if [ -z "$PS_NO_PUID_CHOWN" ]; then
-    for dir in /ps/library/.photostructure \
+    for dir in \
+      /ps/library/.photostructure \
       /ps/tmp \
       /ps/cache \
       /ps/config \
@@ -178,11 +175,7 @@ else
   # - these don't need to be full pathnames to the binaries: $PATH should be
   #   set up reasonably already. This simply to be explicit.
 
-  # - although /opt/photostructure/photostructure has a valid shebang line, we
-  #   can avoid spawning an extra `sh` by exec'ing node directly and make
-  #   launching a bit faster.
-
   # - Alpine's busybox-powered `su` doesn't support the long-arg variants of
   #   --preserve-environment (alias for `-p`), or --command (alias for `-c`).
-  exec su -p photostructure -c /usr/local/bin/node /opt/photostructure/photostructure "$@"
+  exec su -p photostructure -c /opt/photostructure/bin/photostructure.js "$@"
 fi

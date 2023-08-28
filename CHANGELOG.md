@@ -21,13 +21,24 @@ This is a detailed list of changes in each version.
 
 <!-- fix "tag context" for "next previous" context. I'd always done a search, clicked a thumb, and then clicked esc to go back to the search results. But...  if you click a thumb from a search,  and then click "next" or "previous", it ignores that you can from a search, and does the chronological next asset, which is very confusing/irritating. -->
 
-## v2023.8.0-prealpha.9
+## v2023.8.0-prealpha.10 ("Nighthawk TNG")
 
 **Released 2023 August 28**
 
-- 📦 v2023.8.0-prealpha.9 adds a missing dependency on `type-detect`, and updates several other third party libraries.
+- 🐛 Fix docker error in `docker-entrypoint.sh` by directly `exec`ing `photostructure.js` rather than using `/usr/local/bin/node`
 
-## v2023.8.0-prealpha.8 ("nighthawk")
+- 🐛 Fix spurious ["No eligible files found in scanned paths"](https://discord.com/channels/818905168107012097/1145860551956758660)
+
+- 📦 Install `source-map-support` for better stacktraces
+
+
+## v2023.8.0-prealpha.9 ("Nighthawk")
+
+**Released 2023 August 28**
+
+- 📦 v2023.8.0-prealpha.9 fixes the base debian image, adds a missing dependency on `type-detect`, and updates several other third party libraries.
+
+## v2023.8.0-prealpha.8
 
 **Released 2023 August 28**
 

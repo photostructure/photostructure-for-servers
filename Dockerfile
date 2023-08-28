@@ -57,11 +57,6 @@ COPY --chown=node:node . ./
 # Overwrite source with builder results (/opt/photostructure/tools/bin):
 COPY --from=builder --chown=node:node /opt/photostructure ./
 
-# Tell PhotoStructure that we're running in a docker container:
-ENV PS_IS_DOCKER=true
-ENV NODE_ENV=production
-ENV PATH=/opt/photostructure:/opt/photostructure/tools/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-
 # Your library is exposed by default to <http://localhost:1787>
 # This can be changed by setting the PS_HTTP_PORT environment variable.
 EXPOSE 1787
