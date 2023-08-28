@@ -2,7 +2,7 @@
   "name": "photostructure",
   "productName": "PhotoStructure",
   "author": "PhotoStructure, Inc. <hello@photostructure.com>",
-  "version": "23.8.0-prealpha.7",
+  "version": "2023.8.0-prealpha.8",
   "description": "PhotoStructure for Servers",
   "repository": {
     "type": "git",
@@ -16,11 +16,11 @@
   "resolutions-vs-overrides:note": "yarn supports resoltions, and npm supports overrides. In either case, this is to force-upgrade a third party dependency to avoid a security vulnerability.",
   "resolutions": {
     "node-abi": "3.45.0",
-    "semver": "7.5.4"
+    "semver": "^7.5.4"
   },
   "overrides": {
     "node-abi": "3.45.0",
-    "semver": "7.5.4"
+    "semver": "^7.5.4"
   },
   "dependencies": {
     "@iarna/toml": "2.2.5",

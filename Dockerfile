@@ -3,7 +3,7 @@
 # Howdy! Need help? See
 # <https://photostructure.com/server/photostructure-for-docker/>
 
-FROM photostructure/base-tools as builder
+FROM photostructure/base-tools-debian as builder
 
 # https://docs.docker.com/develop/develop-images/multistage-build/
 
@@ -12,57 +12,55 @@ WORKDIR /opt/photostructure
 
 COPY package.json yarn.lock ./
 
-# base-tools will install build-essential and libraries that native node
-# packages require to be compiled.
+# base-tools-debian will install build-essential and libraries that native
+# node packages require to be compiled.
 
 RUN yarn install --frozen-lockfile --production --no-cache
 
-# This must match the base image from base-tools:
-FROM node:20-alpine3.18
+# This must match the base image from base-tools-debian:
+FROM node:20-bookworm-slim
 
-# procps provides a working `ps -o lstart`
-# coreutils provides a working `df -kPl`
-# glib is for gio (for mountpoint monitoring)
-# util-linux (which should be there already) provides `renice` and `lsblk`
-# musl-locales provides `locale`
-# orc is for sharp SIMD operations
+# ffmpeg is used for video frame extraction and transcoding
+# libheif-examples provides "heif-convert"
+# libjpeg-turbo-progs includes `jpegtran` for lossless rotation and JPEG file validation
+# libjpeg62-turbo-dev is used by VIPS for JPEG handling
+# liblcms2-dev supports color management
+# liborc-0.4-dev is for sharp SIMD operations
+# passwd provides `usermod` and `groupmod` (used by docker-entrypoint.sh)
 # perl is required for exiftool.
-# libheif-tools provides "heif-convert"
-# libraw-tools provides "dcraw_emu" and "raw-identify"
-# shadow provides usermod
+# procps provides a working `ps -o lstart`
+# tini is an `init` that supports proper zombie and signal handling
 
-# https://pkgs.alpinelinux.org/contents
-
-RUN apk update \
-  && apk upgrade \
-  && apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/latest-stable/community musl-locales \
-  && apk add --no-cache \
-  bash \
-  coreutils \
+RUN apt-get update \
+  && apt-get upgrade -y \
+  && apt-get install -y --no-install-recommends \
   ffmpeg \
-  glib \
-  lcms2 \
-  libheif-tools \
-  libjpeg-turbo-utils \
-  orc \
-  pciutils \
+  libheif-examples \
+  libjpeg-turbo-progs \
+  libjpeg62-turbo \
+  liblcms2-2 \
+  liborc-0.4-0 \
+  locales-all \
+  passwd \
   perl \
   procps \
-  shadow \
-  sqlite \
   tini \
   tzdata \
-  util-linux \
+  && rm -rf /var/lib/apt/lists/* \
   && npm install --force --location=global npm yarn
-#    ^ fetch any recent updates to npm or yarn 
 
 # Sets the default path to be inside /opt/photostructure when running `docker exec -it`:
 WORKDIR /opt/photostructure
 
 COPY --chown=node:node . ./
 
-# Copy in builder results (/opt/photostructure/tools, /opt/photostructure/node_modules):
+# Overwrite source with builder results (/opt/photostructure/tools/bin):
 COPY --from=builder --chown=node:node /opt/photostructure ./
+
+# Tell PhotoStructure that we're running in a docker container:
+ENV PS_IS_DOCKER=true
+ENV NODE_ENV=production
+ENV PATH=/opt/photostructure:/opt/photostructure/tools/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 # Your library is exposed by default to <http://localhost:1787>
 # This can be changed by setting the PS_HTTP_PORT environment variable.
@@ -73,5 +71,6 @@ HEALTHCHECK CMD wget --quiet --output-document - http://localhost:1787/ping
 
 # https://docs.docker.com/engine/reference/builder/#understand-how-cmd-and-entrypoint-interact
 
-# docker-entrypoint.sh handles custom $PUID/$PGID
-ENTRYPOINT [ "/sbin/tini", "--", "/opt/photostructure/docker-entrypoint.sh" ]
+# docker-entrypoint.sh handles dropping privileges down to the "node" user in order
+# to support custom PUID/PGID
+ENTRYPOINT [ "/usr/bin/tini", "--", "/opt/photostructure/docker-entrypoint.sh" ]

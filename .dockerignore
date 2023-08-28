@@ -1,6 +1,6 @@
 .git
 .github
 .gitignore
-Dockerfile
+Dockerfile*
 # binaries in tools/* are compiled with glibc, but Alpine uses musl, so skip:
 tools/

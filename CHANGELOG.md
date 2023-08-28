@@ -3,7 +3,7 @@ This is a detailed list of changes in each version.
 
 - Major releases have posts summarizing bigger changes. See [the posts tagged with "release notes"](/tags/release-notes/).
 
-- New releases, starting in 2023, use "calendar versioning," or [CalVer](https://calver.org/), using scheme `YY.MM.MINOR`.
+- New releases, starting in 2023, use "calendar versioning," or [CalVer](https://calver.org/), using scheme `YYYY.MM.MINOR`.
 
 - **Stable, released versions are recommended.** [See the forum post for details about alpha, beta, and stable releases.](https://forum.photostructure.com/t/alpha-beta-stable-and-latest-what-should-you-use/274)
 
@@ -21,17 +21,51 @@ This is a detailed list of changes in each version.
 
 <!-- fix "tag context" for "next previous" context. I'd always done a search, clicked a thumb, and then clicked esc to go back to the search results. But...  if you click a thumb from a search,  and then click "next" or "previous", it ignores that you can from a search, and does the chronological next asset, which is very confusing/irritating. -->
 
-## 23.8.0-prealpha.7
+## v2023.8.0-prealpha.8 ("nighthawk")
+
+**Released 2023 August 28**
+
+Note that prior prealpha builds were `YY.MM.MINOR`, and after a discussion on [Discord](https://discord.com/channels/818905168107012097/818907922767544340/1145044739268296744), we're switching to `YYYY.MM.MINOR` to make it clearer that the first number is a year.
+
+
+- ✨/🐛 Deduplication improvements: see new `allowFuzzyDateImageHashMatches` setting. [More details are in the forum](https://forum.photostructure.com/t/deduplicate-shenanigans/1732/14?u=mrm). Thanks for your help, @nuk!
+
+- 🐛 Docker setup on new instances was broken due to (several) health check bugs. This caused a redirect loop from the welcome page to the health check page ([see discussion](https://discord.com/channels/818905168107012097/1139058626976288798)).
+
+- 🐛 Improvements to avoid overscheduling and timeouts:
+
+  - Health checks are now processed with a bounded concurrency queue, rather than all 35 checks running in parallel, which could cause [spurious health check failures](https://discord.com/channels/818905168107012097/1139270057906679818).
+  - Parts of `sync`'s file processing pipeline had used bounded concurrency queues in an effort to expedite completion. Unfortunately, this results in overscheduling, especially if assets have sidecars. The processing pipeline has been changed to always use serial processing to avoid this overscheduling, and rather than defaulting `maxConcurrentImports` to 50% of maxCpus, the new default is 100% of maxCpus. This should avoid [overscheduling timeouts like this](https://discord.com/channels/818905168107012097/1138942378938470450).
+
+- 🐛 Directory iteration had a step that examined sidecar eligibility in a tight loop, synchronously, which could cause spurious external timeouts when processing directories with many (1k+) sidecar files. Sidecars are now processed asynchronously in timed chunks (just like non-sidecars) to avoid this situation.
+
+- 🐛 `sync` memory consumption could grow to > 1GB on high CPU hosts. Memory allocation and retention was profiled and several hotspots were remediated, allowing for better GC of child process, weak, and lazy references, and `sync` is back down to ~50MB, steady state.
+
+- 📦 The base image for PhotoStructure for Docker is now [node-20-bookworm-slim](https://github.com/nodejs/docker-node/blob/1a4f3d2d0c914b4468ba9675cedf70a2f4f0f82d/20/bookworm-slim/Dockerfile).
+
+  I initially based PhotoStructure for Docker off of [Alpine](https://www.alpinelinux.org/) because the Alpine base image size (181MB) was smaller than the Debian image base (245MB).
+
+  After installing all of PhotoStructure's prerequisite libraries and tooling, though, the base tools images are quite comparable: Alpine is 619MB and Debian is 787MB.
+
+  Given this lack of substantial size benefit, Alpine suddenly looks less appealing:
+
+  - Supporting Alpine is Yet Another Platform that requires special codepaths in PhotoStructure and requires the test suite to be run in
+  - Several issues (including buggy RAW DNG image decoding) are only reproducible within Alpine, so just by moving to Debian, we "fix" the bugs
+  - The `ffmpeg` package in Debian supports several more codecs.
+
+- 📦 The library test suite is now runnable within docker. Test runs within docker in previous versions were limited to the core test suite.
+
+## v23.8.0-prealpha.7
 
 **Released 2023 August 11**
 
-- 🐛 Fixed Windows volume status parsing (thanks for the assist, mackid1993!)
+- 🐛 Fixed Windows volume status parsing (thanks for the assist, @mackid1993!)
 
 - 📦 Added log level and directory to the about page
 
-- 📦 Fixed font weight rendering and upgraded Roboto and Roboto mono to latest versions thanks to [Google Fonts Helper](https://gwfh.mranftl.com/fonts)
+- 📦 Fixed font weight rendering and upgraded Roboto and Roboto Mono to latest versions thanks to [Google Fonts Helper](https://gwfh.mranftl.com/fonts)
 
-## 23.8.0-prealpha.6
+## v23.8.0-prealpha.6
 
 **Released 2023 August 10**
 
@@ -44,7 +78,7 @@ This is a detailed list of changes in each version.
 
 - 📦 Downgrade levels for a heap of `.warn` and `.info` logs
 
-## 23.8.0-prealpha.2-5
+## v23.8.0-prealpha.2-5
 
 **Released 2023 August 9**
 
@@ -61,7 +95,7 @@ This is a detailed list of changes in each version.
 <a id="23.6.0-prealpha.1"></a>
 <a id="23.7.0-prealpha.1"></a>
 
-## 23.8.0-prealpha.1
+## v23.8.0-prealpha.1
 
 **Released 2023 August 8**
 
