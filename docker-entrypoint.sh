@@ -40,33 +40,49 @@
 # reassigning the userid can be problematic. We now create a new
 # `photostructure` user instead.
 
-# As of v2023.6, the photostructure code and resources were moved from /ps/...
+# As of v23.8, the photostructure code and resources were moved from /ps/...
 # to /opt/photostructure to avoid being squashed by a typoed /ps user bind
 # mounts.
 
 # Note that this same entrypoint is used for the Debian and Alpine docker
 # images, so this needs to run under busybox (for Alpine), and dash (for
-# debian).
+# debian). Note that
 
 # --- script starts here ---
 
 # Propagate ctrl-c while we're still in this script:
 trap 'exit 130' INT
 
-# `node` is installed in /usr/local/bin:
-export PATH="/opt/photostructure:/opt/photostructure/tools/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+# `node` is installed in /usr/local/bin, and we want that to win. Note that
+# nothing within PhotoStructure assumes /opt/photostructure is in the PATH,
+# but in case someone runs "photostructure" anywhere in the image, I'd rather
+# it work.
+export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/photostructure:/opt/photostructure/tools/bin"
 
-# PhotoStructure looks for this environment variable to be "1" or "true" to
-# know it's running in Docker. This had been set in the Dockerfile, but that
-# confused people.
+# PhotoStructure uses this environment variable to know that it's running in a
+# docker container, and make a bunch of docker-specific setup, like health
+# check registration and default PS_LIBRARY_DIR.
+
+# This env had been set in the Dockerfile, but that makes PS_IS_DOCKER show up
+# in some docker container managers, like portainer, which can be confusing.
+# Previous versions used more "clever" am-I-in-docker detection heuristics,
+# but this is simple and explicit.
 export PS_IS_DOCKER=1
 
+# Node.js and several third-party libraries look for this value to run in
+# "production mode" (rather than "development mode").
 export NODE_ENV=production
 
-# We "trust" the /ps/config ownership a bit more than the /ps/library
-# directory because /ps/config is specific to this machine, whereas the
-# library directory could be shared with other machines with different
-# UID/GIDs.
+# PhotoStructure settings are split into 2 different configurations--one
+# "system" setting file that (mostly) tells PhotoStructure where the library
+# is, and one "library" settings file where everything else is configured.
+
+# That said, these `stats` calls are just to get a reasonable default user id
+# and group id, in case PUID or PGID aren't set.
+
+# We prefer /ps/config over /ps/library/... as /ps/config may be specific to
+# this machine, whereas the library directory could be shared with other
+# machines with different UID/GIDs.
 
 DEFAULT_UID=$(
   stat -c %u /ps/config/settings.toml 2>/dev/null ||
@@ -95,10 +111,6 @@ export PGID="${PGID:-${pgid:-${DEFAULT_GID}}}"
 # Accept UMASK:
 umask "${UMASK:-0022}"
 
-if [ -x "$PS_RUN_AT_STARTUP" ]; then
-  "$PS_RUN_AT_STARTUP"
-fi
-
 if [ "$1" = "sh" ] || [ "$1" = "dash" ] || [ "$1" = "bash" ]; then
   # Let the user shell into the container:
   exec "$@"
@@ -124,8 +136,8 @@ else
 
   # We want to run as userid $PUID and groupid $PGID. Unfortunately, those IDs
   # may already be in use by the container (probably by the "node" user and
-  # group, both which use 1000), so we need to use `groupadd` and `useradd`,
-  # which have the (very!) handy `--non-unique` option.
+  # group, both which use 1000), so we need to use `groupadd` and `useradd`
+  # (rather than addgroup and adduser), which have the `--non-unique` option.
 
   # Create a new "photostructure" user and group to match PUID/PGID:
 
@@ -135,7 +147,10 @@ else
   # Ensure the new "photostructure" user is in the "node" group so it can run
   # node and everything in /opt/photostructure:
 
-  adduser photostructure node
+  # We use --quiet as this may be a no-op if the "node" and "photostructure"
+  # groups share the same group id
+
+  adduser --quiet photostructure node
 
   maybe_chown_dir() {
     if [ -d "$0" ] && [ "$(stat -c '%u' "$0")" != "$PUID" ]; then
@@ -153,7 +168,7 @@ else
     done
   fi
 
-  # Start photostructure as the user "phstr" instead of root.
+  # Start photostructure as the user "photostructure" instead of root.
 
   # Implementation notes:
 
@@ -169,5 +184,5 @@ else
 
   # - Alpine's busybox-powered `su` doesn't support the long-arg variants of
   #   --preserve-environment (alias for `-p`), or --command (alias for `-c`).
-  exec su -p photostructure -c "/usr/local/bin/node /opt/photostructure/photostructure $*"
+  exec su -p photostructure -c /usr/local/bin/node /opt/photostructure/photostructure "$@"
 fi
