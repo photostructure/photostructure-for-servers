@@ -2,7 +2,7 @@
   "name": "photostructure",
   "productName": "PhotoStructure",
   "author": "PhotoStructure, Inc. <hello@photostructure.com>",
-  "version": "2023.8.0-prealpha.8",
+  "version": "2023.8.0-prealpha.9",
   "description": "PhotoStructure for Servers",
   "repository": {
     "type": "git",
@@ -16,20 +16,20 @@
   "resolutions-vs-overrides:note": "yarn supports resoltions, and npm supports overrides. In either case, this is to force-upgrade a third party dependency to avoid a security vulnerability.",
   "resolutions": {
     "node-abi": "3.45.0",
-    "semver": "^7.5.4"
+    "semver": "7.5.4"
   },
   "overrides": {
     "node-abi": "3.45.0",
-    "semver": "^7.5.4"
+    "semver": "7.5.4"
   },
   "dependencies": {
     "@iarna/toml": "2.2.5",
-    "@parcel/watcher": "2.2.0",
-    "@photostructure/tz-lookup": "^8.0.0",
-    "@sentry/node": "7.62.0",
+    "@parcel/watcher": "2.3.0",
+    "@photostructure/tz-lookup": "8.0.0",
+    "@sentry/node": "7.65.0",
     "argon2": "0.31.0",
     "batch-cluster": "12.1.0",
-    "better-sqlite3": "8.5.0",
+    "better-sqlite3": "8.5.2",
     "body-parser": "1.20.2",
     "commander": "11.0.0",
     "exiftool-vendored": "22.0.0",
@@ -41,20 +41,21 @@
     "he": "1.2.0",
     "helmet": "7.0.0",
     "knex": "2.5.1",
-    "luxon": "3.4.0",
+    "luxon": "3.4.2",
     "ml-kmeans": "5.0.0",
     "moo": "0.5.2",
     "nearley": "2.20.1",
     "papaparse": "5.4.1",
     "picomatch": "2.3.1",
-    "platform-folders": "^0.6.0",
+    "platform-folders": "0.6.0",
     "plist": "3.1.0",
     "pug": "3.0.2",
     "punycode": "2.3.0",
-    "semver": "^7.5.4",
-    "sharp": "0.32.4",
+    "semver": "7.5.4",
+    "sharp": "0.32.5",
     "source-map-support": "0.5.21",
     "trash": "7.2.0",
-    "utimes": "5.1.1"
+    "type-detect": "4.0.8",
+    "utimes": "5.2.0"
   }
 }

@@ -21,6 +21,12 @@ This is a detailed list of changes in each version.
 
 <!-- fix "tag context" for "next previous" context. I'd always done a search, clicked a thumb, and then clicked esc to go back to the search results. But...  if you click a thumb from a search,  and then click "next" or "previous", it ignores that you can from a search, and does the chronological next asset, which is very confusing/irritating. -->
 
+## v2023.8.0-prealpha.9
+
+**Released 2023 August 28**
+
+- 📦 v2023.8.0-prealpha.9 adds a missing dependency on `type-detect`, and updates several other third party libraries.
+
 ## v2023.8.0-prealpha.8 ("nighthawk")
 
 **Released 2023 August 28**
