@@ -2,7 +2,7 @@
   "name": "photostructure",
   "productName": "PhotoStructure",
   "author": "PhotoStructure, Inc. <hello@photostructure.com>",
-  "version": "2023.8.0-prealpha.11",
+  "version": "2023.8.0-prealpha.12",
   "description": "PhotoStructure for Servers",
   "repository": {
     "type": "git",

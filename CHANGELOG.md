@@ -21,13 +21,19 @@ This is a detailed list of changes in each version.
 
 <!-- fix "tag context" for "next previous" context. I'd always done a search, clicked a thumb, and then clicked esc to go back to the search results. But...  if you click a thumb from a search,  and then click "next" or "previous", it ignores that you can from a search, and does the chronological next asset, which is very confusing/irritating. -->
 
+## v2023.8.0-prealpha.12
+
+**to be released**
+
+- 📦 Skip `lsblk` on docker--the debian container doesn't see any host volume UUIDs.
+
 ## v2023.8.0-prealpha.11
 
 **Released 2023 August 28**
 
 - 🐛 PhotoStructure for Docker now ignores the root partition, `/`, for both volume metadata and as a scan path. This was accomplished by changing the default for the `PS_EXCLUDED_MOUNTPOINT_PATHS` setting to include `"/"` by default on docker. Thanks for the suggestion, [MK](https://www.mklibrary.com/)!
 
-- 📦 add wget to the docker image to satisfy the `HEALTHCHECK CMD` (thanks for the catch, [@avdp](https://forum.photostructure.com/u/avdp/summary)!)
+- 📦 Add wget to the docker image to satisfy the `HEALTHCHECK CMD` (thanks for the catch, [@avdp](https://forum.photostructure.com/u/avdp/summary)!)
 
 ## v2023.8.0-prealpha.10 ("Nighthawk TNG")
 
