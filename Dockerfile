@@ -29,6 +29,7 @@ FROM node:20-bookworm-slim
 # passwd provides `usermod` and `groupmod` (used by docker-entrypoint.sh)
 # perl is required for exiftool.
 # procps provides a working `ps -o lstart`
+# wget is used by the health check.
 # tini is an `init` that supports proper zombie and signal handling
 
 RUN apt-get update \
@@ -46,6 +47,7 @@ RUN apt-get update \
   procps \
   tini \
   tzdata \
+  wget \
   && rm -rf /var/lib/apt/lists/* \
   && npm install --force --location=global npm yarn
 
