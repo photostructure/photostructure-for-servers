@@ -21,6 +21,16 @@ This is a detailed list of changes in each version.
 
 <!-- fix "tag context" for "next previous" context. I'd always done a search, clicked a thumb, and then clicked esc to go back to the search results. But...  if you click a thumb from a search,  and then click "next" or "previous", it ignores that you can from a search, and does the chronological next asset, which is very confusing/irritating. -->
 
+## v2023.9.0-prealpha.14
+
+**Released 2023 September 6**
+
+- 🐛 Fixed `ffmpeg` overscheduling by moving the `--threads` argument _after_ the input. The default value for `--threads` remains `clamp(1, 8, $PS_FFMPEG_THREADS ?? maxCpus() / 2)`, where `maxCpus()` is `$cpuCount * PS_CPU_LOAD_PERCENT`.
+ 
+- 🐛 Fixed CPU utilization health check to refresh when a proper cpu load value was available.
+
+- 🐛 `sync` will now run `Math.max(1, maxCpus() - 1)` workers. Previously it would schedule `maxCpus()` workers, which could result in overscheduling (especially on CPUs with only 1-4 threads)
+
 ## v2023.9.0-prealpha.13
 
 **Released 2023 September 6**
