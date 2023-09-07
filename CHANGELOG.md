@@ -21,7 +21,7 @@ This is a detailed list of changes in each version.
 
 <!-- fix "tag context" for "next previous" context. I'd always done a search, clicked a thumb, and then clicked esc to go back to the search results. But...  if you click a thumb from a search,  and then click "next" or "previous", it ignores that you can from a search, and does the chronological next asset, which is very confusing/irritating. -->
 
-## v2023.9.0-prealpha.14
+## v2023.9.0-prealpha.15
 
 **Released 2023 September 6**
 
@@ -65,13 +65,13 @@ This is a detailed list of changes in each version.
 
 - 📦 `Error` stacktraces are included in log metadata, which may help expedite issue reproduction.
 
-## v23.8.0-prealpha.12
+## v2023.8.0-prealpha.12
 
 **Released 2023 August 28**
 
 - 📦 Skip `lsblk` on docker--the debian container doesn't see any host volume UUIDs.
 
-## v23.8.0-prealpha.11
+## v2023.8.0-prealpha.11
 
 **Released 2023 August 28**
 
@@ -79,7 +79,7 @@ This is a detailed list of changes in each version.
 
 - 📦 Add wget to the docker image to satisfy the `HEALTHCHECK CMD` (thanks for the catch, [@avdp](https://forum.photostructure.com/u/avdp/summary)!)
 
-## v23.8.0-prealpha.10 ("Nighthawk TNG")
+## v2023.8.0-prealpha.10 ("Nighthawk TNG")
 
 **Released 2023 August 28**
 
@@ -90,13 +90,13 @@ This is a detailed list of changes in each version.
 - 📦 Install `source-map-support` for better stacktraces
 
 
-## v23.8.0-prealpha.9 ("Nighthawk")
+## v2023.8.0-prealpha.9 ("Nighthawk")
 
 **Released 2023 August 28**
 
 - 📦 v23.8.0-prealpha.9 fixes the base debian image, adds a missing dependency on `type-detect`, and updates several other third party libraries.
 
-## v23.8.0-prealpha.8
+## v2023.8.0-prealpha.8
 
 **Released 2023 August 28**
 
