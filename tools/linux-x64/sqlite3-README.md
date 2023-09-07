@@ -1,11 +1,9 @@
-Applied on Ubuntu 22.04 x64:
-
-To make a static binary, we have to disable readline, and as of 3.42.0, we
-have to yank the `./libtool` line from `make` and add `-all-static` right after
-`gcc`.
+Applied on Debian 11 x64:
 
 ```sh
-source <(egrep "^(YEAR|VERSION)=" /home/mrm/src/photostructure/src/library/node_modules/better-sqlite3/deps/download.sh)
+sudo apt install -y build-essential curl
+
+source <(egrep "^(YEAR|VERSION)=" $HOME/src/photostructure/src/library/node_modules/better-sqlite3/deps/download.sh)
 
 export DEST=/tmp/sqlite-$VERSION
 
@@ -19,3 +17,6 @@ mkdir -p $DEST \
   && cp sqlite3 ~/src/photostructure/tools/linux-x64
 
 ```
+
+To validate the binary is static:
+

@@ -21,13 +21,47 @@ This is a detailed list of changes in each version.
 
 <!-- fix "tag context" for "next previous" context. I'd always done a search, clicked a thumb, and then clicked esc to go back to the search results. But...  if you click a thumb from a search,  and then click "next" or "previous", it ignores that you can from a search, and does the chronological next asset, which is very confusing/irritating. -->
 
-## v2023.8.0-prealpha.12
+## v2023.9.0-prealpha.13
 
-**to be released**
+**Released 2023 September 6**
+
+- 🐛 Search `when:2023` didn't work (thanks for the [report](https://discord.com/channels/818905168107012097/1146105684648267886) and assistance, [@avdp](https://forum.photostructure.com/u/avdp/summary) and [@tkohhh](https://forum.photostructure.com/u/tkohhh/summary))
+
+- 🐛 When rotating images with prior versions, `-Orientation` would always be delivered to sidecars (because the `PS_SIDECAR_TAG_BLOCKLIST` included `Orientation`, but we have to pass `-Orientation#` to ExifTool). Unfortunately, nothing respects sidecar `Orientation` values, so it resulted in images not being rotated properly. Thanks for example, @tkohhh! 
+
+- 🐛 Found and addressed several codepaths that could throw ["e.localBoundaries not a function"](https://discord.com/channels/818905168107012097/1138979196090200084)--JSON serialization for `Date` and `DateTime` were broken. Thanks for the reports, @slothstronaut, @ltlowe, and @HelloPanic!
+
+- 🐛 Images with `stat`-only captured-at date variants should have more consistent aggregation. Thanks for the [report](https://discord.com/channels/818905168107012097/1139417790458114220), @nuk!
+
+- 🐛 Search `Keywords:___` is now a valid alias for `kw:___`, which fixes the search result from clicking from keyword tags.
+
+- 🐛 Added stale cache cleanup. Several directory structures in ~/.cache/photostructure were updated from prior versions.
+
+- 🐛 Improved dominant color extraction with arbitrary image rotations--images could be incorrectly dis-aggregated, especially for variants that were rotated by `Orientation` tag versus re-rastered with a different orientation.
+
+- 🐛 PLUS licenses could fail to activate in some situations. This should be improved, but holler if you see an issue.
+
+- 🐛 The settings page's library directory suggestions code could, in some situations, fail to suggest anything, resulting in an error. This was improved.
+
+- 🐛 Health check validation on `web` now only waits for "critical" health checks (like library database validation) before moving from the splash screen onto the home page.
+
+- 🐛 Volume metadata results could be postponed for a fraction of the short command timeout on some Linux boxes if `gio` wasn't installed. This was fixed. 
+
+- 🐛 `sync` is now properly restarted when settings are saved, which should fix ["initial scan not starting on it's own"](https://discord.com/channels/818905168107012097/1139175793222758441)--thanks for the report, @advp!
+
+- 📦 Dropped fsCache for most codepaths--the mutex implementation proved to be problematic on some filesystems. Future versions may adopt a different caching strategy, but performance doesn't seem to be dramatically impacted (especially on fast disks).
+
+- 📦 Third party libraries were upgraded, including sharp, SQLite, and ExifTool.
+
+- 📦 `Error` stacktraces are included in log metadata, which may help expedite issue reproduction.
+
+## v23.8.0-prealpha.12
+
+**Released 2023 August 28**
 
 - 📦 Skip `lsblk` on docker--the debian container doesn't see any host volume UUIDs.
 
-## v2023.8.0-prealpha.11
+## v23.8.0-prealpha.11
 
 **Released 2023 August 28**
 
@@ -35,7 +69,7 @@ This is a detailed list of changes in each version.
 
 - 📦 Add wget to the docker image to satisfy the `HEALTHCHECK CMD` (thanks for the catch, [@avdp](https://forum.photostructure.com/u/avdp/summary)!)
 
-## v2023.8.0-prealpha.10 ("Nighthawk TNG")
+## v23.8.0-prealpha.10 ("Nighthawk TNG")
 
 **Released 2023 August 28**
 
@@ -46,13 +80,13 @@ This is a detailed list of changes in each version.
 - 📦 Install `source-map-support` for better stacktraces
 
 
-## v2023.8.0-prealpha.9 ("Nighthawk")
+## v23.8.0-prealpha.9 ("Nighthawk")
 
 **Released 2023 August 28**
 
-- 📦 v2023.8.0-prealpha.9 fixes the base debian image, adds a missing dependency on `type-detect`, and updates several other third party libraries.
+- 📦 v23.8.0-prealpha.9 fixes the base debian image, adds a missing dependency on `type-detect`, and updates several other third party libraries.
 
-## v2023.8.0-prealpha.8
+## v23.8.0-prealpha.8
 
 **Released 2023 August 28**
 
