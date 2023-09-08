@@ -21,12 +21,26 @@ This is a detailed list of changes in each version.
 
 <!-- fix "tag context" for "next previous" context. I'd always done a search, clicked a thumb, and then clicked esc to go back to the search results. But...  if you click a thumb from a search,  and then click "next" or "previous", it ignores that you can from a search, and does the chronological next asset, which is very confusing/irritating. -->
 
+## v2023.9.0-prealpha.16
+
+**Releasing 2023 September 7**
+
+- 🐛 Fixed `cpuUsage()` bug that could cause it to stay at `undefined`
+
+- 📦 Adjusted `maxCpus()` to account for `sync` load to more accurately schedule the correct number of import jobs
+
+- 📦 `SystemLoadHealthCheck` now refreshes every minute
+
+- 📦 Current system load was added to the `/about` page
+
+- 📦 CPU count now uses [`node:os.availableParallelism()`](https://nodejs.org/dist/latest-v20.x/docs/api/os.html#osavailableparallelism) if available (Node.js v18+), and on Linux, `/sys/fs/cgroup/cpu/cpu.cfs_quota_us`, `/sys/fs/cgroup/cpu/cpu.cfs_period_us`, and `/sys/fs/cgroup/cpu/cpu.shares` are taken into account. The least value from all these methods is used for the "CPU count."
+
 ## v2023.9.0-prealpha.15
 
 **Released 2023 September 6**
 
 - 🐛 Fixed `ffmpeg` overscheduling by moving the `--threads` argument _after_ the input. The default value for `--threads` remains `clamp(1, 8, $PS_FFMPEG_THREADS ?? maxCpus() / 2)`, where `maxCpus()` is `$cpuCount * PS_CPU_LOAD_PERCENT`.
- 
+
 - 🐛 Fixed CPU utilization health check to refresh when a proper cpu load value was available.
 
 - 🐛 `sync` will now run `Math.max(1, maxCpus() - 1)` workers. Previously it would schedule `maxCpus()` workers, which could result in overscheduling (especially on CPUs with only 1-4 threads)
@@ -37,15 +51,13 @@ This is a detailed list of changes in each version.
 
 - 🐛 Search `when:2023` didn't work (thanks for the [report](https://discord.com/channels/818905168107012097/1146105684648267886) and assistance, [@avdp](https://forum.photostructure.com/u/avdp/summary) and [@tkohhh](https://forum.photostructure.com/u/tkohhh/summary))
 
-- 🐛 When rotating images with prior versions, `-Orientation` would always be delivered to sidecars (because the `PS_SIDECAR_TAG_BLOCKLIST` included `Orientation`, but we have to pass `-Orientation#` to ExifTool). Unfortunately, nothing respects sidecar `Orientation` values, so it resulted in images not being rotated properly. Thanks for example, @tkohhh! 
+- 🐛 When rotating images with prior versions, `-Orientation` would always be delivered to sidecars (because the `PS_SIDECAR_TAG_BLOCKLIST` included `Orientation`, but we have to pass `-Orientation#` to ExifTool). Unfortunately, nothing respects sidecar `Orientation` values, so it resulted in images not being rotated properly. Thanks for example, @tkohhh!
 
 - 🐛 Found and addressed several codepaths that could throw ["e.localBoundaries not a function"](https://discord.com/channels/818905168107012097/1138979196090200084)--JSON serialization for `Date` and `DateTime` were broken. Thanks for the reports, @slothstronaut, @ltlowe, and @HelloPanic!
 
 - 🐛 Images with `stat`-only captured-at date variants should have more consistent aggregation. Thanks for the [report](https://discord.com/channels/818905168107012097/1139417790458114220), @nuk!
 
 - 🐛 Search `Keywords:___` is now a valid alias for `kw:___`, which fixes the search result from clicking from keyword tags.
-
-- 🐛 Added stale cache cleanup. Several directory structures in ~/.cache/photostructure were updated from prior versions.
 
 - 🐛 Improved dominant color extraction with arbitrary image rotations--images could be incorrectly dis-aggregated, especially for variants that were rotated by `Orientation` tag versus re-rastered with a different orientation.
 
@@ -55,11 +67,11 @@ This is a detailed list of changes in each version.
 
 - 🐛 Health check validation on `web` now only waits for "critical" health checks (like library database validation) before moving from the splash screen onto the home page.
 
-- 🐛 Volume metadata results could be postponed for a fraction of the short command timeout on some Linux boxes if `gio` wasn't installed. This was fixed. 
+- 🐛 Volume metadata results could be postponed for a fraction of the short command timeout on some Linux boxes if `gio` wasn't installed. This was fixed.
 
 - 🐛 `sync` is now properly restarted when settings are saved, which should fix ["initial scan not starting on it's own"](https://discord.com/channels/818905168107012097/1139175793222758441)--thanks for the report, @advp!
 
-- 📦 Dropped fsCache for most codepaths--the mutex implementation proved to be problematic on some filesystems. Future versions may adopt a different caching strategy, but performance doesn't seem to be dramatically impacted (especially on fast disks).
+- 📦 Dropped `fsCache` for most codepaths--the mutex implementation proved to be problematic on some filesystems. Future versions may adopt a different caching strategy, but performance doesn't seem to be dramatically impacted (especially on systems with fast disks).
 
 - 📦 Third party libraries were upgraded, including sharp, SQLite, and ExifTool.
 
@@ -89,7 +101,6 @@ This is a detailed list of changes in each version.
 
 - 📦 Install `source-map-support` for better stacktraces
 
-
 ## v2023.8.0-prealpha.9 ("Nighthawk")
 
 **Released 2023 August 28**
@@ -101,7 +112,6 @@ This is a detailed list of changes in each version.
 **Released 2023 August 28**
 
 Note that prior prealpha builds were `YY.MM.MINOR`, and after a discussion on [Discord](https://discord.com/channels/818905168107012097/818907922767544340/1145044739268296744), we're switching to `YYYY.MM.MINOR` to make it clearer that the first number is a year.
-
 
 - ✨/🐛 Deduplication improvements: see new `allowFuzzyDateImageHashMatches` setting. [More details are in the forum](https://forum.photostructure.com/t/deduplicate-shenanigans/1732/14?u=mrm). Thanks for your help, @nuk!
 
