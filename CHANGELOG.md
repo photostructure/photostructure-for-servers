@@ -21,11 +21,29 @@ This is a detailed list of changes in each version.
 
 <!-- fix "tag context" for "next previous" context. I'd always done a search, clicked a thumb, and then clicked esc to go back to the search results. But...  if you click a thumb from a search,  and then click "next" or "previous", it ignores that you can from a search, and does the chronological next asset, which is very confusing/irritating. -->
 
+## v2023.9.0-prealpha.17
+
+**Releasing 2023 September 9**
+
+- 🐛 Prior video transcoding timeouts were validated against .MOV and other older video formats. HEVC in 4K 60fps require 10x the CPU time, based on bytes to transcode--so prior builds would erroneously timeout video transcode operations _and then retry_, causing imports to crawl to a halt (and burn CPU time needlessly). The following fixes are in this build:
+  - Video asset file imports now have _no timeouts_. I may reestablish this timeout in the future if we find people's sync getting "stuck" in `ffmpeg`, but I don't have a record of that.
+  - The "is this previously transcoded file" test assumed a transcoded file would not be less than a quarter the size of the original file--but if we're downsampling videos, this limit isn't correct. The expected file size is now (duration * bitrate), and a transcoded file can now be validly 10% of that size without requesting a new transcode.
+  
+- 🐛 CPU rendering code would return `undefined` for values higher than 100%--which would normally be a reasonable approach, but PhotoStructure uses an average of load and cpu usage statistics--if system load is higher than current CPU count, "busy percent" will exceed 100%.
+
+- 📦 The "system load" health check was removed. `sync`'s work queue now directly looks at system load to determine if new work should be started--this should further avoid overscheduling.
+
+- 📦 A new "share" icon was added to the asset header, but most browsers do not support sharing embedded `blob`-based files, so most people won't see the icon :sob:
+
 ## v2023.9.0-prealpha.16
 
-**Releasing 2023 September 7**
+**Released 2023 September 7**
 
 - 🐛 Fixed `cpuUsage()` bug that could cause it to stay at `undefined`
+
+- 🐛 Invalid values (like "00" and "01") associated to EXIF `SubSec` datetime fields could assume the current date (!!). This is now fixed.
+
+- 🐛 The CPU busy code was incorrectly filtering all values (!!), which led to the `undefined` cpu percent in the health check
 
 - 📦 Adjusted `maxCpus()` to account for `sync` load to more accurately schedule the correct number of import jobs
 

@@ -18,9 +18,9 @@
   integrity sha512-+gPfKv8UWeKKeJTUxe59+OobVcrYHETCsORl61EmSkmgymguYk/X5bp7GuUIXaFsc6y++v8ZxPsLSSuujqDphA==
 
 "@babel/types@^7.6.1", "@babel/types@^7.9.6":
-  version "7.22.15"
-  resolved "https://registry.yarnpkg.com/@babel/types/-/types-7.22.15.tgz#266cb21d2c5fd0b3931e7a91b6dd72d2f617d282"
-  integrity sha512-X+NLXr0N8XXmN5ZsaQdm9U2SSC3UbIYq/doL++sueHOTisgZHoKaQtZxGuV2cUPQHMfjKEfg/g6oy7Hm6SKFtA==
+  version "7.22.17"
+  resolved "https://registry.yarnpkg.com/@babel/types/-/types-7.22.17.tgz#f753352c4610ffddf9c8bc6823f9ff03e2303eee"
+  integrity sha512-YSQPHLFtQNE5xN9tHuZnzu8vPr61wVTBZdfv1meex1NBosa4iT05k/Jw06ddJugi4bk7The/oSwQGFcksmEJQg==
   dependencies:
     "@babel/helper-string-parser" "^7.22.5"
     "@babel/helper-validator-identifier" "^7.22.15"
