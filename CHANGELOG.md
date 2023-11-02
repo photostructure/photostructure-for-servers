@@ -23,9 +23,17 @@ This is a detailed list of changes in each version.
 
 <!-- fix "tag context" for "next previous" context. I'd always done a search, clicked a thumb, and then clicked esc to go back to the search results. But...  if you click a thumb from a search,  and then click "next" or "previous", it ignores that you can from a search, and does the chronological next asset, which is very confusing/irritating. -->
 
-## v2023.10.0-prealpha.18
+## v2023.11.0-prealpha.19
 
-**Releasing soon**
+**Released 2023 November 2**
+
+- 🐛 File hidden tests no longer run on drive letters on windows (`C:\` is reported to be hidden as per `Get-Item`)
+
+- 🐛 Fixed PowerShell health check on Windows
+
+## v2023.11.0-prealpha.18
+
+**Released 2023 November 2**
 
 ### ✨ Version checking was added as a health check
 
@@ -192,7 +200,7 @@ Several new settings were added to let you suit this feature to your taste:
   exclusion globs that are in the library or originals directory hierarchy.
   Note that files in NoMedia folders and hidden files (that start with `.`)
   are still be ignored.
-  
+
 - 📦 Pulled in latest third-party libraries, including SQLite and ExifTool
 
 - 🛡️ Added a [regex
