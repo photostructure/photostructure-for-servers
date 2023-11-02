@@ -23,20 +23,17 @@ html(lang="en")
 
       .container.reveal
         form.mhauto(action="/settings", method="post") 
-          unless (isVideoTranscodingSupported)
+          if (videoToolDetails == null || videoToolDetails.isSupportedVersion !== true)
             .section
               #videoSupported.warn.message
                 p
                   i.emj.movie-camera
                   b.fs22 Do you have videos?
                 p
-                  if (vlcInfo && vlcInfo.unsupportedVersion)
-                    | VLC #{ vlcInfo.unsupportedVersion } is not supported.
+                  if (videoToolDetails && videoToolDetails.isSupportedVersion === false)
+                    | #{ videoToolDetails.path } is not a supported version.
 
-                  | Before continuing, please
-                  a(
-                    href="https://photostructure.com/getting-started/video-support/"
-                  ) follow these steps. It’ll only take a minute.
+                  | Before continuing, please <a href="https://photostructure.com/getting-started/video-support/">follow these steps</a>. It’ll only take a minute.
                   //- we don’t have the "reload" button here so people (like Jim L) don’t lose their form entries.
               .buttons.card-nav
                 a.next.btn-small(href="#section1", rel="next") Next
@@ -284,6 +281,81 @@ html(lang="en")
               a.next.btn-small(href="#section5", rel="next") Next
 
           #section5.section
+            h2 <i class="emj med gift"></i> PhotoStructure updates
+
+            p <a href="https://forum.photostructure.com/t/new-in-v2023-10-automated-photostructure-version-checking/1956">Read more about PhotoStructure updates here</a>.
+
+            p
+              label
+                input#updateCheckDaily(
+                  name="autoUpdateCheck",
+                  type="radio",
+                  value="true",
+                  checked=autoUpdateCheck === true
+                )
+                i.emj.thumbs-up
+                | Yes, PhotoStructure may check for updates automatically
+
+            p
+              label
+                input#updateCheckNone(
+                  name="autoUpdateCheck",
+                  type="radio",
+                  value="false",
+                  checked=autoUpdateCheck === false
+                )
+                i.emj.thumbs-down
+                | No thanks, do not check for updates automatically
+
+            .buttons.card-nav
+              a.back.btn-small(href="#section4", rel="prev") Back
+              a.next.btn-small(href="#section6", rel="next") Next
+
+          #section6.section
+            h2 <i class="emj med chart"></i> Share basic installation information?
+
+            p When PhotoStructure checks for updates, is it OK to share basic information about your installation?
+
+            details
+              summary.more-details(title="Click to toggle details")
+
+              p If enabled, your library will send a User-Agent that includes basic information about your installation. This includes your current PhotoStructure edition, version, operating system, and your subscription state. Yours looks like this:
+
+              tt #{ userAgent }
+
+              p If disabled, the User-Agent will just be <tt>PhotoStructure</tt>.
+
+              p This information in aggregate is used to help prioritize platform and feature support. It is not sold or shared for marketing or advertising.
+
+              p <a href="https://forum.photostructure.com/t/new-in-v2023-10-automated-photostructure-version-checking/1956">Read more details about PhotoStructure updates here</a>.
+
+            p
+              label
+                input#share(
+                  name="allowUserAgent",
+                  type="radio",
+                  value="true",
+                  checked=allowUserAgent === true
+                )
+                i.emj.thumbs-up
+                | Yes, PhotoStructure may share installation information with PhotoStructure, Inc.
+
+            p
+              label
+                input#updateCheckNone(
+                  name="allowUserAgent",
+                  type="radio",
+                  value="false",
+                  checked=allowUserAgent === false
+                )
+                i.emj.thumbs-down
+                | No thanks, do not share any installation information.
+
+            .buttons.card-nav
+              a.back.btn-small(href="#section5", rel="prev") Back
+              a.next.btn-small(href="#section7", rel="next") Next
+
+          #section7.section
             h2 <i class="emj med emergency-light"></i> Error reporting
             p PhotoStructure's error reports help us detect, triage, and fix issues (<a href="https://photostructure.com/faq/error-reports/">learn more</a>).
 
@@ -310,10 +382,10 @@ html(lang="en")
                 | No thanks, do not send any error reports.
 
             .buttons.card-nav
-              a.back.btn-small(href="#section4", rel="prev") Back
-              a.next.btn-small(href="#section6", rel="next") Next
+              a.back.btn-small(href="#section6", rel="prev") Back
+              a.next.btn-small(href="#section8", rel="next") Next
 
-          #section6.section
+          #section8.section
             h2 <i class="emj med scales"></i> PhotoStructure license
 
             details(open=welcome)
@@ -321,7 +393,7 @@ html(lang="en")
               .eula
                 include eula.html
             p
-              b By clicking Start you agree to all terms of this license.
+              b By clicking #{ welcome ? "Start" : "Save" } you agree to all terms of this license.
             //- .buttons.card-nav
             //-   a.back.btn-small(href="#section5" rel="prev") Back
 

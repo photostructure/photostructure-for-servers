@@ -1,13 +1,13 @@
 {
-  "version": "2023.9.0-prealpha.17",
+  "version": "2023.11.0-prealpha.18",
   "versionMajor": 2023,
-  "versionMinor": 9,
+  "versionMinor": 11,
   "versionPatch": 0,
   "versionPrerelease": [
     "prealpha",
-    17
+    18
   ],
-  "release": "2023.9.0-prealpha.17+20230909221849",
-  "gitSha": "fcaf76dd737c83cc2ad522cb3402f642b870cbef",
-  "gitDate": "2023-09-10T05:18:49.000Z"
+  "release": "2023.11.0-prealpha.18+20231102152702",
+  "gitSha": "4b8d192a24a3bcd7545e28be11c53730526d1501",
+  "gitDate": "2023-11-02T22:27:02.000Z"
 }

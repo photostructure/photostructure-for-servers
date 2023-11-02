@@ -33,11 +33,11 @@ html
           i.emj.bank
           p <b><a href="/plans/billing?then=/about">Manage your subscription and billing</a></b>.
 
-        i.emj.birthday
+        i.emj.gift
         p
           a(href="https://photostructure.com/whats-new/") What’s new in this release?
 
-        i.emj.surf
+        i.emj.open-book
         p Read our <a href="https://photostructure.com/user-guide/">User Guide</a>.
 
         i.emj.beetle
@@ -86,8 +86,8 @@ html
                 title=ea.library ? "This is your library directory" : ""
               ) !{ ea.path }
               td.status.icon(class=ea.status)= ea.status
-              td.last-started= ea.lastStarted
-              td.last-completed= ea.lastCompleted
+              td.last-started(title=ea.lastStartedISO)= ea.lastStarted
+              td.last-completed(title=ea.lastCompletedISO)= ea.lastCompleted
         .details.center Edit this in the <a href="/settings#scan-path-section">"Where else are your photos and videos?" settings section</a>.
 
     if volumes

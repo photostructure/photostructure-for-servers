@@ -9,13 +9,7 @@ cd /tmp
 rm -rf LibRaw
 git clone https://github.com/LibRaw/LibRaw.git
 cd LibRaw
-git checkout --force 6fffd414bfda63dfef2276ae07f7ca36660b8888
-
-# wget https://www.libraw.org/data/LibRaw-0.20.2.tar.gz
-# sha256sum should say "OK":
-# echo dc1b486c2003435733043e4e05273477326e51c3ea554c6864a4eafaff1004a6  LibRaw-0.20.2.tar.gz | sha256sum --check
-# tar xvzf LibRaw-0.20.2.tar.gz
-# cd LibRaw-0.20.2
+git checkout --force 41506ef73e33c5e0c3b94608cce2481d92003d5d
 
 autoreconf -fiv
 

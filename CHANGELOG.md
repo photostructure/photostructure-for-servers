@@ -14,26 +14,206 @@ This is a detailed list of changes in each version.
 - If you update to an alpha or beta build and you want to downgrade to a prior version, know that older versions of PhotoStructure may not be able to open libraries created by newer versions of PhotoStructure. You will probably need to [restore your library from a database backup](/faq/restore-db-from-backup/).
 
 <!-- TODO: -->
+<!-- - 🐛 Sync doesn't seem to no-op properly for a completed directory -->
+<!-- - 🐛 Tag gallery is not sorted and has too many rows -->
+
 <!-- - ✨ Logs are now viewable in the UI -->
 <!-- - 🐛 [Tag reparenting doesn't seem to work properly on rebuilds](https://forum.photostructure.com/t/who-tags-are-incorrectly-excluded-from-keywords/676/6?u=mrm). -->
-
 <!-- - 🐛 Sync resume (after pause) on mac via the menubar (not the main window nav button) doesn't seem to support "resume" properly -->
 
 <!-- fix "tag context" for "next previous" context. I'd always done a search, clicked a thumb, and then clicked esc to go back to the search results. But...  if you click a thumb from a search,  and then click "next" or "previous", it ignores that you can from a search, and does the chronological next asset, which is very confusing/irritating. -->
 
+## v2023.10.0-prealpha.18
+
+**Releasing soon**
+
+### ✨ Version checking was added as a health check
+
+PhotoStructure can now make periodic requests to
+https://photostructure.com/channel-versions.json, using a
+[User-Agent](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent)
+that exposes
+
+- The version of PhotoStructure that you're using (`PhotoStructure/2023.10.0`)
+- Your operating system and system architecture (like `Windows 11 on x64` or `Ubuntu 22.04.3 LTS on x64`)
+- Your current subscription (`PLUS` or `LITE`)
+
+Several new settings were added to let you suit this feature to your taste:
+
+1. A new section in the Settings page lets you disable either the version
+   check altogether, or just the custom user agent
+
+1. By setting `PS_AUTO_UPDATE_CHECK=false`, which disables version checks, or
+
+1. By setting `PS_ALLOW_USER_AGENT=false`, which makes the `User-Agent` be
+   simply `PhotoStructure`, or
+
+1. By opting out of all external network requests with the new meta-setting,
+   `PS_OPT_OUT=true`, which changes:
+
+   - the default value of `PS_AUTO_UPDATE_CHECK` to false
+   - the default value of `PS_ALLOW_USER_AGENT` to false, and
+   - the default value of `PS_REPORT_ERRORS` to false
+
+   In the future, when there are any other features in the future that may
+   require external network requests, those will be disabled by default with
+   this meta setting as well.
+
+## Video improvements
+
+- 💔 **VLC support has been dropped.** Please use FFmpeg instead. [Setup instructions were updated for every platform.](/video)
+
+- 🐛 Depending on how video files were encoded, metadata (like the video
+  duration) could have been missing in prior builds. PhotoStructure now
+  properly omits the `-fast` argument when reading and extracting video
+  metadata. This bug could have caused videos to not be imported in prior
+  builds, or video transcode timeouts to be (very) incorrect.
+
+- 🐛 `ffmpeg` transcode rescaling could fail on older versions, causing videos
+  to not be imported. We now try the new-style `-filter:v scale=WIDTH:HEIGHT`
+  format, and automatically downgrade to the older style `-s WIDTHxHEIGHT`
+  argument format if there are errors. See the new `ffmpegScaleType` setting
+  for details:
+
+> What style of resize works for your version of ffmpeg?
+>
+> - `vf` will use `-vf scale=WxH`
+> - `s` will use `-s WxH`.
+>
+> The default should be fine: only very old versions should use "s".
+
+- 🐛 `ffmpeg` transcoding now supports bounded framerates. See the new
+  `transcodeFrameRate` setting for details:
+
+> If set, transcoded videos will be bounded to this framerate. Videos that are
+> lower than this framerate will retain their original (lower) framerate.
+>
+> Note that framerate reduction does not reduce the final transcoded video
+> size linearly: it may only reduce file sizes by ~20% to go from 60 FPS to 30
+> FPS.
+>
+> Unset this or set to 0 to disable bounded framerates.
+
+- 🐛 Video timezone parsing has been
+  [improved](https://github.com/photostructure/exiftool-vendored.js/issues/156)
+
+### Additional changes and improvements
+
+- ✨ Asset pages are now rendered with OpenGraph header metadata. [See the
+  forum for
+  details](https://forum.photostructure.com/t/image-thumbnail-in-link-preview/1950/2).
+
+- 🐛 Image rotation was broken for some orientations in prior builds. We now
+  only consider rotations that match the exemplar aspect ratio. The final
+  rotation formula was simplified and (more) tests were added as well.
+
+- 🐛 `sync` re-scheduling in prior prealpha builds would only happen if
+  mountpoints had changed--now there is no such prerequisite condition.
+
+- 🐛 Very large values of `PS_MAX_MEMORY_MB` will no longer result in [very
+  few worker
+  processes](https://discord.com/channels/818905168107012097/1152796699912310794).
+
+- 🐛 More recent Panasonic camera RAW images can now be imported by
+  PhotoStructure, with the addition of the new `validateMimetypeSkiplist`
+  setting, and adding `JpgFromRaw2` to the default set of the
+  `embeddedPreviews` setting.
+
+- 🐛 PhotoStructure tried to look at Linux `cgroup` files for CPU scheduling,
+  but the implementation proved to be incorrect on many systems.
+  PhotoStructure now relies on
+  [availableParallelism](https://nodejs.org/dist/latest-v18.x/docs/api/os.html#osavailableparallelism).
+  If that isn't available, PhotoStructure counts the CPUs returned by
+  [os.cpus()](https://nodejs.org/dist/latest-v18.x/docs/api/os.html#oscpus).
+  See the [forum post for more
+  details](https://forum.photostructure.com/t/no-sync-on-synology-docker/1959/11?u=mrm)
+  (thanks for the assist, @underdog!)
+
+- 🐛 The `assetPathnameFormat` setting in prior builds was stripped of **all**
+  quotes, which resulted in static strings incorrectly being interpreted as
+  path tokens.
+
+- 📦 Thumbnail and video serving by the web service is now more tolerant of
+  incorrect/unavailable resolutions: PhotoStructure will 302-redirect to the
+  nearest resolution preview now.
+
+- 📦 `PS_LOG_SERVER_LEVEL` now defaults to the value of `PS_LOG_LEVEL` if unset.
+
+- 📦 Added version extraction backstop for Debian/Ubuntu external tooling
+  (mostly for `heif-convert` debugging).
+
+- 📦 PhotoStructure can now use `dpkg -S` to check for installed versions of
+  tools on Debian-based systems (which will help debug issues with `ffmpeg`
+  and `heif-convert`).
+
+- 📦 EXIF dates can be partially specified--month and day that is set to two
+  spaces is considered "unset", so "2023: : " or "2023:00:00" is considered
+  to just be the year 2023. [See the forum for
+  details](https://forum.photostructure.com/t/340/19).
+
+- 📦 Timezone offsets (like "+5" or "-07:00") are now optionally extracted and
+  respected for all date formats, including fuzzy date formats.
+
+- 📦 `extraDateTimeFormats` now includes additional formats to extract
+  timestamps from filenames from LG, dashcam, and action cameras.
+
+- 📦 Added operating system version health check (to make it clear we didn't
+  support end-of-life OSes or Linux distributions that aren't Ubuntu, Debian,
+  or Fedora), and removed the version check from `./start.sh`.
+
+- 📦 Health checks now warn against ancient versions of `ffmpeg` and
+  `heif-convert` (if version metadata is available).
+
+- 📦 `backfillTimezones` and `inferTimezoneFromDatestamps` are now exposed by
+  settings and enabled by default. [See the documentation for
+  details](https://photostructure.github.io/exiftool-vendored.js/interfaces/ExifToolOptions.html#backfillTimezones).
+
+- 📦 ExifTool `MWG` mode is now enabled by default. See the new `useMWG`
+  setting to revert to prior behavior. See
+  https://exiftool.org/TagNames/MWG.html for details.
+
+- 📦 On Windows, `%SystemDrive%\cygwin64\bin` is now checked for external
+  tooling even if it's not in the `%PATH%`
+
+- 📦 Improved make/model handling for several new flagship mirrorless cameras
+
+- 📦 `info` improvements:
+
+  - Added PhotoStructure version metadata (including available updates for the current channel)
+  - For given files, why (if at all) the file would be rejected from being imported
+  - For given files, include all inferred metadata (like captured-at time, timezone, make, and model)
+
+- 📦 File and directory exclusion globs can now conditionally applied,
+  depending on if files are in your library or originals directories. If the
+  new `excludeGlobsInLibrary` setting is `true`, prior exclusion glob
+  application behavior will be in place, and if a library directory happens to
+  match an exclusion glob, we won't import any files (!!). The default for
+  this setting is `false`, which means we **won't** skip over files that match
+  exclusion globs that are in the library or originals directory hierarchy.
+  Note that files in NoMedia folders and hidden files (that start with `.`)
+  are still be ignored.
+  
+- 📦 Pulled in latest third-party libraries, including SQLite and ExifTool
+
+- 🛡️ Added a [regex
+  linter](https://github.com/ota-meshi/eslint-plugin-regexp) to the build
+  pipeline, and fixed several issues (including a couple that could result in
+  super-linear backtracking)
+
 ## v2023.9.0-prealpha.17
 
-**Releasing 2023 September 9**
+**Released 2023 September 9**
 
 - 🐛 Prior video transcoding timeouts were validated against .MOV and other older video formats. HEVC in 4K 60fps require 10x the CPU time, based on bytes to transcode--so prior builds would erroneously timeout video transcode operations _and then retry_, causing imports to crawl to a halt (and burn CPU time needlessly). The following fixes are in this build:
+
   - Video asset file imports now have _no timeouts_. I may reestablish this timeout in the future if we find people's sync getting "stuck" in `ffmpeg`, but I don't have a record of that.
-  - The "is this previously transcoded file" test assumed a transcoded file would not be less than a quarter the size of the original file--but if we're downsampling videos, this limit isn't correct. The expected file size is now (duration * bitrate), and a transcoded file can now be validly 10% of that size without requesting a new transcode.
-  
+  - The "is this previously transcoded file" test assumed a transcoded file would not be less than a quarter the size of the original file--but if we're downsampling videos, this limit isn't correct. The expected file size is now (duration \* bitrate), and a transcoded file can now be validly 10% of that size without requesting a new transcode.
+
 - 🐛 CPU rendering code would return `undefined` for values higher than 100%--which would normally be a reasonable approach, but PhotoStructure uses an average of load and cpu usage statistics--if system load is higher than current CPU count, "busy percent" will exceed 100%.
 
-- 📦 The "system load" health check was removed. `sync`'s work queue now directly looks at system load to determine if new work should be started--this should further avoid overscheduling.
+- 🐛 Pulled in new exiftool-vendored build which avoids invalid datetime values from some cameras (like "00" and "01", which prior builds would _consider an obscure ISO reference to today's date_). Those invalid values are now properly ignored.
 
-- 📦 A new "share" icon was added to the asset header, but most browsers do not support sharing embedded `blob`-based files, so most people won't see the icon :sob:
+- 📦 A new "share" icon was added to the asset header, but most browsers do not support sharing embedded `blob`-based files, so most people won't see the icon :sob: (you can still long-press the asset image and share that, though)
 
 ## v2023.9.0-prealpha.16
 

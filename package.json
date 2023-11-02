@@ -2,7 +2,7 @@
   "name": "photostructure",
   "productName": "PhotoStructure",
   "author": "PhotoStructure, Inc. <hello@photostructure.com>",
-  "version": "2023.9.0-prealpha.17",
+  "version": "2023.11.0-prealpha.18",
   "description": "PhotoStructure for Servers",
   "repository": {
     "type": "git",
@@ -14,33 +14,28 @@
   "preinstall:note": "This disables indexing on macOS for the node_modules directory, which just wastes system resources otherwise...",
   "preinstall": "mkdir -p ./node_modules && touch ./node_modules/.metadata_never_index",
   "resolutions-vs-overrides:note": "yarn supports resoltions, and npm supports overrides. In either case, this is to force-upgrade a third party dependency to avoid a security vulnerability.",
-  "resolutions": {
-    "node-abi": "3.45.0",
-    "semver": "7.5.4"
-  },
-  "overrides": {
-    "node-abi": "3.45.0",
-    "semver": "7.5.4"
-  },
+  "resolutions": null,
+  "overrides": null,
   "dependencies": {
     "@iarna/toml": "2.2.5",
     "@parcel/watcher": "2.3.0",
     "@photostructure/tz-lookup": "8.0.0",
-    "@sentry/node": "7.68.0",
+    "@sentry/node": "7.76.0",
     "argon2": "0.31.1",
+    "axios": "^1.6.0",
     "batch-cluster": "12.1.0",
-    "better-sqlite3": "8.6.0",
+    "better-sqlite3": "9.0.0",
     "body-parser": "1.20.2",
-    "commander": "11.0.0",
-    "exiftool-vendored": "22.2.3",
+    "commander": "11.1.0",
+    "exiftool-vendored": "23.4.0",
     "express": "4.18.2",
     "express-session": "1.17.3",
-    "fast-xml-parser": "4.2.7",
+    "fast-xml-parser": "4.3.2",
     "file-type": "16.5.4",
     "fs-extra": "11.1.1",
     "he": "1.2.0",
     "helmet": "7.0.0",
-    "knex": "2.5.1",
+    "knex": "3.0.1",
     "luxon": "3.4.3",
     "ml-kmeans": "5.0.0",
     "moo": "0.5.2",
@@ -52,10 +47,10 @@
     "pug": "3.0.2",
     "punycode": "2.3.0",
     "semver": "7.5.4",
-    "sharp": "0.32.5",
+    "sharp": "0.32.6",
     "source-map-support": "0.5.21",
     "trash": "7.2.0",
     "type-detect": "4.0.8",
-    "utimes": "5.2.0"
+    "utimes": "5.2.1"
   }
 }
