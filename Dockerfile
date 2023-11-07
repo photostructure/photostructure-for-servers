@@ -71,3 +71,5 @@ HEALTHCHECK CMD wget --quiet --output-document - http://localhost:1787/ping
 # docker-entrypoint.sh handles dropping privileges down to the "node" user in order
 # to support custom PUID/PGID
 ENTRYPOINT [ "/usr/bin/tini", "--", "/opt/photostructure/docker-entrypoint.sh" ]
+
+# Note: we don't set ENV here anymore. See docker-entrypoint.sh for details.

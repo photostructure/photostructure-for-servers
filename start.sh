@@ -16,7 +16,7 @@
 
 die() {
   printf "%s\n" "$1"
-  printf "Please refer to <https://photostructure.com/server/photostructure-for-node/>.\nYou can also visit <https://forum.photostructure.com> for help.\n\n"
+  printf "Please refer to https://photostructure.com/server/photostructure-for-node/ .\nYou can also visit https://forum.photostructure.com for help.\n\n"
   exit 1
 }
 
@@ -46,30 +46,41 @@ fi
 
 if [ "$IS_WINDOWS" = 1 ]; then
   NODE="${NODE:-node.exe}" # < workaround for windows tty shenanigans
+  PYTHON="${PYTHON:-py.exe}"
+  PIP="${PIP:-pip.exe}"
 else
   NODE="${NODE:-node}"
+  PYTHON="${PYTHON:-python3}"
+  PIP="${PIP:-$PYTHON -m pip}"
 fi
 
 # We really just need node and git at this point:
 
-for i in python pip git "$NODE"; do
+for i in git "$NODE" "$PYTHON"; do
   command -v "$i" >/dev/null || die "Please install $i"
 done
 
-# Unfortunately, the python installed by Chocolatey on Windows doesn't include
-# distutils (which is part of setuptools), which we need in order to compile
-# the platform-folders module.
-py -c "import distutils" || pip install setuptools || die "Please pip install setuptools"
+# Unfortunately, newer versions of python don't include distutils (which is
+# part of setuptools), which is required in order to compile the
+# platform-folders module.
+
+# We don't want to freak out users with "<string>:1: DeprecationWarning: The
+# distutils package is deprecated and slated for removal in Python 3.12. Use
+# setuptools or check PEP 632 for potential alternatives", so we silence it
+# with this environment variable:
+export PYTHONWARNINGS="ignore::DeprecationWarning"
+
+$PYTHON -c "import distutils" || $PIP install setuptools || die "\"$PIP install setuptools\" failed."
 
 # We can't just run `node --version` because that doesn't work in a subshell on
-# Windows. CROSS PLATFORM CODE IS FUN
+# Windows. YAY CROSS PLATFORM CODE IS FUN
 
 NODE_VERSION="$(version "$("$NODE" -p process.versions.node)")"
 
 # As of 20230930, Node.js versions older than 18 are End-of-life:
 # https://nodejs.org/en/about/releases/
 if [ "$NODE_VERSION" -lt "$(version "18.16.0")" ]; then
-  die "Please install the latest Node.js v18 or v20"
+  die "Please install Node.js v18 or v20."
 fi
 
 # set NOGIT=1 or PS_CHECK_UPDATES=none to disable auto-update:
@@ -82,8 +93,6 @@ fi
 
 clean() {
   yarn cache clean
-  # NOTE: even if $HOME or $*APPDATA aren't set, these paths from root
-  # wouldn't be terrible to delete:
   if [ "$IS_WINDOWS" = 1 ]; then
     rm -rf node_modules "$APPDATA/npm-cache/_libvips" "$LOCALAPPDATA/node-gyp"
   else
@@ -91,7 +100,11 @@ clean() {
   fi
 }
 
-PS_CONFIG_DIR=${PS_CONFIG_DIR:-$HOME/.config/PhotoStructure}
+if [ "$IS_WINDOWS" = 1 ]; then
+  PS_CONFIG_DIR=${PS_CONFIG_DIR:-$APPDATA/PhotoStructure}
+else
+  PS_CONFIG_DIR=${PS_CONFIG_DIR:-$HOME/.config/PhotoStructure}
+fi
 mkdir -p "$PS_CONFIG_DIR"
 
 # We can't put this in the current directory, because we always clean it out
@@ -112,6 +125,12 @@ argv=("$@")
 # Adding --silent hides the potentially scary "...is incompatible with this
 # module..." messages. <https://forum.photostructure.com/t/886?u=mrm>
 npx yarn install --silent || die "Dependency installation failed."
+
+# This is used by the version health check--we'll suggest you move to a more
+# stable branch (like "main" instead of "beta") if the same version is
+# available on that branch.
+PS_UPDATE_CHANNEL=$(git rev-parse --abbrev-ref HEAD)
+export PS_UPDATE_CHANNEL
 
 # We used to `tee` to a runlog, but by propagating ctrl-c, the tee would get
 # killed and shutdown messages would be omitted from stdout.

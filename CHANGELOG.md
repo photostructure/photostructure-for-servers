@@ -23,6 +23,65 @@ This is a detailed list of changes in each version.
 
 <!-- fix "tag context" for "next previous" context. I'd always done a search, clicked a thumb, and then clicked esc to go back to the search results. But...  if you click a thumb from a search,  and then click "next" or "previous", it ignores that you can from a search, and does the chronological next asset, which is very confusing/irritating. -->
 
+## v2023.11.0-alpha.1
+
+**To be released**
+
+### 💔/🐛 Exclusion globs have been simplified
+
+- Exclusion glob patterns are now applied both in and out of libraries: the
+  `excludeGlobsInLibrary` setting (introduced last build) was confusing, and
+  has been deleted.
+
+- The `disableIgnorableFilters` setting was renamed to
+  `omitDefaultExcludeGlobs`, but does the same thing: if set to `true`, users
+  start with an empty set of exclusion globs, and use `excludeGlobsAdd` to
+  build up whatever set of patterns they want.
+
+- See [the discord chat for details](https://discord.com/channels/818905168107012097/1170442569671512245)
+
+### Additional improvements
+
+- 🐛 Video transcodes in prior builds had a 2 minute timeout (due to a
+  misapplication of a default argument), which would slow down larger video
+  imports because transcode operations would timeout incorrectly and retry
+  (causing the system to bog down with the _same_ ffmpeg operation multiple
+  times)
+
+- ✨ `ffmpegHwaccel` can now be safely kept at `auto`--PhotoStructure will
+  attempt the transcode with `-hwaccel=auto`, but if that fails (due to
+  missing hardware support for the necessary codecs, for example), we'll
+  automatically re-try that transcode operation without a `-hwaccel` argument.
+
+- 🐛 `Asset.durationMs` is now properly copied from AssetFile variations up to
+  Asset. Prior builds could have missing duration timestamps in tag galleries.
+  
+  Note that this is backfilled partially by a database migration that will be
+  applied automatically, as well as a step that invalidates all asset files
+  (and assets) that are videos and missing `.durationMs`.
+
+- 🐛 Fixed `./start.sh` warnings and errors related to python `disttools` and
+  `setuptools`
+
+- 🐛 Fixed [version health check
+  bug](https://discord.com/channels/818905168107012097/818907922767544340/1169801101806145566)
+  where running a newer version than what is advertised as being available was
+  marked as being "out of date". Also added channel advice if a more stable
+  channel is providing a newer release.
+
+- 📦 `./photostructure info --version-check` is now a whole thing, and invalidates prior cache.
+
+- 📦 Open Graph headers were simplified: we now only send one video or image
+  entry, using the closest available prerender to `openGraphTargetWidth`.
+  Previews seem to work properly now at least on Apple iMessages.
+  
+- 📦 New `checkBasenameMatches` setting (defaults to true) adds Yet Another
+  asset file's existing-asset adoption search strategy. This is a minor
+  deduplication improvement, and doesn't seem to adversely impact import
+  speed.
+  
+- 📦 Docker images should now include a proper set of labels
+
 ## v2023.11.0-prealpha.19
 
 **Released 2023 November 2**
@@ -67,9 +126,10 @@ Several new settings were added to let you suit this feature to your taste:
    require external network requests, those will be disabled by default with
    this meta setting as well.
 
-## Video improvements
+### Video improvements
 
-- 💔 **VLC support has been dropped.** Please use FFmpeg instead. [Setup instructions were updated for every platform.](/video)
+- 💔 **VLC support has been dropped.** Please use FFmpeg instead. [Setup
+  instructions were updated for every platform.](/video)
 
 - 🐛 Depending on how video files were encoded, metadata (like the video
   duration) could have been missing in prior builds. PhotoStructure now
