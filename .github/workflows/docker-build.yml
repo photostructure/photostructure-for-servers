@@ -2,7 +2,7 @@ name: Build Docker Images
 
 on:
   push:
-    # We only need to build on tags. If we include branches, we build twice.
+    # We only want to build on tags--if we include branches, we build twice.
     # branches:
     #   - main
     #   - alpha
@@ -14,51 +14,53 @@ jobs:
   build:
     name: Build Docker Images
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-        with:
-          platforms: arm64
-
-      - name: Set up Buildx
-        uses: docker/setup-buildx-action@v2
-
+      # https://docs.docker.com/build/ci/github-actions/manage-tags-labels/
       # https://github.com/docker/metadata-action#tags-input
       # https://docs.github.com/en/actions/learn-github-actions/contexts#github-context
 
       - name: Docker meta
         id: meta
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         with:
-          images: photostructure/server,ghcr.io/photostructure/photostructure-for-servers
+          images: |
+            photostructure/server
+            ghcr.io/photostructure/server
           flavor: |
             latest=false
           tags: |
             # always include the full semver (v1.2.3-alpha.1)
             type=semver,pattern={{version}}
-            
+
             # tag as a prealpha build if it is such
             type=raw,value=prealpha,enable=${{ contains(github.ref_name, 'prealpha') }}
-            
+
             # unless this is a prealpha build, update the alpha tag
             type=raw,value=alpha,enable=${{ !contains(github.ref_name, 'prealpha') }}
-            
-            # always update the beta tag unless it's an alpha build, so people on :beta get the beta and stable builds:
+
+            # always update the beta tag unless it's an alpha or prealpha build, so people on :beta get the beta and stable builds:
             type=raw,value=beta,enable=${{ !contains(github.ref_name, 'alpha') }}
-            
-            # if it's not alpha or beta, update :stable, :latest, and version tags.
+
+            # if it's not *alpha or beta, update :stable, :latest, and version tags.
             type=raw,value=stable,enable=${{ !contains(github.ref_name, 'alpha') && !contains(github.ref_name, 'beta') }}
             type=raw,value=latest,enable=${{ !contains(github.ref_name, 'alpha') && !contains(github.ref_name, 'beta') }}
             type=semver,pattern=v{{major}},enable=${{ !contains(github.ref_name, 'alpha') && !contains(github.ref_name, 'beta') }}
             type=semver,pattern=v{{major}}.{{minor}},enable=${{ !contains(github.ref_name, 'alpha') && !contains(github.ref_name, 'beta') }}
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: arm64
+
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Log in to Docker Hub
         if: github.event_name != 'pull_request'
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: docker.io
           username: ${{ secrets.DOCKERHUB_USER }}
@@ -66,17 +68,17 @@ jobs:
 
       - name: Log in to GitHub Container Registry
         if: github.event_name != 'pull_request'
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
-          username: ${{ github.repository_owner }}
+          username: ${{ secrets.GHCR_USERNAME }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
           context: .
-          file: ./Dockerfile
           platforms: linux/amd64,linux/arm64
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
