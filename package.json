@@ -2,11 +2,16 @@
   "name": "photostructure",
   "productName": "PhotoStructure",
   "author": "PhotoStructure, Inc. <hello@photostructure.com>",
-  "version": "2023.11.0-alpha.1",
+  "version": "2023.12.0-alpha.3",
+  "license": "SEE LICENSE IN LICENSE.md",
   "description": "PhotoStructure for Servers",
+  "homepage": "https://photostructure.com/server/photostructure-for-node/",
   "repository": {
     "type": "git",
     "url": "https://github.com/photostructure/photostructure-for-servers"
+  },
+  "bugs": {
+    "url": "https://forum.photostructure.com/c/bug/8"
   },
   "bin": {
     "photostructure": "./photostructure"
@@ -20,27 +25,28 @@
     "@iarna/toml": "2.2.5",
     "@parcel/watcher": "2.3.0",
     "@photostructure/tz-lookup": "8.0.0",
-    "@sentry/node": "7.77.0",
-    "argon2": "0.31.1",
-    "axios": "^1.6.0",
+    "@sentry/node": "7.86.0",
+    "argon2": "0.31.2",
+    "axios": "1.6.2",
     "batch-cluster": "12.1.0",
-    "better-sqlite3": "9.0.0",
+    "better-sqlite3": "9.2.2",
     "body-parser": "1.20.2",
     "commander": "11.1.0",
-    "exiftool-vendored": "23.4.0",
+    "exiftool-vendored": "24.1.0",
     "express": "4.18.2",
     "express-session": "1.17.3",
     "fast-xml-parser": "4.3.2",
     "file-type": "16.5.4",
-    "fs-extra": "11.1.1",
+    "fs-extra": "11.2.0",
     "he": "1.2.0",
-    "helmet": "7.0.0",
-    "knex": "3.0.1",
-    "luxon": "3.4.3",
+    "helmet": "7.1.0",
+    "knex": "3.1.0",
+    "luxon": "3.4.4",
     "ml-kmeans": "5.0.0",
     "moo": "0.5.2",
     "nearley": "2.20.1",
     "papaparse": "5.4.1",
+    "paseto": "3.1.4",
     "picomatch": "3.0.1",
     "platform-folders": "0.6.0",
     "plist": "3.1.0",
@@ -50,7 +56,6 @@
     "sharp": "0.32.6",
     "source-map-support": "0.5.21",
     "trash": "7.2.0",
-    "type-detect": "4.0.8",
-    "utimes": "5.2.1"
+    "type-detect": "4.0.8"
   }
 }

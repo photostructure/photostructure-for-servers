@@ -23,9 +23,175 @@ This is a detailed list of changes in each version.
 
 <!-- fix "tag context" for "next previous" context. I'd always done a search, clicked a thumb, and then clicked esc to go back to the search results. But...  if you click a thumb from a search,  and then click "next" or "previous", it ignores that you can from a search, and does the chronological next asset, which is very confusing/irritating. -->
 
+<a id="v2023.11.0-alpha.2"></a>
+
+## v2023.12.0-alpha.3
+
+**Released 17 December 2023**
+
+### Database improvements
+
+- ⚠️ We now use SQLite's [STRICT](https://sqlite.org/stricttables.html) mode,
+  but this requires your library database to be completely dumped and
+  reloaded. This happens automatically, but expect larger libraries to take up
+  to a minute to start after upgrading to this build, depending on the speed
+  of your server and disk.
+
+- ✨/📦 Tag asset counts are [now updated in real
+  time](https://discord.com/channels/818905168107012097/818907922767544340/1175283018454286427),
+  as assets are imported. This should avoid CPU and `IOWAIT` stalls during
+  syncs for users with large (100k+) libraries, as we don't have to do large
+  bulk updates to the tags table during sync runs.
+
+- 📦 The fulltext search index for tags is now incrementally updated only on
+  Tag creation. Prior versions rebuilt the entire index whenever "database
+  maintenance" was scheduled, which, in some cases, could lead to SQLite
+  errors if multiple FTS rebuilds occurred simultaneously.
+
+### Docker improvements
+
+- 🐛 Fixed docker detection regression from `alpha.1`. See [the
+  forum](https://forum.photostructure.com/t/logcat-bad-default-path/1996/2?u=mrm)
+  for details. Thanks for the report,
+  [@underdog](https://forum.photostructure.com/u/underdog/summary)!
+
+- 📦 `:alpha` docker builds now overwrite `:prealpha` builds
+
+- 📦 Configured image publishing to
+  [GHCR](https://github.com/orgs/photostructure/packages). This is in addition
+  to publishing to [Docker Hub](https://hub.docker.com/u/photostructure).
+
+### Metadata extraction improvements
+
+- ✨ The [XMP Album tag](https://exiftool.org/TagNames/XMP.html#xmpDM) is now
+  extracted from photos and videos. The existing `tagAlbumTitle` (AKA
+  `PS_TAG_ALBUM_TITLE`) setting now accepts multiple values.
+
+- ✨ The [MWG Collections
+  tag](https://exiftool.org/TagNames/MWG.html#Collections) is now extracted
+  from photos and videos for Albums, as well. As these are regularly
+  hierarchical, the default for `tagAlbumTitleHierarchies` has been changed to
+  `true`.
+
+- 🐛 When extracting orientation, we no longer fallback to
+  `.CameraOrientation`. The image may have been rastered with a different
+  orientation since being captured which means this orientation may not be
+  relevant anymore. This resulted in images that were stretched in asset
+  views, or incorrectly rotated in tags.
+
+- 🐛 Prior CapturedAt extractions can be written to sidecars when copying
+  files into your PhotoStructure library, which can preserve sibling metadata.
+  A couple defects were found and addressed:
+
+  1. Some date formats, like DateIntervals, were not parsed properly and
+     inhereted by subsequent metadata extraction runs, and could cause `sync`
+     errors (like `TypeError: t.capturedAt.toAssetFileFields is not a function`) that caused those file to not be re-importable. Thanks for
+     reporting this, @mackid1993!
+
+  2. Sidecars whose names were applicable to multiple filenames could include
+     (unrelated) prior captured-at values. We now exclude mismatching
+     basenames from subsequent inheritance.
+
+- 🐛/📦 PhotoStructure now writes rotation metadata to both `.Orientation` as well as
+  `.Rotation` for both images and videos. Several camera manufacturers write
+  to both tags, and this ensures correct orientation regardless of where other
+  applications look for orientation metadata.
+
+- 📦 Related: the new default for `sidecarTagBlocklist` is `["Orientation", "Rotation", "Rating"]`, as almost no software knows to look in sidecars for
+  these fields.
+
+- 📦 If metadata tags the GPS location to be (0,0), that will be ignored (as
+  it's in the middle of the ocean).
+
+- 📦 Added `DateTimeUTC` and `GPSDateTime` to `capturedAtTagsFallback`
+
+- 📦 ExifTool upgraded to [v12.70](https://exiftool.org/history.html#v12.70).
+  **🏆 Thanks for 20 years of updates, Phil Harvey! 🏆**
+
+### Privacy improvements
+
+- 📦 Added alias for `PS_OPT_OUT` environment variable, `DO_NOT_TRACK`: when
+  set to something "truthy", all code that makes external network requests
+  (like error reporting and version checking) is disabled.
+
+- 📦 The `autoUpdateCheck`, `allowUserAgent`, and `reportErrors` settings now
+  default to `false` in code, but default to `true` on the settings page. This
+  means these features are disabled until the user has a chance to decide how
+  they want to configure their system
+
+- 🐛 Fixed persistence of the new `allowUserAgent`, and `autoUpdateCheck`
+  values on the settings pages ([thanks for reporting,
+  themk](https://discord.com/channels/818905168107012097/818907922767544340/1175275146601312257)!)
+
+### Video improvements
+
+- 📦 Fixed version parsing for FFmpeg v6.1 and validated screen grabs and
+  transcoding for >10 different video formats, but if you see videos not
+  playing, please report any glitches or bugs to the forum or discord!
+
+- 📦 The `ffmpegScaleType` setting has been deleted. FFmpeg reliably applies
+  the "old-style" `-s WxH` resize setting reliably, and some versions don't
+  accept the "new-style" `-vf scale` format, which doesn't seem to be any
+  faster, so we'll just stick with `-s WxH`.
+
+### General improvements
+
+- ✨ Desktop builds are now available. Please report any issues to the [forum](https://forum.photostructure.com) or [discord](https://photostructure.com/go/discord/)!
+
+- 🐛 If the `web` service can't bind to the web port, the `main` service now
+  properly shuts down and relays the error to the terminal. Prior builds would
+  retry spawning `web` indefinitely, which was confusing.
+
+- 🐛 The about page no longer includes "undefined" for the user id or group id
+  on Windows (users don't have numeric ids on Windows)
+
+- 🐛 Fix TOML output for multi-line and string values that exceed 80
+  characters. Prior builds' word wrapping could cause invalid settings.toml
+  output.
+
+- 🐛 If `validationErrorAllowlist` was set to an empty set, prior builds
+  ignored all file validation errors. (Who knew that JavaScript replaces empty
+  RegExp with `/(?:)/`, which matches everything?) Empty sets are now mapped to
+  `/$^/`, which matches nothing.
+
+- 🐛 Fixed `esc` handling after hide/exclude/trash. Thanks for the [bug report](https://forum.photostructure.com/t/deleting-and-then-pressing-esc-goes-back-to-deleted-image-instead-of-overview/2020), Leon!
+
+- 💔/🐛 The `retainFileBirthtimes` setting was removed, as the `utimes` native
+  dependency current version has an unfixed memory retention flaw. This means
+  the best-effort attempt to retain copied file "birthtimes" will no longer be
+  applied.
+
+- 📦 PhotoStructure for Node's `./start.sh` now runs `git pull` with a one
+  minute timeout, so if it runs before the network is set up (or external
+  network requests hang), it will eventually try to start.
+
+- 📦 Upgraded Electron to v27, which includes Node 18 (upgraded from Node 16).
+  As always, please report any glitches or bugs to the forum or discord!
+
+- 📦 `./photostructure info --version-check` now renders `installedVersion`,
+  `installedChannel`, `latestVersion`, and `latestChannel` (which should be
+  helpful for debugging)
+
+- 📦 PhotoStructure "cleanup" tasks now prune database backup directories,
+  sync reports, and hot-backup directories. See `dbBackupRetentionCount` and
+  `syncReportRetentionCount` settings for details.
+
+- 📦 Tool versions on Linux distributions that use `pacman` (like Fedora and
+  Arch) are now provided by `pacman -Qo`.
+
+- 📦 Added `--timing` to all tooling, which emits performance metrics
+  collected during a run to stdout on exit
+
+- 📦 Added `--tags` to the `list` tool to render all tags and their asset counts
+
+- 📦 Settings that reference field names all consistently use a new
+  case-insensitive "pluckDeep" function now (so, for example, the
+  `tagAlbumTitle` setting can include `Collections.CollectionName`, _and have
+  it work_)
+
 ## v2023.11.0-alpha.1
 
-**To be released**
+**Released 7 November 2023**
 
 ### 💔/🐛 Exclusion globs have been simplified
 
@@ -55,7 +221,7 @@ This is a detailed list of changes in each version.
 
 - 🐛 `Asset.durationMs` is now properly copied from AssetFile variations up to
   Asset. Prior builds could have missing duration timestamps in tag galleries.
-  
+
   Note that this is backfilled partially by a database migration that will be
   applied automatically, as well as a step that invalidates all asset files
   (and assets) that are videos and missing `.durationMs`.
@@ -74,13 +240,26 @@ This is a detailed list of changes in each version.
 - 📦 Open Graph headers were simplified: we now only send one video or image
   entry, using the closest available prerender to `openGraphTargetWidth`.
   Previews seem to work properly now at least on Apple iMessages.
-  
+
 - 📦 New `checkBasenameMatches` setting (defaults to true) adds Yet Another
   asset file's existing-asset adoption search strategy. This is a minor
   deduplication improvement, and doesn't seem to adversely impact import
   speed.
-  
-- 📦 Docker images should now include a proper set of labels
+
+- 📦 Docker images now include a proper set of labels:
+
+```json
+  "Labels": {
+      "org.opencontainers.image.created": "2023-11-07T21:28:51.769Z",
+      "org.opencontainers.image.description": "PhotoStructure for Servers",
+      "org.opencontainers.image.licenses": "NOASSERTION",
+      "org.opencontainers.image.revision": "f98e5a7e0f115fbf415511952e004e4a82c212a2",
+      "org.opencontainers.image.source": "https://github.com/photostructure/photostructure-for-servers",
+      "org.opencontainers.image.title": "photostructure-for-servers",
+      "org.opencontainers.image.url": "https://github.com/photostructure/photostructure-for-servers",
+      "org.opencontainers.image.version": "2023.11.0-alpha.1"
+  }
+```
 
 ## v2023.11.0-prealpha.19
 
@@ -137,18 +316,11 @@ Several new settings were added to let you suit this feature to your taste:
   metadata. This bug could have caused videos to not be imported in prior
   builds, or video transcode timeouts to be (very) incorrect.
 
-- 🐛 `ffmpeg` transcode rescaling could fail on older versions, causing videos
+- 🐛 ~~`ffmpeg` transcode rescaling could fail on older versions, causing videos
   to not be imported. We now try the new-style `-filter:v scale=WIDTH:HEIGHT`
   format, and automatically downgrade to the older style `-s WIDTHxHEIGHT`
   argument format if there are errors. See the new `ffmpegScaleType` setting
-  for details:
-
-> What style of resize works for your version of ffmpeg?
->
-> - `vf` will use `-vf scale=WxH`
-> - `s` will use `-s WxH`.
->
-> The default should be fine: only very old versions should use "s".
+  for details:~~ (this change was reverted in v2023.11.0-alpha.2).
 
 - 🐛 `ffmpeg` transcoding now supports bounded framerates. See the new
   `transcodeFrameRate` setting for details:

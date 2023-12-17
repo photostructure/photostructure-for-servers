@@ -12,19 +12,19 @@
         },
         {
           "name": "name",
-          "type": "VARCHAR(255)",
+          "type": "TEXT",
           "notnull": true,
           "pk": false
         },
         {
           "name": "createdAt",
-          "type": "BIGINT",
+          "type": "INTEGER",
           "notnull": true,
           "pk": false
         },
         {
           "name": "updatedAt",
-          "type": "BIGINT",
+          "type": "INTEGER",
           "notnull": true,
           "pk": false
         }
@@ -87,7 +87,7 @@
         },
         {
           "name": "name",
-          "type": "VARCHAR(255)",
+          "type": "TEXT",
           "notnull": true,
           "pk": false
         },

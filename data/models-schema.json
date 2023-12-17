@@ -2,41 +2,6 @@
   "info": "This is used in validating PhotoStructure library databases after repair and restore operations.",
   "tableInfo": [
     {
-      "tableName": "AdvisoryLock",
-      "columns": [
-        {
-          "name": "id",
-          "type": "INTEGER",
-          "notnull": true,
-          "pk": true
-        },
-        {
-          "name": "name",
-          "type": "VARCHAR(255)",
-          "notnull": true,
-          "pk": false
-        },
-        {
-          "name": "lockId",
-          "type": "VARCHAR(255)",
-          "notnull": true,
-          "pk": false
-        },
-        {
-          "name": "acquired",
-          "type": "INTEGER",
-          "notnull": true,
-          "pk": false
-        },
-        {
-          "name": "createdAt",
-          "type": "BIGINT",
-          "notnull": true,
-          "pk": false
-        }
-      ]
-    },
-    {
       "tableName": "Asset",
       "columns": [
         {
@@ -77,13 +42,13 @@
         },
         {
           "name": "createdAt",
-          "type": "BIGINT",
+          "type": "INTEGER",
           "notnull": true,
           "pk": false
         },
         {
           "name": "updatedAt",
-          "type": "BIGINT",
+          "type": "INTEGER",
           "notnull": true,
           "pk": false
         },
@@ -95,19 +60,19 @@
         },
         {
           "name": "deletedAt",
-          "type": "BIGINT",
+          "type": "INTEGER",
           "notnull": false,
           "pk": false
         },
         {
           "name": "durationMs",
-          "type": "BIGINT",
+          "type": "INTEGER",
           "notnull": false,
           "pk": false
         },
         {
           "name": "excludedAt",
-          "type": "BIGINT",
+          "type": "INTEGER",
           "notnull": false,
           "pk": false
         }
@@ -136,13 +101,13 @@
         },
         {
           "name": "uri",
-          "type": "VARCHAR(2048)",
+          "type": "TEXT",
           "notnull": true,
           "pk": false
         },
         {
           "name": "mountpoint",
-          "type": "VARCHAR(1024)",
+          "type": "TEXT",
           "notnull": false,
           "pk": false
         },
@@ -160,19 +125,19 @@
         },
         {
           "name": "mimetype",
-          "type": "VARCHAR(64)",
+          "type": "TEXT",
           "notnull": true,
           "pk": false
         },
         {
           "name": "sha",
-          "type": "VARCHAR(64)",
+          "type": "TEXT",
           "notnull": true,
           "pk": false
         },
         {
           "name": "capturedAtLocal",
-          "type": "BIGINT",
+          "type": "INTEGER",
           "notnull": true,
           "pk": false
         },
@@ -190,25 +155,25 @@
         },
         {
           "name": "capturedAtSrc",
-          "type": "VARCHAR(8)",
+          "type": "TEXT",
           "notnull": true,
           "pk": false
         },
         {
           "name": "focalLength",
-          "type": "VARCHAR(16)",
+          "type": "TEXT",
           "notnull": false,
           "pk": false
         },
         {
           "name": "aperture",
-          "type": "FLOAT",
+          "type": "REAL",
           "notnull": false,
           "pk": false
         },
         {
           "name": "shutterSpeed",
-          "type": "VARCHAR(16)",
+          "type": "TEXT",
           "notnull": false,
           "pk": false
         },
@@ -238,37 +203,37 @@
         },
         {
           "name": "make",
-          "type": "VARCHAR(16)",
+          "type": "TEXT",
           "notnull": false,
           "pk": false
         },
         {
           "name": "model",
-          "type": "VARCHAR(16)",
+          "type": "TEXT",
           "notnull": false,
           "pk": false
         },
         {
           "name": "cameraId",
-          "type": "VARCHAR(64)",
+          "type": "TEXT",
           "notnull": false,
           "pk": false
         },
         {
           "name": "imageId",
-          "type": "VARCHAR(64)",
+          "type": "TEXT",
           "notnull": false,
           "pk": false
         },
         {
           "name": "lensId",
-          "type": "VARCHAR(64)",
+          "type": "TEXT",
           "notnull": false,
           "pk": false
         },
         {
           "name": "durationMs",
-          "type": "BIGINT",
+          "type": "INTEGER",
           "notnull": false,
           "pk": false
         },
@@ -286,7 +251,7 @@
         },
         {
           "name": "meanHash",
-          "type": "VARCHAR(64)",
+          "type": "TEXT",
           "notnull": false,
           "pk": false
         },
@@ -340,13 +305,13 @@
         },
         {
           "name": "createdAt",
-          "type": "BIGINT",
+          "type": "INTEGER",
           "notnull": true,
           "pk": false
         },
         {
           "name": "updatedAt",
-          "type": "BIGINT",
+          "type": "INTEGER",
           "notnull": true,
           "pk": false
         },
@@ -406,13 +371,13 @@
         },
         {
           "name": "dctHash",
-          "type": "VARCHAR(36)",
+          "type": "TEXT",
           "notnull": false,
           "pk": false
         },
         {
           "name": "diffHash",
-          "type": "VARCHAR(36)",
+          "type": "TEXT",
           "notnull": false,
           "pk": false
         }
@@ -435,31 +400,31 @@
         },
         {
           "name": "createdAt",
-          "type": "BIGINT",
+          "type": "INTEGER",
           "notnull": true,
           "pk": false
         },
         {
           "name": "field",
-          "type": "VARCHAR(255)",
+          "type": "TEXT",
           "notnull": true,
           "pk": false
         },
         {
           "name": "op",
-          "type": "VARCHAR(8)",
+          "type": "TEXT",
           "notnull": false,
           "pk": false
         },
         {
           "name": "_priorValueJson",
-          "type": "VARCHAR(255)",
+          "type": "TEXT",
           "notnull": false,
           "pk": false
         },
         {
           "name": "_newValueJson",
-          "type": "VARCHAR(255)",
+          "type": "TEXT",
           "notnull": false,
           "pk": false
         }
@@ -483,23 +448,6 @@
       ]
     },
     {
-      "tableName": "ChangedTag",
-      "columns": [
-        {
-          "name": "tagId",
-          "type": "IDINTEGER",
-          "notnull": true,
-          "pk": true
-        },
-        {
-          "name": "updatedAt",
-          "type": "BIGINT",
-          "notnull": false,
-          "pk": false
-        }
-      ]
-    },
-    {
       "tableName": "Example",
       "columns": [
         {
@@ -510,7 +458,7 @@
         },
         {
           "name": "name",
-          "type": "VARCHAR(255)",
+          "type": "TEXT",
           "notnull": true,
           "pk": false
         },
@@ -522,13 +470,13 @@
         },
         {
           "name": "createdAt",
-          "type": "BIGINT",
+          "type": "INTEGER",
           "notnull": true,
           "pk": false
         },
         {
           "name": "updatedAt",
-          "type": "BIGINT",
+          "type": "INTEGER",
           "notnull": true,
           "pk": false
         }
@@ -545,19 +493,19 @@
         },
         {
           "name": "name",
-          "type": "VARCHAR(255)",
+          "type": "TEXT",
           "notnull": true,
           "pk": false
         },
         {
           "name": "createdAt",
-          "type": "BIGINT",
+          "type": "INTEGER",
           "notnull": true,
           "pk": false
         },
         {
           "name": "updatedAt",
-          "type": "BIGINT",
+          "type": "INTEGER",
           "notnull": true,
           "pk": false
         }
@@ -574,37 +522,37 @@
         },
         {
           "name": "name",
-          "type": "VARCHAR(255)",
+          "type": "TEXT",
           "notnull": true,
           "pk": false
         },
         {
           "name": "value",
-          "type": "VARCHAR(255)",
+          "type": "TEXT",
           "notnull": false,
           "pk": false
         },
         {
           "name": "version",
-          "type": "BIGINT",
+          "type": "INTEGER",
           "notnull": false,
           "pk": false
         },
         {
           "name": "createdAt",
-          "type": "BIGINT",
+          "type": "INTEGER",
           "notnull": true,
           "pk": false
         },
         {
           "name": "updatedAt",
-          "type": "BIGINT",
+          "type": "INTEGER",
           "notnull": true,
           "pk": false
         },
         {
           "name": "completedAt",
-          "type": "BIGINT",
+          "type": "INTEGER",
           "notnull": false,
           "pk": false
         }
@@ -621,43 +569,43 @@
         },
         {
           "name": "uri",
-          "type": "VARCHAR(255)",
+          "type": "TEXT",
           "notnull": true,
           "pk": false
         },
         {
           "name": "hostname",
-          "type": "VARCHAR(255)",
+          "type": "TEXT",
           "notnull": true,
           "pk": false
         },
         {
           "name": "pid",
-          "type": "BIGINT",
+          "type": "INTEGER",
           "notnull": true,
           "pk": false
         },
         {
           "name": "volume",
-          "type": "VARCHAR(255)",
+          "type": "TEXT",
           "notnull": true,
           "pk": false
         },
         {
           "name": "state",
-          "type": "VARCHAR(255)",
+          "type": "TEXT",
           "notnull": false,
           "pk": false
         },
         {
           "name": "hed",
-          "type": "VARCHAR(255)",
+          "type": "TEXT",
           "notnull": false,
           "pk": false
         },
         {
           "name": "dekJSON",
-          "type": "VARCHAR(255)",
+          "type": "TEXT",
           "notnull": false,
           "pk": false
         },
@@ -681,19 +629,19 @@
         },
         {
           "name": "createdAt",
-          "type": "BIGINT",
+          "type": "INTEGER",
           "notnull": true,
           "pk": false
         },
         {
           "name": "updatedAt",
-          "type": "BIGINT",
+          "type": "INTEGER",
           "notnull": true,
           "pk": false
         },
         {
           "name": "completedAt",
-          "type": "BIGINT",
+          "type": "INTEGER",
           "notnull": false,
           "pk": false
         }
@@ -716,25 +664,25 @@
         },
         {
           "name": "name",
-          "type": "VARCHAR(255)",
+          "type": "TEXT",
           "notnull": true,
           "pk": false
         },
         {
           "name": "value",
-          "type": "VARCHAR(255)",
+          "type": "TEXT",
           "notnull": true,
           "pk": false
         },
         {
           "name": "createdAt",
-          "type": "BIGINT",
+          "type": "INTEGER",
           "notnull": true,
           "pk": false
         },
         {
           "name": "updatedAt",
-          "type": "BIGINT",
+          "type": "INTEGER",
           "notnull": true,
           "pk": false
         }
@@ -745,19 +693,19 @@
       "columns": [
         {
           "name": "sid",
-          "type": "VARCHAR(255)",
+          "type": "TEXT",
           "notnull": true,
           "pk": true
         },
         {
           "name": "expired",
-          "type": "BIGINT",
+          "type": "INTEGER",
           "notnull": true,
           "pk": false
         },
         {
           "name": "sess",
-          "type": "VARCHAR(2048)",
+          "type": "TEXT",
           "notnull": true,
           "pk": false
         }
@@ -768,7 +716,7 @@
       "columns": [
         {
           "name": "sha",
-          "type": "VARCHAR(64)",
+          "type": "TEXT",
           "notnull": true,
           "pk": true
         }
@@ -791,7 +739,7 @@
         },
         {
           "name": "_path",
-          "type": "VARCHAR(2048)",
+          "type": "TEXT",
           "notnull": true,
           "pk": false
         },
@@ -803,13 +751,13 @@
         },
         {
           "name": "createdAt",
-          "type": "BIGINT",
+          "type": "INTEGER",
           "notnull": true,
           "pk": false
         },
         {
           "name": "updatedAt",
-          "type": "BIGINT",
+          "type": "INTEGER",
           "notnull": true,
           "pk": false
         },
@@ -820,26 +768,20 @@
           "pk": false
         },
         {
-          "name": "assetFileCount",
-          "type": "INTEGER",
-          "notnull": false,
-          "pk": false
-        },
-        {
           "name": "_displayName",
-          "type": "VARCHAR(1024)",
+          "type": "TEXT",
           "notnull": false,
           "pk": false
         },
         {
           "name": "description",
-          "type": "VARCHAR(1024)",
+          "type": "TEXT",
           "notnull": false,
           "pk": false
         },
         {
           "name": "releasedAt",
-          "type": "NUMBER",
+          "type": "INTEGER",
           "notnull": false,
           "pk": false
         }
@@ -856,7 +798,7 @@
         },
         {
           "name": "name",
-          "type": "VARCHAR(255)",
+          "type": "TEXT",
           "notnull": true,
           "pk": false
         },

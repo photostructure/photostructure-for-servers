@@ -48,10 +48,12 @@ if [ "$IS_WINDOWS" = 1 ]; then
   NODE="${NODE:-node.exe}" # < workaround for windows tty shenanigans
   PYTHON="${PYTHON:-py.exe}"
   PIP="${PIP:-pip.exe}"
+  GIT="${GIT:-git.exe}"
 else
   NODE="${NODE:-node}"
   PYTHON="${PYTHON:-python3}"
-  PIP="${PIP:-$PYTHON -m pip}"
+  PIP="${PIP:-"$PYTHON" -m pip}"
+  GIT="${GIT:-git}"
 fi
 
 # We really just need node and git at this point:
@@ -70,7 +72,8 @@ done
 # with this environment variable:
 export PYTHONWARNINGS="ignore::DeprecationWarning"
 
-$PYTHON -c "import distutils" || $PIP install setuptools || die "\"$PIP install setuptools\" failed."
+# We don't quote $PIP here because it may be a compound command (`python3 -m pip``)
+"$PYTHON" -c "import distutils" || $PIP install setuptools || die "\"$PIP install setuptools\" failed."
 
 # We can't just run `node --version` because that doesn't work in a subshell on
 # Windows. YAY CROSS PLATFORM CODE IS FUN
@@ -83,16 +86,38 @@ if [ "$NODE_VERSION" -lt "$(version "18.16.0")" ]; then
   die "Please install Node.js v18 or v20."
 fi
 
+# Add `timeout` to git commands if `timeout` is available, as external network
+# may not be available (yet)
+
+if command -v timeout >/dev/null; then
+
+  timeout() {
+    command timeout "$@"
+  }
+else
+  timeout() {
+    command "$@"
+  }
+fi
+
 # set NOGIT=1 or PS_CHECK_UPDATES=none to disable auto-update:
 
 if [ "$NOGIT" != "1" ] && [ "$PS_CHECK_UPDATES" != "none" ]; then
-  # Make sure we're always running the latest version of our branch
-  git stash --include-untracked
-  git pull || die "git pull failed."
+  echo "$GIT" stash --include-untracked
+
+  # This may be running at system startup, and network may not be available
+  # yet--try, but timeout after a minute.
+
+  # `git pull` ensures we're always running the latest version of this branch:
+  if command -v timeout >/dev/null; then
+    timeout 60 "$GIT" pull || echo "$GIT pull timed out"
+  else
+    "$GIT" pull || die "git pull failed."
+  fi
 fi
 
 clean() {
-  yarn cache clean
+  npx yarn cache clean
   if [ "$IS_WINDOWS" = 1 ]; then
     rm -rf node_modules "$APPDATA/npm-cache/_libvips" "$LOCALAPPDATA/node-gyp"
   else

@@ -6,7 +6,7 @@ CREATE TABLE
   Queue (
     id INTEGER NOT NULL PRIMARY KEY,
     name TEXT NOT NULL
-  );
+  ) STRICT;
 
 CREATE UNIQUE INDEX queue_name_udx ON Queue (name);
 
@@ -15,10 +15,10 @@ CREATE TABLE
     id INTEGER NOT NULL PRIMARY KEY,
     queueId INTEGER NOT NULL,
     contents TEXT NOT NULL,
-    type TEXT,
+    'type' TEXT,
     FOREIGN KEY (queueId) REFERENCES Queue (id)
-  );
+  ) STRICT;
 
 CREATE UNIQUE INDEX queue_item_contents_udx ON QueueItem (queueId, contents);
 
-CREATE INDEX queue_item_type_idx ON QueueItem (queueId, id, TYPE);
+CREATE INDEX queue_item_type_idx ON QueueItem (queueId, id, 'type');
