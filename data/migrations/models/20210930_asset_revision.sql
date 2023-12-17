@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS "AssetRevision";
+
 CREATE TABLE
   "AssetRevision" (
     -- Any change made to an Asset through the PhotoStructure UI creates an "AssetRevision" which can then be merged with any external changes made to files or sidecars.

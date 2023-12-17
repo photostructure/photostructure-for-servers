@@ -53,25 +53,8 @@
 # Propagate ctrl-c while we're still in this script:
 trap 'exit 130' INT
 
-# `node` is installed in /usr/local/bin, and we want that to win. Note that
-# nothing within PhotoStructure assumes /opt/photostructure is in the PATH,
-# but in case someone runs "photostructure" anywhere in the image, I'd rather
-# it work.
-export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/photostructure:/opt/photostructure/bin:/opt/photostructure/tools/bin"
-
-# PhotoStructure uses this environment variable to know that it's running in a
-# docker container, and make a bunch of docker-specific setup, like health
-# check registration and default PS_LIBRARY_DIR.
-
-# This env had been set in the Dockerfile, but that makes PS_IS_DOCKER show up
-# in some docker container managers, like portainer, which can be confusing.
-# Previous versions used more "clever" am-I-in-docker detection heuristics,
-# but this is simple and explicit.
-export PS_IS_DOCKER=1
-
-# Node.js and several third-party libraries look for this value to run in
-# "production mode" (rather than "development mode").
-export NODE_ENV=production
+# (Prior versions set PATH, PS_IS_DOCKER, and NODE_ENV here, but that's now
+# handled as ENV settings in the Dockerfile)
 
 # PhotoStructure settings are split into 2 different configurations--one
 # "system" setting file that (mostly) tells PhotoStructure where the library

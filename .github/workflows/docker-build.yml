@@ -31,19 +31,24 @@ jobs:
             ghcr.io/photostructure/server
           flavor: |
             latest=false
+          # https://specs.opencontainers.org/image-spec/annotations/#pre-defined-annotation-keys
+          labels: |
+            org.opencontainers.image.title="PhotoStructure"
+            org.opencontainers.image.description="Your new home for all your photos and videos"
+            org.opencontainers.image.licenses="SEE LICENSE IN LICENSE.md"
+            org.opencontainers.image.url="https://photostructure.com/"
+            org.opencontainers.image.documentation="https://photostructure.com/server/photostructure-for-docker/"
           tags: |
             # always include the full semver (v1.2.3-alpha.1)
             type=semver,pattern={{version}}
-
-            # tag as a prealpha build if it is such
-            type=raw,value=prealpha,enable=${{ contains(github.ref_name, 'prealpha') }}
-
-            # unless this is a prealpha build, update the alpha tag
+            # minimal git SHA tag
+            type=sha
+            # tag every build as a :prealpha build
+            type=raw,value=prealpha
+            # unless this is a prealpha build, update the :alpha tag
             type=raw,value=alpha,enable=${{ !contains(github.ref_name, 'prealpha') }}
-
-            # always update the beta tag unless it's an alpha or prealpha build, so people on :beta get the beta and stable builds:
+            # always update the beta tag unless it's an *alpha build, so people on :beta get the beta and stable builds:
             type=raw,value=beta,enable=${{ !contains(github.ref_name, 'alpha') }}
-
             # if it's not *alpha or beta, update :stable, :latest, and version tags.
             type=raw,value=stable,enable=${{ !contains(github.ref_name, 'alpha') && !contains(github.ref_name, 'beta') }}
             type=raw,value=latest,enable=${{ !contains(github.ref_name, 'alpha') && !contains(github.ref_name, 'beta') }}
@@ -71,9 +76,9 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
-          username: ${{ secrets.GHCR_USERNAME }}
+          username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
+  
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
