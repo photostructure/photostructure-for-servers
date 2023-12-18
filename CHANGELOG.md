@@ -23,6 +23,26 @@ This is a detailed list of changes in each version.
 
 <!-- fix "tag context" for "next previous" context. I'd always done a search, clicked a thumb, and then clicked esc to go back to the search results. But...  if you click a thumb from a search,  and then click "next" or "previous", it ignores that you can from a search, and does the chronological next asset, which is very confusing/irritating. -->
 
+## v2023.12.0-alpha.5
+
+**Released 17 December 2023**
+
+- 🐛 Fixed PhotoStructure for Node on Windows to find tooling like SQLite. Thanks for [reporting](https://discord.com/channels/818905168107012097/818907922767544340/1186061474490232854), @mackid1993!
+
+- 🐛 Fixed macOS `./start.sh` error if `timeout` was missing (rather than requiring users to `brew install coreutils`). Thanks for [reporting](https://discord.com/channels/818905168107012097/818907922767544340/1186074684001878067), @Zandr!
+
+- 🐛 Database validation would [fail if the database was locked](https://discord.com/channels/818905168107012097/1186045650446598274). We now retry each validation step if we get lock errors. See the `maxBusyDbMs` setting for details.
+
+- 📦 On Windows we now add `%ProgramData%\chocolatey\bin` as a backfill `%PATH%` entry (to help find `ffmpeg.exe`). Thanks for [reporting](https://discord.com/channels/818905168107012097/818907922767544340/1186099486389452922), @Leaky!
+
+- 📦 Prior builds relied on the `ffmpegPath` setting to be resolvable. We now use the `pathTo()` function (which includes backfill default paths) for all `ffmpeg` commands
+
+- 📦 Added the current userid/groupid to the library directory health check message to [simplify finding the correct PUID/PGID values](https://forum.photostructure.com/t/raspberry-pi-and-docker-image/1789/9?u=mrm).
+
+- 📦 Added `toolsDir`, `osToolsDir`, `ffmpeg`, and `sqlite` paths to `photostructure info` to aid in future debugging
+
+- 📦 Added `jpegtran` health check. You know you all wanted it.
+
 <a id="v2023.11.0-alpha.2"></a>
 
 ## v2023.12.0-alpha.3

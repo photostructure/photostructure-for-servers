@@ -86,17 +86,15 @@ if [ "$NODE_VERSION" -lt "$(version "18.16.0")" ]; then
   die "Please install Node.js v18 or v20."
 fi
 
-# Add `timeout` to git commands if `timeout` is available, as external network
-# may not be available (yet)
-
+# Add a `timeout1m` function, if `timeout` is installed. On macOS, you can
+# `brew install coreutils`.
 if command -v timeout >/dev/null; then
-
-  timeout() {
-    command timeout "$@"
+  timeout1m() {
+    timeout 1m "$@"
   }
 else
-  timeout() {
-    command "$@"
+  timeout1m() {
+    env "$@"
   }
 fi
 
@@ -106,14 +104,10 @@ if [ "$NOGIT" != "1" ] && [ "$PS_CHECK_UPDATES" != "none" ]; then
   echo "$GIT" stash --include-untracked
 
   # This may be running at system startup, and network may not be available
-  # yet--try, but timeout after a minute.
+  # yet, so let's try, but timeout after a minute.
 
   # `git pull` ensures we're always running the latest version of this branch:
-  if command -v timeout >/dev/null; then
-    timeout 60 "$GIT" pull || echo "$GIT pull timed out"
-  else
-    "$GIT" pull || die "git pull failed."
-  fi
+  timeout1m "$GIT" pull # don't fail here if git pull fails--it might be a network issue.
 fi
 
 clean() {
