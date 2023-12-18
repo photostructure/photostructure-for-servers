@@ -23,6 +23,12 @@ This is a detailed list of changes in each version.
 
 <!-- fix "tag context" for "next previous" context. I'd always done a search, clicked a thumb, and then clicked esc to go back to the search results. But...  if you click a thumb from a search,  and then click "next" or "previous", it ignores that you can from a search, and does the chronological next asset, which is very confusing/irritating. -->
 
+## v2023.12.0-alpha.6
+
+**Released 17 December 2023**
+
+- 🐛 Reverted alpha.5 `WorkQueue` job dequeuing tweak (as it seemed to cause lower cpu systems to never do work)
+
 ## v2023.12.0-alpha.5
 
 **Released 17 December 2023**
@@ -42,6 +48,8 @@ This is a detailed list of changes in each version.
 - 📦 Added `toolsDir`, `osToolsDir`, `ffmpeg`, and `sqlite` paths to `photostructure info` to aid in future debugging
 
 - 📦 Added `jpegtran` health check. You know you all wanted it.
+
+- 📦 `WorkQueue` job dequeuing tries to take into account system load to avoid overscheduling
 
 <a id="v2023.11.0-alpha.2"></a>
 
