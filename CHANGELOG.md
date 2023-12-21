@@ -23,6 +23,20 @@ This is a detailed list of changes in each version.
 
 <!-- fix "tag context" for "next previous" context. I'd always done a search, clicked a thumb, and then clicked esc to go back to the search results. But...  if you click a thumb from a search,  and then click "next" or "previous", it ignores that you can from a search, and does the chronological next asset, which is very confusing/irritating. -->
 
+## v2023.12.0-alpha.7
+
+**Released 20 December 2023**
+
+- ✨ Sync reports now include reasons why the sync work queues may not consider themselves eligible to start more work. This could be from the system load being to high, or one of the critical health checks failing (like if a library volume has insufficient disk space). Sync reports also now auto-collapse repeating messages, so you don't get thousands of lines of the same error message.
+
+- 🐛 Fixed "failed to apply SQL" error on Windows
+
+- 🐛 If "Scan all directories on all drives" is selected on macOS, we now avoid scanning `/`, with the belief that macOS users will typically store their files either in their home directory, or on external volumes. If you have files on your root partition outside your home directory, you can always add them explicitly, and PhotoStructure will scan those paths even if "Scan all directories on all drives" is selected.
+
+- 🐛 `sync` schedules a cleanup process after every 50 processed files. Unfortunately, this cleanup process would force-rebuild the `Tag.assetCount` column in prior builds. Force-rebuilding this column can take 10 or more minutes on slow machines and large libraries. The "cleanup" no longer force-rebuilds `Tag.assetCount`, as it is kept up to date incrementally as assets are added or removed from tags.
+
+- 📦 The `proc-not-superuser` health check is no longer skipped on Windows, as it only looks at the source shell, which should normally run with non-admin permissions (even if the user is an "Administrator").
+
 ## v2023.12.0-alpha.6
 
 **Released 17 December 2023**
