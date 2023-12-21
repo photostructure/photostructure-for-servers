@@ -2,7 +2,7 @@
   "name": "photostructure",
   "productName": "PhotoStructure",
   "author": "PhotoStructure, Inc. <hello@photostructure.com>",
-  "version": "2023.12.0-alpha.6",
+  "version": "2023.12.0-alpha.7",
   "license": "SEE LICENSE IN LICENSE.md",
   "description": "PhotoStructure for Servers",
   "homepage": "https://photostructure.com/server/photostructure-for-node/",
