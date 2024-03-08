@@ -23,12 +23,28 @@ This is a detailed list of changes in each version.
 
 <!-- fix "tag context" for "next previous" context. I'd always done a search, clicked a thumb, and then clicked esc to go back to the search results. But...  if you click a thumb from a search,  and then click "next" or "previous", it ignores that you can from a search, and does the chronological next asset, which is very confusing/irritating. -->
 
+<a id="v2024.3.1-prealpha"></a>
+## v2024.3.1-prealpha ["Zep"](https://discord.com/channels/818905168107012097/818905168690413611/1215774241979502612)
+
+**Released 2023-03-08**
+
+- 🐛 Extended database migration timeouts to 2 minutes by default. See `dbMaintenanceTimeoutMs` setting for details. Should resolve [this issue](https://discord.com/channels/818905168107012097/818907922767544340/1215748274401710191).
+
+- 🐛 Added new migration to re-assert the `Progress` table schema. Should resolve [this issue](https://discord.com/channels/818905168107012097/1215730724020293752).
+
+- 🐛 The webservice now re-writes `settings.toml` files from prior versions, to ensure the latest settings are visible. Thanks for reporting, [@tkohhh](https://discord.com/channels/818905168107012097/1215760858664140841)! Older versions of `settings.toml` are now moved to `./archive` (it had been `./old`).
+
+- 🐛 `sync` won't be started if any health checks post fatal errors.
+
+- 🐛 `main` renders service startup errors to `stderr` now _and still tries to spin up the web service_ (in an effort to try to get the health check page to the user)
+
 <a id="v2024.1.0-alpha"></a>
 <a id="v2024.2.0-alpha"></a>
+<a id="v2024.3.0-alpha"></a>
 
-## v2024.3.0-alpha
+## v2024.3.0-prealpha
 
-**To be released**
+**Released 2023-03-08**
 
 ### ✒️ Version format change
 
@@ -40,7 +56,7 @@ As an example, a build might be `v2024.1.7-beta`. If it proves sufficiently stab
 
 PhotoStructure now adds `Where/Country/Region/City` tags for those photos and videos with Latitude and Longitude metadata.
 
-Note that this feature is uses an embedded geo database, so no network access is required. This initial implementation only inclues cities with a population of 1000 or greater. See the new `tagGeo` and `tagGeoTemplate` [settings](/go/settings) for more details. 
+Note that this feature is uses an embedded geo database, so no network access is required. This initial implementation only inclues cities with a population of 1000 or greater. See the new `tagGeo` and `tagGeoTemplate` [settings](/go/settings) for more details.
 
 ### 🔃 Sync improvements
 
