@@ -1,12 +1,11 @@
 -- THERE'S AN ORDER TO THIS!
 -- See https://www.sqlite.org/lang_altertable.html#otheralter
-CREATE TABLE
-  migrations_new (
-    -- tracks database migrations applied on version upgrades
-    id INTEGER NOT NULL PRIMARY KEY,
-    name TEXT NOT NULL,
-    migration_time INTEGER NOT NULL
-  ) STRICT;
+CREATE TABLE migrations_new (
+  -- tracks database migrations applied on version upgrades
+  id INTEGER NOT NULL PRIMARY KEY,
+  name TEXT NOT NULL,
+  migration_time INTEGER NOT NULL
+) STRICT;
 
 INSERT INTO
   migrations_new (id, name, migration_time)
@@ -25,25 +24,23 @@ RENAME TO migrations;
 --------------------------------------
 DROP TABLE Heartbeat;
 
-CREATE TABLE
-  Heartbeat (
-    -- used for db health checks
-    id INTEGER NOT NULL PRIMARY KEY,
-    name TEXT NOT NULL,
-    createdAt INTEGER NOT NULL,
-    updatedAt INTEGER NOT NULL
-  ) STRICT;
+CREATE TABLE Heartbeat (
+  -- used for db health checks
+  id INTEGER NOT NULL PRIMARY KEY,
+  name TEXT NOT NULL,
+  createdAt INTEGER NOT NULL,
+  updatedAt INTEGER NOT NULL
+) STRICT;
 
 --------------------------------------
-CREATE TABLE
-  Example_new (
-    -- used for db health checks
-    id INTEGER NOT NULL PRIMARY KEY,
-    name TEXT NOT NULL,
-    isExample INTEGER,
-    createdAt INTEGER NOT NULL,
-    updatedAt INTEGER NOT NULL
-  ) STRICT;
+CREATE TABLE Example_new (
+  -- used for db health checks
+  id INTEGER NOT NULL PRIMARY KEY,
+  name TEXT NOT NULL,
+  isExample INTEGER,
+  createdAt INTEGER NOT NULL,
+  updatedAt INTEGER NOT NULL
+) STRICT;
 
 INSERT INTO
   Example_new (id, name, isExample, createdAt, updatedAt)
@@ -62,13 +59,12 @@ ALTER TABLE Example_new
 RENAME TO Example;
 
 --------------------------------------
-CREATE TABLE
-  Session_new (
-    -- used for web sessions
-    sid TEXT NOT NULL PRIMARY KEY,
-    expired INTEGER NOT NULL,
-    sess TEXT NOT NULL
-  ) STRICT;
+CREATE TABLE Session_new (
+  -- used for web sessions
+  sid TEXT NOT NULL PRIMARY KEY,
+  expired INTEGER NOT NULL,
+  sess TEXT NOT NULL
+) STRICT;
 
 INSERT INTO
   Session_new (sid, expired, sess)
@@ -86,20 +82,19 @@ RENAME TO 'Session';
 
 --------------------------------------
 -- Any change made to an Asset through the PhotoStructure UI creates an "AssetRevision" which can then be merged with any external changes made to files or sidecars.
-CREATE TABLE
-  AssetRevision_new (
-    id INTEGER NOT NULL PRIMARY KEY,
-    assetId INTEGER NOT NULL,
-    createdAt INTEGER NOT NULL,
-    field TEXT NOT NULL,
-    op TEXT,
-    -- For singular fields, op is null.
-    -- For additions to array fields (like keywords), op is "add", _priorValue is ignored, _newValue is the added keyword.
-    -- For deletions to array fields (like keywords), op is "delete", _priorValue is the value to delete, and _newValue is ignored.
-    _priorValueJson TEXT,
-    _newValueJson TEXT,
-    FOREIGN KEY (assetId) REFERENCES Asset (id)
-  ) STRICT;
+CREATE TABLE AssetRevision_new (
+  id INTEGER NOT NULL PRIMARY KEY,
+  assetId INTEGER NOT NULL,
+  createdAt INTEGER NOT NULL,
+  field TEXT NOT NULL,
+  op TEXT,
+  -- For singular fields, op is null.
+  -- For additions to array fields (like keywords), op is "add", _priorValue is ignored, _newValue is the added keyword.
+  -- For deletions to array fields (like keywords), op is "delete", _priorValue is the value to delete, and _newValue is ignored.
+  _priorValueJson TEXT,
+  _newValueJson TEXT,
+  FOREIGN KEY (assetId) REFERENCES Asset (id)
+) STRICT;
 
 INSERT INTO
   AssetRevision_new (
@@ -131,61 +126,60 @@ RENAME TO AssetRevision;
 DROP TABLE IF EXISTS AdvisoryLock;
 
 --------------------------------------
-CREATE TABLE
-  AssetFile_new (
-    -- AssetFile instances are files that back an Asset.
-    id INTEGER NOT NULL PRIMARY KEY,
-    assetId INTEGER NOT NULL,
-    shown INTEGER NOT NULL DEFAULT 0,
-    uri TEXT NOT NULL,
-    mountpoint TEXT,
-    mtime INTEGER NOT NULL,
-    fileSize INTEGER NOT NULL,
-    mimetype TEXT NOT NULL,
-    sha TEXT NOT NULL,
-    capturedAtLocal INTEGER NOT NULL,
-    capturedAtOffset INTEGER NULL,
-    capturedAtPrecisionMs INTEGER NULL,
-    capturedAtSrc TEXT NOT NULL,
-    focalLength TEXT,
-    aperture REAL,
-    shutterSpeed TEXT,
-    iso INTEGER,
-    width INTEGER,
-    height INTEGER,
-    rotation INTEGER,
-    make TEXT,
-    model TEXT,
-    cameraId TEXT,
-    imageId TEXT,
-    lensId TEXT,
-    durationMs INTEGER,
-    fps INTEGER,
-    geohash INTEGER,
-    meanHash TEXT,
-    mode0 INTEGER,
-    mode1 INTEGER,
-    mode2 INTEGER,
-    mode3 INTEGER,
-    mode4 INTEGER,
-    mode5 INTEGER,
-    mode6 INTEGER,
-    version INTEGER NOT NULL DEFAULT 0,
-    createdAt INTEGER NOT NULL,
-    updatedAt INTEGER NOT NULL,
-    updateCount INTEGER NOT NULL DEFAULT 0,
-    rating INTEGER,
-    mode0pct INTEGER,
-    mode1pct INTEGER,
-    mode2pct INTEGER,
-    mode3pct INTEGER,
-    mode4pct INTEGER,
-    mode5pct INTEGER,
-    mode6pct INTEGER,
-    dctHash TEXT,
-    diffHash TEXT,
-    FOREIGN KEY (assetId) REFERENCES Asset (id)
-  ) STRICT;
+CREATE TABLE AssetFile_new (
+  -- AssetFile instances are files that back an Asset.
+  id INTEGER NOT NULL PRIMARY KEY,
+  assetId INTEGER NOT NULL,
+  shown INTEGER NOT NULL DEFAULT 0,
+  uri TEXT NOT NULL,
+  mountpoint TEXT,
+  mtime INTEGER NOT NULL,
+  fileSize INTEGER NOT NULL,
+  mimetype TEXT NOT NULL,
+  sha TEXT NOT NULL,
+  capturedAtLocal INTEGER NOT NULL,
+  capturedAtOffset INTEGER NULL,
+  capturedAtPrecisionMs INTEGER NULL,
+  capturedAtSrc TEXT NOT NULL,
+  focalLength TEXT,
+  aperture REAL,
+  shutterSpeed TEXT,
+  iso INTEGER,
+  width INTEGER,
+  height INTEGER,
+  rotation INTEGER,
+  make TEXT,
+  model TEXT,
+  cameraId TEXT,
+  imageId TEXT,
+  lensId TEXT,
+  durationMs INTEGER,
+  fps INTEGER,
+  geohash INTEGER,
+  meanHash TEXT,
+  mode0 INTEGER,
+  mode1 INTEGER,
+  mode2 INTEGER,
+  mode3 INTEGER,
+  mode4 INTEGER,
+  mode5 INTEGER,
+  mode6 INTEGER,
+  version INTEGER NOT NULL DEFAULT 0,
+  createdAt INTEGER NOT NULL,
+  updatedAt INTEGER NOT NULL,
+  updateCount INTEGER NOT NULL DEFAULT 0,
+  rating INTEGER,
+  mode0pct INTEGER,
+  mode1pct INTEGER,
+  mode2pct INTEGER,
+  mode3pct INTEGER,
+  mode4pct INTEGER,
+  mode5pct INTEGER,
+  mode6pct INTEGER,
+  dctHash TEXT,
+  diffHash TEXT,
+  FOREIGN KEY (assetId) REFERENCES Asset (id)
+) STRICT;
 
 INSERT INTO
   AssetFile_new (
@@ -300,14 +294,13 @@ ALTER TABLE AssetFile_new
 RENAME TO AssetFile;
 
 --------------------------------------
-CREATE TABLE
-  AssetTag_new (
-    -- join table to associate Assets to Tags.
-    assetId INTEGER NOT NULL,
-    tagId INTEGER NOT NULL,
-    FOREIGN KEY (assetId) REFERENCES Asset (id) ON DELETE CASCADE,
-    FOREIGN KEY (tagId) REFERENCES Tag (id) ON DELETE CASCADE
-  ) STRICT;
+CREATE TABLE AssetTag_new (
+  -- join table to associate Assets to Tags.
+  assetId INTEGER NOT NULL,
+  tagId INTEGER NOT NULL,
+  FOREIGN KEY (assetId) REFERENCES Asset (id) ON DELETE CASCADE,
+  FOREIGN KEY (tagId) REFERENCES Tag (id) ON DELETE CASCADE
+) STRICT;
 
 INSERT INTO
   AssetTag_new (assetId, tagId)
@@ -323,17 +316,16 @@ ALTER TABLE AssetTag_new
 RENAME TO AssetTag;
 
 --------------------------------------
-CREATE TABLE
-  ProgressMeta_new (
-    -- Used to store state of a sync. Prevents future sync jobs from re-doing prior work.
-    id INTEGER NOT NULL PRIMARY KEY,
-    progressId INTEGER NOT NULL,
-    name TEXT NOT NULL,
-    value TEXT NOT NULL,
-    createdAt INTEGER NOT NULL,
-    updatedAt INTEGER NOT NULL,
-    FOREIGN KEY (progressId) REFERENCES Progress (id)
-  ) STRICT;
+CREATE TABLE ProgressMeta_new (
+  -- Used to store state of a sync. Prevents future sync jobs from re-doing prior work.
+  id INTEGER NOT NULL PRIMARY KEY,
+  progressId INTEGER NOT NULL,
+  name TEXT NOT NULL,
+  value TEXT NOT NULL,
+  createdAt INTEGER NOT NULL,
+  updatedAt INTEGER NOT NULL,
+  FOREIGN KEY (progressId) REFERENCES Progress (id)
+) STRICT;
 
 INSERT INTO
   ProgressMeta_new (id, progressId, name, value, createdAt, updatedAt)
@@ -353,24 +345,23 @@ ALTER TABLE ProgressMeta_new
 RENAME TO ProgressMeta;
 
 --------------------------------------
-CREATE TABLE
-  Progress_new (
-    -- records sync process state
-    id INTEGER NOT NULL PRIMARY KEY,
-    uri TEXT NOT NULL,
-    hostname TEXT NOT NULL,
-    pid INTEGER NOT NULL,
-    volume TEXT NOT NULL,
-    state TEXT,
-    hed TEXT,
-    dekJSON TEXT,
-    completePct INTEGER,
-    incompletePct INTEGER,
-    scanningPct INTEGER,
-    createdAt INTEGER NOT NULL,
-    updatedAt INTEGER NOT NULL,
-    completedAt INTEGER
-  ) STRICT;
+CREATE TABLE Progress_new (
+  -- records sync process state
+  id INTEGER NOT NULL PRIMARY KEY,
+  uri TEXT NOT NULL,
+  hostname TEXT NOT NULL,
+  pid INTEGER NOT NULL,
+  volume TEXT NOT NULL,
+  state TEXT,
+  hed TEXT,
+  dekJSON TEXT,
+  completePct REAL,
+  incompletePct REAL,
+  scanningPct REAL,
+  createdAt INTEGER NOT NULL,
+  updatedAt INTEGER NOT NULL,
+  completedAt INTEGER
+) STRICT;
 
 INSERT INTO
   Progress_new (
@@ -413,17 +404,16 @@ ALTER TABLE Progress_new
 RENAME TO Progress;
 
 --------------------------------------
-CREATE TABLE
-  Operation_new (
-    -- used to store user-requested operations, like "forced" syncs
-    id INTEGER NOT NULL PRIMARY KEY,
-    name TEXT NOT NULL,
-    value TEXT,
-    version INTEGER,
-    createdAt INTEGER NOT NULL,
-    updatedAt INTEGER NOT NULL,
-    completedAt INTEGER
-  ) STRICT;
+CREATE TABLE Operation_new (
+  -- used to store user-requested operations, like "forced" syncs
+  id INTEGER NOT NULL PRIMARY KEY,
+  name TEXT NOT NULL,
+  value TEXT,
+  version INTEGER,
+  createdAt INTEGER NOT NULL,
+  updatedAt INTEGER NOT NULL,
+  completedAt INTEGER
+) STRICT;
 
 INSERT INTO
   Operation_new (
@@ -452,11 +442,10 @@ ALTER TABLE Operation_new
 RENAME TO Operation;
 
 --------------------------------------
-CREATE TABLE
-  ShaBlocklist_new (
-    -- Files with any of these SHAs are not to be imported.
-    sha TEXT NOT NULL PRIMARY KEY
-  ) STRICT;
+CREATE TABLE ShaBlocklist_new (
+  -- Files with any of these SHAs are not to be imported.
+  sha TEXT NOT NULL PRIMARY KEY
+) STRICT;
 
 INSERT INTO
   ShaBlocklist_new (sha)
@@ -474,22 +463,21 @@ RENAME TO ShaBlocklist;
 DROP TABLE ChangedTag;
 
 --------------------------------------
-CREATE TABLE
-  Asset_new (
-    -- an "asset" is a photos or video, backed by 1 or more asset file variations.
-    id INTEGER NOT NULL PRIMARY KEY,
-    capturedAtLocal INTEGER NOT NULL,
-    shown INTEGER NOT NULL DEFAULT 0,
-    hidden INTEGER NOT NULL DEFAULT 0,
-    rating INTEGER DEFAULT 0,
-    version INTEGER NOT NULL DEFAULT 0,
-    createdAt INTEGER NOT NULL,
-    updatedAt INTEGER NOT NULL,
-    updateCount INTEGER NOT NULL DEFAULT 0,
-    deletedAt INTEGER,
-    durationMs INTEGER,
-    excludedAt INTEGER
-  ) STRICT;
+CREATE TABLE Asset_new (
+  -- an "asset" is a photos or video, backed by 1 or more asset file variations.
+  id INTEGER NOT NULL PRIMARY KEY,
+  capturedAtLocal INTEGER NOT NULL,
+  shown INTEGER NOT NULL DEFAULT 0,
+  hidden INTEGER NOT NULL DEFAULT 0,
+  rating INTEGER DEFAULT 0,
+  version INTEGER NOT NULL DEFAULT 0,
+  createdAt INTEGER NOT NULL,
+  updatedAt INTEGER NOT NULL,
+  updateCount INTEGER NOT NULL DEFAULT 0,
+  deletedAt INTEGER,
+  durationMs INTEGER,
+  excludedAt INTEGER
+) STRICT;
 
 INSERT INTO
   Asset_new (
@@ -528,22 +516,21 @@ ALTER TABLE Asset_new
 RENAME TO Asset;
 
 --------------------------------------
-CREATE TABLE
-  Tag_new (
-    -- tags are hierarchical. Root tags have a null parentId. Assets can have zero or more tags.
-    id INTEGER NOT NULL PRIMARY KEY,
-    parentId INTEGER,
-    -- this is the full path of the Tag, and is an ASCII SEP-separated string.
-    _path TEXT NOT NULL COLLATE NOCASE,
-    ordinal INTEGER,
-    createdAt INTEGER NOT NULL,
-    updatedAt INTEGER NOT NULL,
-    assetCount INTEGER DEFAULT 0,
-    _displayName TEXT,
-    description TEXT,
-    releasedAt INTEGER,
-    FOREIGN KEY (parentId) REFERENCES Tag (id)
-  ) STRICT;
+CREATE TABLE Tag_new (
+  -- tags are hierarchical. Root tags have a null parentId. Assets can have zero or more tags.
+  id INTEGER NOT NULL PRIMARY KEY,
+  parentId INTEGER,
+  -- this is the full path of the Tag, and is an ASCII SEP-separated string.
+  _path TEXT NOT NULL COLLATE NOCASE,
+  ordinal INTEGER,
+  createdAt INTEGER NOT NULL,
+  updatedAt INTEGER NOT NULL,
+  assetCount INTEGER DEFAULT 0,
+  _displayName TEXT,
+  description TEXT,
+  releasedAt INTEGER,
+  FOREIGN KEY (parentId) REFERENCES Tag (id)
+) STRICT;
 
 INSERT INTO
   Tag_new (

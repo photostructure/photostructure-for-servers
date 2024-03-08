@@ -20,7 +20,7 @@ brew install curl
 mkdir -p ~/src
 cd ~/src
 
-source <(egrep "^(YEAR|VERSION)=" /home/mrm/src/photostructure/src/library/node_modules/better-sqlite3/deps/download.sh)
+source <(egrep "^(YEAR|VERSION)=" $HOME/src/photostructure/src/library/node_modules/better-sqlite3/deps/download.sh)
 
 curl -o - https://sqlite.org/$YEAR/sqlite-autoconf-$VERSION.tar.gz | tar xz
 cd sqlite-autoconf-$VERSION

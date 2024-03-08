@@ -35,17 +35,16 @@ SET
 WHERE
   capturedAtLocal IS NULL;
 
-CREATE TABLE
-  new_Asset (
-    id INTEGER NOT NULL PRIMARY KEY,
-    capturedAtLocal INTEGER NOT NULL,
-    shown INTEGER NOT NULL DEFAULT 0,
-    hidden INTEGER NOT NULL DEFAULT 0,
-    favorite INTEGER DEFAULT 0,
-    version INTEGER NOT NULL DEFAULT 0,
-    createdAt BIGINT NOT NULL,
-    updatedAt BIGINT NOT NULL
-  );
+CREATE TABLE new_Asset (
+  id INTEGER NOT NULL PRIMARY KEY,
+  capturedAtLocal INTEGER NOT NULL,
+  shown INTEGER NOT NULL DEFAULT 0,
+  hidden INTEGER NOT NULL DEFAULT 0,
+  favorite INTEGER DEFAULT 0,
+  version INTEGER NOT NULL DEFAULT 0,
+  createdAt BIGINT NOT NULL,
+  updatedAt BIGINT NOT NULL
+);
 
 INSERT INTO
   new_Asset

@@ -533,12 +533,6 @@
           "pk": false
         },
         {
-          "name": "version",
-          "type": "INTEGER",
-          "notnull": false,
-          "pk": false
-        },
-        {
           "name": "createdAt",
           "type": "INTEGER",
           "notnull": true,
@@ -611,19 +605,19 @@
         },
         {
           "name": "completePct",
-          "type": "INTEGER",
+          "type": "REAL",
           "notnull": false,
           "pk": false
         },
         {
           "name": "incompletePct",
-          "type": "INTEGER",
+          "type": "REAL",
           "notnull": false,
           "pk": false
         },
         {
           "name": "scanningPct",
-          "type": "INTEGER",
+          "type": "REAL",
           "notnull": false,
           "pk": false
         },
@@ -781,6 +775,41 @@
         },
         {
           "name": "releasedAt",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        }
+      ]
+    },
+    {
+      "tableName": "Task",
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": true
+        },
+        {
+          "name": "fn",
+          "type": "TEXT",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "argsJSON",
+          "type": "TEXT",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "priority",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "retries",
           "type": "INTEGER",
           "notnull": false,
           "pk": false

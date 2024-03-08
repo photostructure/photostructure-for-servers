@@ -1,13 +1,12 @@
 {
-  "version": "2023.12.0-alpha.7",
-  "versionMajor": 2023,
-  "versionMinor": 12,
+  "version": "2024.3.0-prealpha",
+  "versionMajor": 2024,
+  "versionMinor": 3,
   "versionPatch": 0,
   "versionPrerelease": [
-    "alpha",
-    7
+    "prealpha"
   ],
-  "release": "2023.12.0-alpha.7+20231220192300",
-  "gitSha": "086e28c1b50d5a229fc0140ff39f4776952fb492",
-  "gitDate": "2023-12-21T03:23:00.000Z"
+  "release": "2024.3.0-prealpha+20240308102353",
+  "gitSha": "92cba1b21937cb9ca770f6a339e44b0fbee04bf9",
+  "gitDate": "2024-03-08T18:23:53.000Z"
 }

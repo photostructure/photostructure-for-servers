@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-# Copyright © 2021, PhotoStructure Inc.
+# Copyright © 2023, PhotoStructure Inc.
 
 # BY RUNNING THIS SOFTWARE YOU AGREE TO ALL THE TERMS OF THIS LICENSE:
 # <https://photostructure.com/eula>
@@ -9,6 +9,9 @@
 
 # See <https://photostructure.com/server> for general instructions and
 # visit <https://forum.photostructure.com/> for support.
+
+# Propagate ctrl-c:
+trap 'exit 130' INT
 
 # SYNTAX NOTE TO FUTURE SELF:
 # function foo {...} # < doesn't work with /bin/sh
@@ -31,8 +34,14 @@ version() {
 
 cd "$(dirname "$0")" || die "failed to cd"
 
-# Propagate ctrl-c:
-trap 'exit 130' INT
+# Source ~/.psenv, if it exists. If start.sh is being started by systemd, PATH
+# will be empty, so your .psenv should source your ~/.bashrc or whereever you
+# are setting up your environment.
+PS_ENV=${PS_ENV:-"$HOME/.psenv"}
+if [ -r "$PS_ENV" ]; then
+  # shellcheck disable=SC1090
+  source "$PS_ENV"
+fi
 
 # Windows needs `uname -o`, but that doesn't exist of macOS. macOS works with
 # `uname -s`. Linux works with either -o or -s.
@@ -64,7 +73,7 @@ done
 
 # Unfortunately, newer versions of python don't include distutils (which is
 # part of setuptools), which is required in order to compile the
-# platform-folders module.
+# platform-folders module. See https://github.com/nodejs/gyp-next/pull/214
 
 # We don't want to freak out users with "<string>:1: DeprecationWarning: The
 # distutils package is deprecated and slated for removal in Python 3.12. Use
@@ -86,14 +95,14 @@ if [ "$NODE_VERSION" -lt "$(version "18.16.0")" ]; then
   die "Please install Node.js v18 or v20."
 fi
 
-# Add a `timeout1m` function, if `timeout` is installed. On macOS, you can
+# Add a `timeout30s` function, if `timeout` is installed. On macOS, you can
 # `brew install coreutils`.
 if command -v timeout >/dev/null; then
-  timeout1m() {
-    timeout 1m "$@"
+  timeout30s() {
+    timeout 30 "$@"
   }
 else
-  timeout1m() {
+  timeout30s() {
     env "$@"
   }
 fi
@@ -101,17 +110,17 @@ fi
 # set NOGIT=1 or PS_CHECK_UPDATES=none to disable auto-update:
 
 if [ "$NOGIT" != "1" ] && [ "$PS_CHECK_UPDATES" != "none" ]; then
-  echo "$GIT" stash --include-untracked
+  "$GIT" stash --include-untracked
 
   # This may be running at system startup, and network may not be available
   # yet, so let's try, but timeout after a minute.
 
   # `git pull` ensures we're always running the latest version of this branch:
-  timeout1m "$GIT" pull # don't fail here if git pull fails--it might be a network issue.
+  timeout30s "$GIT" pull # don't fail here if git pull fails--it might be a network issue.
 fi
 
 clean() {
-  npx yarn cache clean
+  npx --yes yarn cache clean
   if [ "$IS_WINDOWS" = 1 ]; then
     rm -rf node_modules "$APPDATA/npm-cache/_libvips" "$LOCALAPPDATA/node-gyp"
   else
@@ -138,18 +147,28 @@ fi
 
 argv=("$@")
 
-# We run `npx yarn install` because `npm install` provides no way to silence
-# all the dependency compilation warnings and other console spam.
+# We run `npx yarn install` instead of `npm install` because `yarn --silent`
+# hides the potentially scary "...is incompatible with this module..."
+# messages and other console spam. See
+# <https://forum.photostructure.com/t/886?u=mrm> for details.
 
-# Adding --silent hides the potentially scary "...is incompatible with this
-# module..." messages. <https://forum.photostructure.com/t/886?u=mrm>
-npx yarn install --silent || die "Dependency installation failed."
+# Adding --network-timeout 30000 lets us try to install dependencies, but if
+# network is unavailable for 30 seconds, try again with --offline. If that
+# fails, die.
+npx --yes yarn install --silent --network-timeout 30000 ||
+  npx --yes yarn install --silent --offline ||
+  die "Dependency installation failed."
 
 # This is used by the version health check--we'll suggest you move to a more
 # stable branch (like "main" instead of "beta") if the same version is
 # available on that branch.
 PS_UPDATE_CHANNEL=$(git rev-parse --abbrev-ref HEAD)
 export PS_UPDATE_CHANNEL
+
+# Node.js and several third-party libraries look for this value to run in
+# "production mode" (rather than "development mode").
+NODE_ENV=production
+export NODE_ENV
 
 # We used to `tee` to a runlog, but by propagating ctrl-c, the tee would get
 # killed and shutdown messages would be omitted from stdout.
