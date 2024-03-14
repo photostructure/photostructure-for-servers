@@ -1,6 +1,8 @@
 -- remove the rightHash and searchHash (which didn't improve asset
 -- aggregations), and add FPS:
-CREATE TABLE "new_AssetFile" (
+DROP TABLE IF EXISTS new_AssetFile;
+
+CREATE TABLE new_AssetFile (
   id INTEGER NOT NULL PRIMARY KEY,
   assetId INTEGER NOT NULL,
   shown INTEGER NOT NULL DEFAULT 0,

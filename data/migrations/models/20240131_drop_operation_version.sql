@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS Operation_new;
+
 CREATE TABLE Operation_new (
   -- used to store operations, like "forced" syncs, and library rebuilds
   id INTEGER NOT NULL PRIMARY KEY,

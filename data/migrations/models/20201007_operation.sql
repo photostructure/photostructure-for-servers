@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS Operation;
+
 CREATE TABLE Operation (
   -- used to store user-requested operations, like "forced" syncs
   id INTEGER NOT NULL PRIMARY KEY,

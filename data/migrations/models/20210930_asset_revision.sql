@@ -1,6 +1,6 @@
-DROP TABLE IF EXISTS "AssetRevision";
+DROP TABLE IF EXISTS AssetRevision;
 
-CREATE TABLE "AssetRevision" (
+CREATE TABLE AssetRevision (
   -- Any change made to an Asset through the PhotoStructure UI creates an "AssetRevision" which can then be merged with any external changes made to files or sidecars.
   id INTEGER NOT NULL PRIMARY KEY,
   assetId INTEGER NOT NULL,

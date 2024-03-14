@@ -1,5 +1,5 @@
-CREATE TABLE IF NOT EXISTS Heartbeat (
-  -- used for db health checks
+CREATE TABLE IF NOT EXISTS Heartbeat -- used for db health checks
+(
   id INTEGER NOT NULL PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
   createdAt BIGINT NOT NULL,

@@ -1,17 +1,27 @@
 
 <div class="release-notes">
 
-This is a detailed list of changes in each version.
+This page contains a detailed list of changes made in every build of PhotoStructure.
 
-- Major releases have posts summarizing bigger changes. See [the posts tagged with "release notes"](/tags/release-notes/).
+## PhotoStructure versions
 
-- New releases, starting in 2023, use "calendar versioning," or [CalVer](https://calver.org/), using scheme `YYYY.MM.BUILD`. `BUILD` starts at zero at the beginning of the month, and gets incremented for every prealpha, alpha, beta, or stable release. For non-stable releases, `-$channel` is appended to the version format.
+- Major versions may have posts summarizing more visible changes. Check out [the posts tagged with "release notes"](/tags/release-notes/).
 
-- "Pre-release" builds (marked with `-alpha` or `-beta`) have not been thoroughly tested, and may not even launch.
+- PhotoStructure uses "calendar versioning," or [CalVer](https://calver.org/), using the template `YYYY.MM.BUILD`. `BUILD` starts at zero at the beginning of the month, so `2024.3.3` is the _fourth_ build from March 2024.
 
-- Only run `alpha` or `beta` builds if you have [recent backups](/faq/how-do-i-safely-store-files/).
+### Experimental builds
 
-- Upgrades to new versions are automatic, but older versions of PhotoStructure may not be able to open libraries created by newer versions of PhotoStructure.
+- Experimental builds end with a `-prealpha`, `-alpha`, or `-beta` suffix.
+
+- **These experimental builds have not been thoroughly tested, and may not even launch.**
+
+- Only run these builds if you have [recent backups](/faq/how-do-i-safely-store-files/).
+
+- If you run one of these builds, please consider hopping into our [chat](/go/discord) to make sure we can squash any bugs you encounter.
+
+### Version upgrades
+
+- Library upgrades to new versions of PhotoStructure are automatic, but older versions of PhotoStructure cannot open libraries from newer versions of PhotoStructure.
 
 <!-- TODO: -->
 <!-- - 🐛 Sync doesn't seem to no-op properly for a completed directory -->
@@ -23,7 +33,44 @@ This is a detailed list of changes in each version.
 
 <!-- fix "tag context" for "next previous" context. I'd always done a search, clicked a thumb, and then clicked esc to go back to the search results. But...  if you click a thumb from a search,  and then click "next" or "previous", it ignores that you can from a search, and does the chronological next asset, which is very confusing/irritating. -->
 
+<!-- - 🐛 (todo): Thumbnails in tag samples are [chronologically ordered](https://discord.com/channels/818905168107012097/1148116413190520923) -->
+
+<!-- - 🐛 (need to verify): Ensure progress is updated during library rebuild (the prior build didn't properly update the `Progress` table, so your computer was busy but you didn't know why). -->
+
+<!--- 📦 (TODO) Add sync reports for AssetFile re-syncs during library rebuilds and video transcodes -->
+
+## v2024.3.2-prealpha
+
+**Released 2024-03-14 🥧**
+
+- 🐛 The warning message `Error: env(): failed to read .env file` caused [sync to fail to run](https://discord.com/channels/818905168107012097/818907922767544340/1217724819483791421]). This warning is now only emitted by the main service, and only if the file exists.
+
+- 🐛 Database migrations were edited to try to gracefully recover from some types of partially-applied migrations. This should remedy many issues like [this](https://discord.com/channels/818905168107012097/818907922767544340/1215748274401710191).
+
+- 🐛 Geolocation fields are now deleted if GPS is [(0,0)](https://en.wikipedia.org/wiki/Null_Island). Upgraded libraries will auto-resync all assets tagged with `Where|Ghana|Western|Takoradi` (the nearest city to [Null Island](https://en.wikipedia.org/wiki/Null_Island)).
+
+- 📦 The `/settings` page redirected to the health check page if settings took longer than a second to fetch(!!).
+
+- 📦 Added several more `/System/Volume` exclude globs to avoid macOS system subdirectories (thanks for the [assist, AlanH!](https://discord.com/channels/818905168107012097/818907922767544340/1216585399615492136)
+
+- 📦 Add `tagGeoSynonyms` setting:
+
+  > Due to EXIF and XMP specification drift, there are several ways for geolocation information to be encoded in files. When PhotoStructure applies the "tagGeoTemplate", we'll use these "synonyms" to build the geo tag (first synonym with a value wins). See https://exiftool.org/forum/index.php?topic=13811.msg74413#msg74413 for details.
+
+- 📦 Add `writeGeolocationTagsToLibraryCopies` setting:
+
+  > When enabled, inferred geolocation tags will backfill into Country/State/City tags in the library copy (by default, into an XMP sidecar).
+  >
+  > This defaults to false, as reverse-geo lookup results can change over time (and should be done on-demand, rather than stored statically and drift into inaccuracies).
+
+- 📦 Merged `commandTimeoutMs` and `statTimeoutMs` settings--they both defaulted to 30s, and given the presence of `taskTimeoutMs` (which defaults to 2m) having all three timeouts was confusing.
+
+- 📦 `syncCronTZ` now defaults to `TZ` if `TZ` is a valid IANA time zone (like "America/Los_Angeles").
+
+- 📦 `info` improvements: include captured-at raw EXIF values for files, and if `--load-library` is specified, include db library setup metadata (like `libraryDbFile`, `libraryDbBackupDir`, and `useReplica`).
+
 <a id="v2024.3.1-prealpha"></a>
+
 ## v2024.3.1-prealpha ["Zep"](https://discord.com/channels/818905168107012097/818905168690413611/1215774241979502612)
 
 **Released 2023-03-08**

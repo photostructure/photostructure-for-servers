@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS Progress_new;
+
 CREATE TABLE Progress_new (
   -- records sync process state
   id INTEGER NOT NULL PRIMARY KEY,

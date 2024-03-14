@@ -35,6 +35,8 @@ SET
 WHERE
   capturedAtLocal IS NULL;
 
+DROP TABLE IF EXISTS new_Asset;
+
 CREATE TABLE new_Asset (
   id INTEGER NOT NULL PRIMARY KEY,
   capturedAtLocal INTEGER NOT NULL,

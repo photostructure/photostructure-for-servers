@@ -1,7 +1,9 @@
 -- THERE'S AN ORDER TO THIS!
 -- See https://www.sqlite.org/lang_altertable.html#otheralter
-CREATE TABLE migrations_new (
-  -- tracks database migrations applied on version upgrades
+DROP TABLE IF EXISTS migrations_new;
+
+CREATE TABLE migrations_new -- tracks database migrations applied on version upgrades
+(
   id INTEGER NOT NULL PRIMARY KEY,
   name TEXT NOT NULL,
   migration_time INTEGER NOT NULL
@@ -22,10 +24,10 @@ ALTER TABLE migrations_new
 RENAME TO migrations;
 
 --------------------------------------
-DROP TABLE Heartbeat;
+DROP TABLE IF EXISTS Heartbeat;
 
-CREATE TABLE Heartbeat (
-  -- used for db health checks
+CREATE TABLE Heartbeat -- used for db health checks
+(
   id INTEGER NOT NULL PRIMARY KEY,
   name TEXT NOT NULL,
   createdAt INTEGER NOT NULL,
@@ -33,8 +35,10 @@ CREATE TABLE Heartbeat (
 ) STRICT;
 
 --------------------------------------
-CREATE TABLE Example_new (
-  -- used for db health checks
+DROP TABLE IF EXISTS Example_new;
+
+CREATE TABLE Example_new -- used for db integration tests
+(
   id INTEGER NOT NULL PRIMARY KEY,
   name TEXT NOT NULL,
   isExample INTEGER,
@@ -59,6 +63,8 @@ ALTER TABLE Example_new
 RENAME TO Example;
 
 --------------------------------------
+DROP TABLE IF EXISTS Session_new;
+
 CREATE TABLE Session_new (
   -- used for web sessions
   sid TEXT NOT NULL PRIMARY KEY,
@@ -81,8 +87,10 @@ ALTER TABLE Session_new
 RENAME TO 'Session';
 
 --------------------------------------
--- Any change made to an Asset through the PhotoStructure UI creates an "AssetRevision" which can then be merged with any external changes made to files or sidecars.
-CREATE TABLE AssetRevision_new (
+DROP TABLE IF EXISTS AssetRevision_new;
+
+CREATE TABLE AssetRevision_new -- Any change made to an Asset through the PhotoStructure UI creates an "AssetRevision" which can then be merged with any external changes made to files or sidecars.
+(
   id INTEGER NOT NULL PRIMARY KEY,
   assetId INTEGER NOT NULL,
   createdAt INTEGER NOT NULL,
@@ -126,8 +134,10 @@ RENAME TO AssetRevision;
 DROP TABLE IF EXISTS AdvisoryLock;
 
 --------------------------------------
-CREATE TABLE AssetFile_new (
-  -- AssetFile instances are files that back an Asset.
+DROP TABLE IF EXISTS AssetFile_new;
+
+CREATE TABLE AssetFile_new -- AssetFile instances are files that back an Asset.
+(
   id INTEGER NOT NULL PRIMARY KEY,
   assetId INTEGER NOT NULL,
   shown INTEGER NOT NULL DEFAULT 0,
@@ -294,8 +304,10 @@ ALTER TABLE AssetFile_new
 RENAME TO AssetFile;
 
 --------------------------------------
-CREATE TABLE AssetTag_new (
-  -- join table to associate Assets to Tags.
+DROP TABLE IF EXISTS AssetTag_new;
+
+CREATE TABLE AssetTag_new -- join table to associate Assets to Tags.
+(
   assetId INTEGER NOT NULL,
   tagId INTEGER NOT NULL,
   FOREIGN KEY (assetId) REFERENCES Asset (id) ON DELETE CASCADE,
@@ -316,8 +328,10 @@ ALTER TABLE AssetTag_new
 RENAME TO AssetTag;
 
 --------------------------------------
-CREATE TABLE ProgressMeta_new (
-  -- Used to store state of a sync. Prevents future sync jobs from re-doing prior work.
+DROP TABLE IF EXISTS ProgressMeta_new;
+
+CREATE TABLE ProgressMeta_new -- Used to store state of a sync. Prevents future sync jobs from re-doing prior work.
+(
   id INTEGER NOT NULL PRIMARY KEY,
   progressId INTEGER NOT NULL,
   name TEXT NOT NULL,
@@ -345,6 +359,8 @@ ALTER TABLE ProgressMeta_new
 RENAME TO ProgressMeta;
 
 --------------------------------------
+DROP TABLE IF EXISTS Progress_new;
+
 CREATE TABLE Progress_new (
   -- records sync process state
   id INTEGER NOT NULL PRIMARY KEY,
@@ -404,8 +420,10 @@ ALTER TABLE Progress_new
 RENAME TO Progress;
 
 --------------------------------------
-CREATE TABLE Operation_new (
-  -- used to store user-requested operations, like "forced" syncs
+DROP TABLE IF EXISTS Operation_new;
+
+CREATE TABLE Operation_new -- used to store user-requested operations, like "forced" syncs
+(
   id INTEGER NOT NULL PRIMARY KEY,
   name TEXT NOT NULL,
   value TEXT,
@@ -442,10 +460,10 @@ ALTER TABLE Operation_new
 RENAME TO Operation;
 
 --------------------------------------
-CREATE TABLE ShaBlocklist_new (
-  -- Files with any of these SHAs are not to be imported.
-  sha TEXT NOT NULL PRIMARY KEY
-) STRICT;
+DROP TABLE IF EXISTS ShaBlocklist_new;
+
+CREATE TABLE ShaBlocklist_new -- Files with any of these SHAs are not to be imported.
+(sha TEXT NOT NULL PRIMARY KEY) STRICT;
 
 INSERT INTO
   ShaBlocklist_new (sha)
@@ -460,11 +478,13 @@ ALTER TABLE ShaBlocklist_new
 RENAME TO ShaBlocklist;
 
 --------------------------------------
-DROP TABLE ChangedTag;
+DROP TABLE IF EXISTS ChangedTag;
 
 --------------------------------------
-CREATE TABLE Asset_new (
-  -- an "asset" is a photos or video, backed by 1 or more asset file variations.
+DROP TABLE IF EXISTS Asset_new;
+
+CREATE TABLE Asset_new -- an "asset" is a photos or video, backed by 1 or more asset file variations.
+(
   id INTEGER NOT NULL PRIMARY KEY,
   capturedAtLocal INTEGER NOT NULL,
   shown INTEGER NOT NULL DEFAULT 0,
@@ -516,8 +536,10 @@ ALTER TABLE Asset_new
 RENAME TO Asset;
 
 --------------------------------------
-CREATE TABLE Tag_new (
-  -- tags are hierarchical. Root tags have a null parentId. Assets can have zero or more tags.
+DROP TABLE IF EXISTS Tag_new;
+
+CREATE TABLE Tag_new -- tags are hierarchical. Root tags have a null parentId. Assets can have zero or more tags.
+(
   id INTEGER NOT NULL PRIMARY KEY,
   parentId INTEGER,
   -- this is the full path of the Tag, and is an ASCII SEP-separated string.

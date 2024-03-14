@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS new_AssetFile;
+
 CREATE TABLE new_AssetFile (
   id INTEGER NOT NULL PRIMARY KEY,
   assetId INTEGER NOT NULL,

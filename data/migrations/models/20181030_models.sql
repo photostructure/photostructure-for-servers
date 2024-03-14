@@ -1,5 +1,9 @@
-CREATE TABLE IF NOT EXISTS Example (
-  -- used for integration tests
+DROP INDEX IF EXISTS example_name_udx;
+
+DROP TABLE IF EXISTS Example;
+
+CREATE TABLE Example -- used for integration tests
+(
   id INTEGER NOT NULL PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
   isExample INTEGER,
@@ -7,9 +11,13 @@ CREATE TABLE IF NOT EXISTS Example (
   updatedAt BIGINT NOT NULL
 );
 
-CREATE UNIQUE INDEX IF NOT EXISTS example_name_udx ON Example (name);
+CREATE UNIQUE INDEX example_name_udx ON Example (name);
 
-CREATE TABLE IF NOT EXISTS Progress (
+DROP INDEX IF EXISTS progress_uri_udx;
+
+DROP TABLE IF EXISTS Progress;
+
+CREATE TABLE Progress (
   -- records sync process state
   id INTEGER NOT NULL PRIMARY KEY,
   uri VARCHAR(255) NOT NULL,
@@ -24,10 +32,14 @@ CREATE TABLE IF NOT EXISTS Progress (
   updatedAt BIGINT NOT NULL
 );
 
-CREATE UNIQUE INDEX IF NOT EXISTS progress_uri_udx ON Progress (uri);
+CREATE UNIQUE INDEX progress_uri_udx ON Progress (uri);
 
-CREATE TABLE IF NOT EXISTS Tag (
-  -- Tags are associated to Assets and support hierarchies.
+DROP INDEX IF EXISTS tag_path_udx;
+
+DROP TABLE IF EXISTS Tag;
+
+CREATE TABLE Tag -- Tags are associated to Assets and support hierarchies.
+(
   id INTEGER NOT NULL PRIMARY KEY,
   parentId INTEGER,
   -- this is the full path of the Tag, and is an ASCII SEP-separated string.
@@ -38,9 +50,25 @@ CREATE TABLE IF NOT EXISTS Tag (
   FOREIGN KEY (parentId) REFERENCES Tag (id)
 );
 
-CREATE UNIQUE INDEX IF NOT EXISTS tag_path_udx ON Tag (_path);
+CREATE UNIQUE INDEX tag_path_udx ON Tag (_path);
 
-CREATE TABLE IF NOT EXISTS Asset -- Asset). -- heuristics (to make sure, for example, that RAW/JPEG pairs share the same -- AssetFiles. AssetFiles are coalesced with existing Assets based on Curator -- An Asset embodies an item in a library, backed by 1 or more "related"
+DROP INDEX IF EXISTS asset_timeline;
+
+DROP INDEX IF EXISTS assetfile_uri_udx;
+
+DROP INDEX IF EXISTS assetfile_recent_idx;
+
+DROP INDEX IF EXISTS assetfile_sha_idx;
+
+DROP INDEX IF EXISTS assetfile_exifuid_idx;
+
+DROP INDEX IF EXISTS assetfile_shown_udx;
+
+DROP TABLE IF EXISTS Asset;
+
+DROP TABLE IF EXISTS AssetFile;
+
+CREATE TABLE Asset -- An Asset embodies a photo or video in a library, backed by 1 or more AssetFile rows
 (
   id INTEGER NOT NULL PRIMARY KEY,
   -- true if the asset *can* be shown
@@ -59,12 +87,11 @@ WHERE
   shown = 1
   AND hidden = 0;
 
-CREATE TABLE IF NOT EXISTS AssetFile (
-  -- Asset, and is the file revision that will be shown for the Asset. -- exactly one Asset. There should be only one "shown" AssetFile for a given -- An AssetFile points to a file (via the URI) and is always associated to
+CREATE TABLE IF NOT EXISTS AssetFile -- An AssetFile is a file on disk that is associated with an Asset.
+(
   id INTEGER NOT NULL PRIMARY KEY,
   assetId INTEGER NOT NULL,
-  -- boolean(1 == true), true for the instance of an asset file that is shown
-  -- in the UI for the given assetId
+  -- 1 if the asset file is the primary file to be shown for the asset
   shown INTEGER NOT NULL DEFAULT 0,
   -- May be longer than 1 K as this is the full native path to files:
   uri VARCHAR(2048) NOT NULL,
@@ -109,8 +136,12 @@ CREATE UNIQUE INDEX IF NOT EXISTS assetfile_shown_udx ON AssetFile (assetId)
 WHERE
   shown = 1;
 
-CREATE TABLE IF NOT EXISTS AssetTag (
-  -- join table to associate Assets to Tags.
+DROP TABLE IF EXISTS AssetTag;
+
+DROP INDEX IF EXISTS assettag_fks;
+
+CREATE TABLE AssetTag -- join table to associate Assets to Tags.
+(
   assetId INTEGER NOT NULL,
   tagId INTEGER NOT NULL,
   FOREIGN KEY (assetId) REFERENCES Asset (id) ON DELETE CASCADE,

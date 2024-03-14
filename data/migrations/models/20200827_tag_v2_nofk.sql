@@ -1,4 +1,6 @@
-CREATE TABLE IF NOT EXISTS new_Tag (
+DROP TABLE IF EXISTS new_Tag;
+
+CREATE TABLE new_Tag (
   -- Tags are associated to Assets and support hierarchies.
   id INTEGER NOT NULL PRIMARY KEY,
   parentId INTEGER,

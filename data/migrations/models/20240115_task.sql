@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS Task;
+
 CREATE TABLE Task (
   id INTEGER NOT NULL PRIMARY KEY,
   -- function name
