@@ -1,0 +1,2 @@
+ALTER TABLE Tag
+ADD COLUMN _displayName VARCHAR(1024);

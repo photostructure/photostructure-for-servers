@@ -1,6 +1,12 @@
 {
-  "version": "2.0.0-beta.1",
-  "release": "2.0.0-beta.1+20211024103944",
-  "gitSha": "c6c6c8a813569c9d14644a8b3996211174a5bcb7",
-  "gitDate": "2021-10-24T17:39:44.000Z"
+  "version": "2024.3.2-beta",
+  "versionMajor": 2024,
+  "versionMinor": 3,
+  "versionPatch": 2,
+  "versionPrerelease": [
+    "beta"
+  ],
+  "release": "2024.3.2-beta+20240320132830",
+  "gitSha": "558a614f9ae0efe2c6cbb173edde2be698605676",
+  "gitDate": "2024-03-20T20:28:30.000Z"
 }

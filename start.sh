@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-# Copyright © 2021, PhotoStructure Inc.
+# Copyright © 2023, PhotoStructure Inc.
 
 # BY RUNNING THIS SOFTWARE YOU AGREE TO ALL THE TERMS OF THIS LICENSE:
 # <https://photostructure.com/eula>
@@ -10,13 +10,16 @@
 # See <https://photostructure.com/server> for general instructions and
 # visit <https://forum.photostructure.com/> for support.
 
+# Propagate ctrl-c:
+trap 'exit 130' INT
+
 # SYNTAX NOTE TO FUTURE SELF:
 # function foo {...} # < doesn't work with /bin/sh
 # foo() {...} # < works with dash and bash
 
 die() {
   printf "%s\n" "$1"
-  printf "Please refer to <https://photostructure.com/server/photostructure-for-node/>.\nYou can also visit <https://forum.photostructure.com> for help.\n\n"
+  printf "Please refer to https://photostructure.com/server/photostructure-for-node/ .\nYou can also visit https://forum.photostructure.com for help.\n\n"
   exit 1
 }
 
@@ -31,90 +34,106 @@ version() {
 
 cd "$(dirname "$0")" || die "failed to cd"
 
-# Propagate ctrl-c:
-trap 'exit 130' INT
-
-NODE="node"
+# Source ~/.psenv, if it exists. If start.sh is being started by systemd, PATH
+# will be empty, so your .psenv should source your ~/.bashrc or whereever you
+# are setting up your environment.
+PS_ENV=${PS_ENV:-"$HOME/.psenv"}
+if [ -r "$PS_ENV" ]; then
+  # shellcheck disable=SC1090
+  source "$PS_ENV"
+fi
 
 # Windows needs `uname -o`, but that doesn't exist of macOS. macOS works with
 # `uname -s`. Linux works with either -o or -s.
 OS="$(uname -o 2>/dev/null || uname -s)"
 
-if [ "$OS" = "Darwin" ]; then
-  if [ "$(version "$(uname -r)")" -lt "$(version 18.7)" ]; then
-    echo "WARNING: PhotoStructure for Servers is only supported on macOS Mojave and later."
-  fi
-elif [ "$OS" = "Msys" ] || [ "$OS" = "Cygwin" ]; then
-  NODE="node.exe" # < workaround for windows tty shenanigans
-
-elif [ "$OS" = "Linux" ] || [ "$OS" = "GNU/Linux" ]; then
-  if [ -r /etc/os-release ]; then
-    # If we're on Ubuntu...
-    # (we source into a subshell to avoid inadvertent variable pollution)
-    if [ "$(
-      source /etc/os-release
-      echo "$NAME"
-    )" == "Ubuntu" ]; then
-      OS_VER=$(
-        source /etc/os-release
-        version "$VERSION_ID"
-      )
-      if [ "$OS_VER" -lt "$(version "18.04.0")" ]; then
-        printf "Sorry, this version of Ubuntu isn't supported. Please use a Docker build, or upgrade to 20.04 or later.\nSee <https://photostructure.com/server/photostructure-for-docker/>\n\n"
-        echo exit 1
-      elif [ "$OS_VER" -lt "$(version "20.04.0")" ]; then
-        printf "WARNING: This version of Ubuntu does not support HEIF-encoded images.\nPlease use PhotoStructure for Docker or upgrade to Ubuntu 20.04 or later.\n<https://photostructure.com/server/photostructure-for-docker/>\n\n"
-      fi
-    fi
-  else
-    echo "WARNING: this isn't a supported platform."
-  fi
+if [ "$OS" = "Msys" ] || [ "$OS" = "Cygwin" ]; then
+  IS_WINDOWS=1
 else
-  echo "WARNING: this isn't a supported platform."
+  unset IS_WINDOWS
 fi
 
-# Version 1.0.0 includes all the binaries from PhotoStructure for Desktop in
-# PhotoStructure for Node because the system libraries (like libraw and sqlite)
-# are probably out of date.
+if [ "$IS_WINDOWS" = 1 ]; then
+  NODE="${NODE:-node.exe}" # < workaround for windows tty shenanigans
+  PYTHON="${PYTHON:-py.exe}"
+  PIP="${PIP:-pip.exe}"
+  GIT="${GIT:-git.exe}"
+else
+  NODE="${NODE:-node}"
+  PYTHON="${PYTHON:-python3}"
+  PIP="${PIP:-"$PYTHON" -m pip}"
+  GIT="${GIT:-git}"
+fi
 
 # We really just need node and git at this point:
 
-for i in git $NODE; do
-  command -v $i >/dev/null || die "Please install $i"
+for i in git "$NODE" "$PYTHON"; do
+  command -v "$i" >/dev/null || die "Please install $i"
 done
 
-# And warn people if they don't have ffmpeg:
+# Unfortunately, newer versions of python don't include distutils (which is
+# part of setuptools), which is required in order to compile the
+# platform-folders module. See https://github.com/nodejs/gyp-next/pull/214
 
-if ! command -v ffmpeg >/dev/null; then
-  printf "WARNING: ffmpeg is required for video support.\nSee <https://photostructure.com/getting-started/video-support/#ubuntu-installation>\n\n"
-fi
+# We don't want to freak out users with "<string>:1: DeprecationWarning: The
+# distutils package is deprecated and slated for removal in Python 3.12. Use
+# setuptools or check PEP 632 for potential alternatives", so we silence it
+# with this environment variable:
+export PYTHONWARNINGS="ignore::DeprecationWarning"
+
+# We don't quote $PIP here because it may be a compound command (`python3 -m pip``)
+"$PYTHON" -c "import distutils" || $PIP install setuptools || die "\"$PIP install setuptools\" failed."
 
 # We can't just run `node --version` because that doesn't work in a subshell on
-# Windows. CROSS PLATFORM CODE IS FUN
+# Windows. YAY CROSS PLATFORM CODE IS FUN
 
-NODE_VERSION="$(version "$($NODE -p process.versions.node)")"
+NODE_VERSION="$(version "$("$NODE" -p process.versions.node)")"
 
-# Node 14 has (many!) important security and performance improvements
-
-if [ "$NODE_VERSION" -lt "$(version "14.16.0")" ]; then
-  die "Please install Node.js v14.16.0 or later"
+# As of 20230930, Node.js versions older than 18 are End-of-life:
+# https://nodejs.org/en/about/releases/
+if [ "$NODE_VERSION" -lt "$(version "18.16.0")" ]; then
+  die "Please install Node.js v18 or v20."
 fi
 
-# set NOGIT=1 to disable auto-update:
-
-if [[ "$NOGIT" != "1" ]]; then
-  # Make sure we're always running the latest version of our branch
-  git stash --include-untracked
-  git pull || die "git pull failed."
+# Add a `timeout30s` function, if `timeout` is installed. On macOS, you can
+# `brew install coreutils`.
+if command -v timeout >/dev/null; then
+  timeout30s() {
+    timeout 30 "$@"
+  }
+else
+  timeout30s() {
+    env "$@"
+  }
 fi
 
-PS_CONFIG_DIR=${PS_CONFIG_DIR:-$HOME/.config/PhotoStructure}
-mkdir -p "$PS_CONFIG_DIR"
+# set NOGIT=1 or PS_CHECK_UPDATES=none to disable auto-update:
+
+if [ "$NOGIT" != "1" ] && [ "$PS_CHECK_UPDATES" != "none" ]; then
+  "$GIT" stash --include-untracked
+
+  # This may be running at system startup, and network may not be available
+  # yet, so let's try, but timeout after a minute.
+
+  # `git pull` ensures we're always running the latest version of this branch:
+  timeout30s "$GIT" pull # don't fail here if git pull fails--it might be a network issue.
+fi
 
 clean() {
-  # NOTE: even if $HOME isn't set, these paths from root wouldn't be terrible to delete:
-  rm -rf node_modules "$HOME/.electron" "$HOME/.electron-gyp" "$HOME/.npm/_libvips" "$HOME/.node-gyp" "$HOME/.cache/yarn/*/*sharp*"
+  npx --yes yarn cache clean
+  if [ "$IS_WINDOWS" = 1 ]; then
+    rm -rf node_modules "$APPDATA/npm-cache/_libvips" "$LOCALAPPDATA/node-gyp"
+  else
+    rm -rf node_modules "$HOME/.npm/_libvips" "$HOME/.node-gyp"
+  fi
 }
+
+if [ "$IS_WINDOWS" = 1 ]; then
+  PS_CONFIG_DIR=${PS_CONFIG_DIR:-$APPDATA/PhotoStructure}
+else
+  PS_CONFIG_DIR=${PS_CONFIG_DIR:-$HOME/.config/PhotoStructure}
+fi
+mkdir -p "$PS_CONFIG_DIR"
 
 # We can't put this in the current directory, because we always clean it out
 # with git stash.
@@ -128,18 +147,29 @@ fi
 
 argv=("$@")
 
-# We run `npx yarn install` because `npm install` provides no way to silence
-# all the dependency compilation warnings and other console spam.
+# We run `npx yarn install` instead of `npm install` because `yarn --silent`
+# hides the potentially scary "...is incompatible with this module..."
+# messages and other console spam. See
+# <https://forum.photostructure.com/t/886?u=mrm> for details.
 
-# Adding --silent hides the potentially scary "...is incompatible with this
-# module..." messages. <https://forum.photostructure.com/t/886?u=mrm>
-npx yarn install --silent || die "Dependency installation failed."
+# Adding --network-timeout 30000 lets us try to install dependencies, but if
+# network is unavailable for 30 seconds, try again with --offline. If that
+# fails, die.
+npx --yes yarn install --silent --network-timeout 30000 ||
+  npx --yes yarn install --silent --offline ||
+  die "Dependency installation failed."
+
+# This is used by the version health check--we'll suggest you move to a more
+# stable branch (like "main" instead of "beta") if the same version is
+# available on that branch.
+PS_UPDATE_CHANNEL=$(git rev-parse --abbrev-ref HEAD)
+export PS_UPDATE_CHANNEL
+
+# Node.js and several third-party libraries look for this value to run in
+# "production mode" (rather than "development mode").
+NODE_ENV=production
+export NODE_ENV
 
 # We used to `tee` to a runlog, but by propagating ctrl-c, the tee would get
 # killed and shutdown messages would be omitted from stdout.
-$NODE ./photostructure "${argv[@]}"
-exit_code=$?
-
-if [ $exit_code -ne 0 ]; then
-  echo "If this error persists, please see <https://forum.photostructure.com>."
-fi
+"$NODE" ./photostructure "${argv[@]}"

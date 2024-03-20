@@ -1,0 +1,1 @@
+-- This file will run db/Migrations.rebuild_tag_asset_counts

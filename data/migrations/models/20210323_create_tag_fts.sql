@@ -1,0 +1,1 @@
+-- runs Migrations.create_tag_fts
