@@ -39,9 +39,15 @@ This page contains a detailed list of changes made in every build of PhotoStruct
 
 <!--- 📦 (TODO) Add sync reports for AssetFile re-syncs during library rebuilds and video transcodes -->
 
-## v2024.3.2-prealpha
+## v2024.3.3-prealpha
 
-**Released 2024-03-14 🥧**
+**to be released**
+
+- ✨ Add "county" support for the geotagger (to help discriminate between [same-named cities](https://discord.com/channels/818905168107012097/1218392684302172170)). This version will automatically schedule a "retag library" job, which is much faster than a "library rebuild," as we skip asset re-aggregation, transcoding, and preview generation, and only re-tag every asset.
+
+## v2024.3.2-beta
+
+**`-prealpha` released 2024-03-14 🥧 and promoted to `-beta` on 2024-03-19**
 
 - 🐛 The warning message `Error: env(): failed to read .env file` caused [sync to fail to run](https://discord.com/channels/818905168107012097/818907922767544340/1217724819483791421]). This warning is now only emitted by the main service, and only if the file exists.
 
