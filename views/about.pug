@@ -113,6 +113,8 @@ html
               td.label= vol.label
                 if vol.remote
                   tt.unc= "//" + vol.remote.host + "/" + vol.remote.share
+                if vol.isNext
+                  .details (to be synced next)
 
   script(src="/app/about.js", nonce=nonce)
   if (subTier != "lite")

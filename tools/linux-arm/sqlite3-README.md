@@ -1,7 +1,7 @@
 To reproduce on a Raspberry Pi 4 running Debian Bullseye:
 
 ```sh
-source <(egrep "^(YEAR|VERSION)=" /home/mrm/src/photostructure/src/library/node_modules/better-sqlite3/deps/download.sh)
+source <(egrep "^(YEAR|VERSION)=" $HOME/src/photostructure/src/library/node_modules/better-sqlite3/deps/download.sh)
 
 export DEST=/tmp/sqlite-$VERSION
 
@@ -16,6 +16,3 @@ mkdir -p $DEST \
  && scp sqlite3 speedy:src/photostructure/tools/linux-arm
 
 ```
-
-ldd should report "not a dynamic executable:" (thanks to "-static"):
-`ldd sqlite3`

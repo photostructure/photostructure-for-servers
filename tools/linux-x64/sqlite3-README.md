@@ -3,7 +3,13 @@ Applied on Debian 11 x64:
 ```sh
 sudo apt install -y build-essential curl
 
-source <(egrep "^(YEAR|VERSION)=" $HOME/src/photostructure/src/library/node_modules/better-sqlite3/deps/download.sh)
+# If using `sh-docker`:
+
+source <(egrep "^(YEAR|VERSION)=" /code/src/library/node_modules/better-sqlite3/deps/download.sh)
+
+# If you're on an actual debian box:
+
+# source <(egrep "^(YEAR|VERSION)=" $HOME/src/photostructure/src/library/node_modules/better-sqlite3/deps/download.sh)
 
 export DEST=/tmp/sqlite-$VERSION
 
@@ -18,5 +24,8 @@ mkdir -p $DEST \
 
 ```
 
-To validate the binary is static:
+To validate the binary is static, `ldd` should report "not a dynamic executable:"
 
+```sh
+ldd sqlite3
+```

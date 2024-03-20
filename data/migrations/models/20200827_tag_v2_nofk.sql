@@ -1,15 +1,16 @@
-CREATE TABLE
-  IF NOT EXISTS new_Tag (
-    -- Tags are associated to Assets and support hierarchies.
-    id INTEGER NOT NULL PRIMARY KEY,
-    parentId INTEGER,
-    -- this is the full path of the Tag, and is an ASCII SEP-separated string.
-    _path VARCHAR(2048) NOT NULL COLLATE NOCASE,
-    ordinal INTEGER,
-    createdAt BIGINT NOT NULL,
-    updatedAt BIGINT NOT NULL,
-    FOREIGN KEY (parentId) REFERENCES new_Tag (id)
-  );
+DROP TABLE IF EXISTS new_Tag;
+
+CREATE TABLE new_Tag (
+  -- Tags are associated to Assets and support hierarchies.
+  id INTEGER NOT NULL PRIMARY KEY,
+  parentId INTEGER,
+  -- this is the full path of the Tag, and is an ASCII SEP-separated string.
+  _path VARCHAR(2048) NOT NULL COLLATE NOCASE,
+  ordinal INTEGER,
+  createdAt BIGINT NOT NULL,
+  updatedAt BIGINT NOT NULL,
+  FOREIGN KEY (parentId) REFERENCES new_Tag (id)
+);
 
 INSERT INTO
   new_Tag
