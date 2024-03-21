@@ -17,11 +17,12 @@ bash # to avoid zsh
 
 brew install curl
 
-YEAR=2022
-VERSION=3400000
+source <(egrep "^(YEAR|VERSION)=" ~/src/photostructure/src/library/node_modules/better-sqlite3/deps/download.sh)
 
-mkdir -p /tmp/sqlite \
-  && cd /tmp/sqlite \
+export DEST=/tmp/sqlite-$VERSION
+
+mkdir -p $DEST \
+  && cd $DEST \
   && curl https://sqlite.org/$YEAR/sqlite-autoconf-$VERSION.tar.gz | tar -xz --strip 1 \
   && ./configure --enable-static-shell --enable-static --disable-readline --disable-shared \
 	&& make clean \

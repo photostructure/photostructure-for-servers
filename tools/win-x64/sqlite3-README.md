@@ -1,3 +1,3 @@
-Extracted from https://www.sqlite.org/2024/sqlite-tools-win-x64-3450100.zip
+Extracted from https://sqlite.org/2024/sqlite-tools-win-x64-3450200.zip
 
-https://www.virustotal.com/gui/file/632027d21b045ff822f594d7481a07fea5a745d71ea191311c8b25158803f0fa
+https://www.virustotal.com/gui/file/24d4655fde07743257cc18f7ebb4ca66dee9be7267778fa2db810e5a68edf4f9
