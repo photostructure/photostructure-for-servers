@@ -24,30 +24,38 @@ This page contains a detailed list of changes made in every build of PhotoStruct
 - Library upgrades to new versions of PhotoStructure are automatic, but older versions of PhotoStructure cannot open libraries from newer versions of PhotoStructure.
 
 <!-- TODO: -->
-<!-- - 🐛 Sync doesn't seem to no-op properly for a completed directory -->
-<!-- - 🐛 Tag gallery is not sorted and has too many rows -->
-
 <!-- - ✨ Logs are now viewable in the UI -->
 <!-- - 🐛 [Tag reparenting doesn't seem to work properly on rebuilds](https://forum.photostructure.com/t/who-tags-are-incorrectly-excluded-from-keywords/676/6?u=mrm). -->
 <!-- - 🐛 Sync resume (after pause) on mac via the menubar (not the main window nav button) doesn't seem to support "resume" properly -->
 
-<!-- fix "tag context" for "next previous" context. I'd always done a search, clicked a thumb, and then clicked esc to go back to the search results. But...  if you click a thumb from a search,  and then click "next" or "previous", it ignores that you can from a search, and does the chronological next asset, which is very confusing/irritating. -->
+<!-- - 📦 Fixed "tag context" for "next previous" context. I'd always done a search, clicked a thumb, and then clicked esc to go back to the search results. But...  if you click a thumb from a search,  and then click "next" or "previous", it ignores that you can from a search, and does the chronological next asset, which is very confusing/irritating. -->
 
 <!-- - 🐛 (todo): Thumbnails in tag samples are [chronologically ordered](https://discord.com/channels/818905168107012097/1148116413190520923) -->
 
 <!-- - 🐛 (need to verify): Ensure progress is updated during library rebuild (the prior build didn't properly update the `Progress` table, so your computer was busy but you didn't know why). -->
 
-<!--- 📦 (TODO) Add sync reports for AssetFile re-syncs during library rebuilds and video transcodes -->
+<!-- - 📦 (TODO) Add sync reports for AssetFile re-syncs during library rebuilds and video transcodes -->
+
+<!-- - ✨ Add "county" support for the geotagger (to help discriminate between [same-named cities](https://discord.com/channels/818905168107012097/1218392684302172170)). This version will automatically schedule a "retag library" job, which is much faster than a "library rebuild," as we skip asset re-aggregation, transcoding, and preview generation, and only re-tag every asset. -->
 
 ## v2024.3.3-prealpha
 
-**to be released**
+**released 2024-03-20**
 
-- ✨ Add "county" support for the geotagger (to help discriminate between [same-named cities](https://discord.com/channels/818905168107012097/1218392684302172170)). This version will automatically schedule a "retag library" job, which is much faster than a "library rebuild," as we skip asset re-aggregation, transcoding, and preview generation, and only re-tag every asset.
+- 🐛 Replaced the ExifTool health check timeout with `statTimeoutMs` (which defaults to 30s -- prior builds timed out after 7 seconds)
+
+- 🐛 Node.js v21 support: fixed `DeprecationWarning: The ``punycode`` module is deprecated.`
+
+- 📦 Update Docker image to Node.js 20.11
+
+- 📦 Update SQLite tooling to 3.45
+
+<a id="v2024.3.2-alpha"></a>
+<a id="v2024.3.2-prealpha"></a>
 
 ## v2024.3.2-beta
 
-**`-prealpha` released 2024-03-14 🥧 and promoted to `-beta` on 2024-03-19**
+**`-prealpha` released 2024-03-14 🥧 and promoted to `-beta` on 2024-03-20**
 
 - 🐛 The warning message `Error: env(): failed to read .env file` caused [sync to fail to run](https://discord.com/channels/818905168107012097/818907922767544340/1217724819483791421]). This warning is now only emitted by the main service, and only if the file exists.
 
@@ -109,7 +117,7 @@ As an example, a build might be `v2024.1.7-beta`. If it proves sufficiently stab
 
 PhotoStructure now adds `Where/Country/Region/City` tags for those photos and videos with Latitude and Longitude metadata.
 
-Note that this feature is uses an embedded geo database, so no network access is required. This initial implementation only inclues cities with a population of 1000 or greater. See the new `tagGeo` and `tagGeoTemplate` [settings](/go/settings) for more details.
+Note that this feature uses an embedded geo database, so no network access is required. This initial implementation only includes cities with a population of 1000 or greater. See the new `tagGeo` and `tagGeoTemplate` [settings](/go/settings) for more details.
 
 ### 🔃 Sync improvements
 

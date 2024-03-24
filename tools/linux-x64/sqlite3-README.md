@@ -3,13 +3,14 @@ Applied on Debian 11 x64:
 ```sh
 sudo apt install -y build-essential curl
 
-# If using `sh-docker`:
-
-source <(egrep "^(YEAR|VERSION)=" /code/src/library/node_modules/better-sqlite3/deps/download.sh)
+# If using `yarn --cwd src/library sh-docker`:
 
 # If you're on an actual debian box:
 
 # source <(egrep "^(YEAR|VERSION)=" $HOME/src/photostructure/src/library/node_modules/better-sqlite3/deps/download.sh)
+
+# If using `yarn --cwd src/library sh-docker`:
+source <(egrep "^(YEAR|VERSION)=" /code/src/library/node_modules/better-sqlite3/deps/download.sh)
 
 export DEST=/tmp/sqlite-$VERSION
 
@@ -19,9 +20,15 @@ mkdir -p $DEST \
   && ./configure --enable-static --disable-readline LDFLAGS="-static -pthread" \
   && make clean \
   && make -j `nproc` \
-  && strip sqlite3 \
-  && cp sqlite3 ~/src/photostructure/tools/linux-x64
+  && strip sqlite3
+  && cp sqlite3 /tmp/sqlite3
+```
 
+Then on the host:
+
+# OMG DOCKER CP DOESN'T ACCEPT GLOBS
+```sh
+docker cp $(docker ps --filter name=photostructure_library --quiet):/tmp/sqlite3 ~/src/photostructure/tools/linux-x64
 ```
 
 To validate the binary is static, `ldd` should report "not a dynamic executable:"
