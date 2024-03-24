@@ -4,7 +4,7 @@
 # <https://photostructure.com/server/photostructure-for-docker/>
 
 # https://github.com/photostructure/base-tools/pkgs/container/base-tools-debian
-FROM photostructure/base-tools-debian:sha-1605d9d as builder
+FROM photostructure/base-tools-debian:sha-2f5c9bb as builder
 
 # https://docs.docker.com/develop/develop-images/multistage-build/
 
@@ -21,7 +21,7 @@ RUN yarn install --frozen-lockfile --production --no-cache
 
 # This must match the base image from
 # https://github.com/photostructure/base-tools-debian/blob/main/Dockerfile
-FROM node:20.10.0-bookworm-slim
+FROM node:20.11-bookworm-slim
 
 # ffmpeg is used for video frame extraction and transcoding
 # libheif-examples provides "heif-convert"
