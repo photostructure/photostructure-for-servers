@@ -1,12 +1,12 @@
 {
-  "version": "2024.3.3-prealpha",
+  "version": "2024.3.3-beta",
   "versionMajor": 2024,
   "versionMinor": 3,
   "versionPatch": 3,
   "versionPrerelease": [
-    "prealpha"
+    "beta"
   ],
-  "release": "2024.3.3-prealpha+20240320221341",
-  "gitSha": "84e58c788ce0a6315415da9cb73a807d535433f6",
-  "gitDate": "2024-03-21T05:13:41.000Z"
+  "release": "2024.3.3-beta+20240324111246",
+  "gitSha": "93ba2e3de8e4eed22352e14c319060b101f65cf9",
+  "gitDate": "2024-03-24T18:12:46.000Z"
 }
