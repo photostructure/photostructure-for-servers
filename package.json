@@ -21,7 +21,7 @@
     "commander": "~8.1.0",
     "deep-eql": "~4.0.0",
     "exiftool-vendored": "~15.2.0",
-    "express": "~4.17.1",
+    "express": "~4.20.0",
     "express-session": "~1.17.2",
     "file-type": "~16.5.3",
     "fs-extra": "~10.0.0",
