@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title><%= locals.title %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="/app/about.css<%= locals.cacheBuster ? '?_=' + locals.cacheBuster : '' %>"
+      nonce="<%= locals.nonce %>"
+    />
+  </head>
+  <body class="grid-center reveal">
+    <main>
+      <img
+        class="logo"
+        src="/images/logo-horizontal.svg"
+        alt="PhotoStructure"
+      />
+
+      <p class="version center"><%= locals.version %></p>
+      <p class="edition center mb2em"><%= locals.edition %></p>
+
+      <div class="emojis">
+        <% if (locals.subTier === "lite") { %>
+        <i class="emj thinking"></i>
+        <p>
+          You're using PhotoStructure <span class="lite">lite</span>.<br />
+          <b
+            ><a href="/plans/pick?then=/about"
+              >Learn more about PhotoStructure <span class="plus">plus</span></a
+            ></b
+          >.<br />
+          If you're a current subscriber,
+          <a href="/plans/activate?then=/about"
+            >log in to activate your license</a
+          >.
+        </p>
+        <% } else { %>
+        <i class="emj tada"></i>
+        <p>
+          Thanks for being a
+          <span class="<%= locals.subTier %>"><%= locals.subTier %></span>
+          subscriber!
+        </p>
+        <% if (locals.subTrial) { %>
+        <i class="emj clock"></i>
+        <p>Your free trial ends in <%= locals.subExpiresInDuration %>.</p>
+        <% } else { %>
+        <i class="emj calendar"></i>
+        <p>
+          Your subscription will end or renew in <%= locals.subExpiresInDuration
+          %>.
+        </p>
+        <% } %>
+        <i class="emj bank"></i>
+        <p>
+          <b
+            ><a href="/plans/billing?then=/about"
+              >Manage your subscription and billing</a
+            ></b
+          >.
+        </p>
+        <% } %>
+
+        <i
+          class="emj <%= locals.healthLevel === 'ok' ? 'green-check' : locals.healthLevel === 'warn' || locals.healthLevel === 'stop-sync' ? 'warning' : locals.healthLevel === 'error' ? 'error' : 'busy-dots' %>"
+        ></i>
+        <p>
+          <a href="/health" title="<%= locals.healthMsg %>"
+            >System health: <%= locals.healthLevel %></a
+          >
+        </p>
+
+        <i class="emj gift"></i>
+        <p>
+          <a href="https://photostructure.com/whats-new/"
+            >What's new in this release?</a
+          >
+        </p>
+
+        <i class="emj open-book"></i>
+        <p>
+          Read our
+          <a href="https://photostructure.com/user-guide/">User Guide</a>.
+        </p>
+
+        <i class="emj beetle"></i>
+        <p>
+          Found something odd, confusing, or buggy?<br />Visit the
+          <a href="https://photostructure.com/go/forum">forum</a> or
+          <a href="https://photostructure.com/go/discord">discord</a> to get
+          support.
+        </p>
+
+        <i class="emj crane"></i>
+        <p>
+          PhotoStructure is made possible by many
+          <a href="/3rd-party-licenses.txt">open source libraries and tools</a>.
+        </p>
+
+        <i class="emj handshake"></i>
+        <p>
+          Use of PhotoStructure is bound by the
+          <a href="https://photostructure.com/legal/eula/"
+            >end-user license agreement</a
+          >, and other
+          <a href="https://photostructure.com/legal/">terms and conditions</a>.
+        </p>
+      </div>
+    </main>
+    <script
+      type="module"
+      src="/app/about.js<%= locals.cacheBuster ? '?_=' + locals.cacheBuster : '' %>"
+      nonce="<%= locals.nonce %>"
+    ></script>
+    <% if (locals.subTier !== "lite") { %>
+    <script src="/js/confetti.min.js" nonce="<%= locals.nonce %>"></script>
+    <% } %>
+  </body>
+</html>

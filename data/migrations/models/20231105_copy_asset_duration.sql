@@ -1,0 +1,3 @@
+-- This file will run db/Migrations.copy_asset_duration
+-- Video Asset.durationMs fields may not have been set correctly by earlier v2023 builds.
+-- Note that this migration will also invalidate any prior Asset or AssetFile that is a video and a NULL durationMs.

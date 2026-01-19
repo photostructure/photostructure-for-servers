@@ -1,0 +1,763 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>PhotoStructure settings</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="/app/settings.css<%= locals.cacheBuster ? '?_=' + locals.cacheBuster : '' %>"
+      nonce="<%= locals.nonce %>"
+    />
+  </head>
+  <body id="app" class="settings <%= locals.bodyClass ?? '' %>">
+    <header class="reveal bg-color-gradient left-middle-right">
+      <div class="left">
+        <a class="vicon hide-on-s" href="/health" title="Health checks">
+          <img class="svg" src="/images/health.svg" />
+        </a>
+      </div>
+      <div class="title middle">
+        <img class="logo" src="/images/logo-white.svg" title="PhotoStructure" />
+        <div class="text">settings</div>
+      </div>
+      <div class="right"></div>
+    </header>
+
+    <main>
+      <% if (locals.err) { %>
+      <div class="error sticky message">
+        <p><%= locals.err %></p>
+      </div>
+      <% } %>
+
+      <div class="container reveal">
+        <form class="mhauto" action="/settings" method="post">
+          <% if (locals.videoToolDetails == null ||
+          locals.videoToolDetails.isSupportedVersion !== true) { %>
+          <div class="section">
+            <div id="videoSupported" class="warn message">
+              <p>
+                <i class="emj movie-camera"></i>
+                <b class="fs22">Do you have videos?</b>
+              </p>
+              <p>
+                <% if (locals.videoToolDetails &&
+                locals.videoToolDetails.isSupportedVersion === false) { %> <%=
+                locals.videoToolDetails.path %> is not a supported version. <% }
+                %> Before continuing, please
+                <a
+                  href="https://photostructure.com/getting-started/video-support/"
+                  >follow these steps</a
+                >. It'll only take a minute.
+              </p>
+            </div>
+            <div class="buttons card-nav">
+              <a class="next btn-small" href="#section1" rel="next">Next</a>
+            </div>
+          </div>
+          <% } %>
+
+          <div id="section1" class="section">
+            <h2>
+              <i class="emj med <%= locals.subTier %>"></i> Your PhotoStructure
+              plan
+            </h2>
+
+            <% if (locals.subTier !== "lite") { %>
+            <p class="emjlist">
+              <i class="emj tada"></i>
+              <b
+                >Thanks for being a
+                <span class="<%= locals.subTier %>"><%= locals.subTier %></span>
+                subscriber!</b
+              >
+            </p>
+            <% if (locals.subTrial) { %>
+            <p class="emjlist">
+              <i class="emj clock"></i> Your free trial subscription ends in <%=
+              locals.subExpiresInDuration %>.
+            </p>
+            <% } else { %>
+            <p class="emjlist">
+              <i class="emj calendar"></i> Your
+              <span class="<%= locals.subTier %>"><%= locals.subTier %></span>
+              subscription will end or renew in <%= locals.subExpiresInDuration
+              %>.
+            </p>
+            <% } %>
+            <p class="emjlist">
+              <i class="emj bank"></i> For details,
+              <b
+                ><a href="/plans/billing?then=/settings"
+                  >visit the billing portal</a
+                ></b
+              >.
+            </p>
+            <% } else { %>
+            <p class="emjlist">
+              <i class="emj sad-cat"></i> You're using PhotoStructure
+              <span class="<%= locals.subTier %>"><%= locals.subTier %></span>.
+            </p>
+            <p class="emjlist">
+              <i class="emj thinking"></i>
+              <b
+                ><a href="/plans/pick?then=/settings"
+                  >Learn more about PhotoStructure
+                  <span class="plus">plus</span></a
+                ></b
+              >.
+            </p>
+            <p class="emjlist">
+              <i class="emj heart"></i> If you're a current subscriber,
+              <a href="/plans/activate?then=/settings"
+                >log in to activate your license on this computer</a
+              >.
+            </p>
+            <% } %>
+            <div class="buttons card-nav">
+              <a class="next btn-small" href="#section2" rel="next">Next</a>
+            </div>
+          </div>
+
+          <div id="section2" class="section">
+            <% if (locals.isDocker) { %>
+            <h2><i class="emj med library"></i> Your PhotoStructure library</h2>
+            <% if (locals.currentLibraryDir) { %>
+            <p>
+              Your library is
+              <tt id="currentLibraryDir"><%= locals.currentLibraryDir %></tt>.
+            </p>
+            <p>
+              <a
+                href="https://photostructure.com/server/photostructure-for-docker/"
+                >Read more about Docker setup here.</a
+              >
+            </p>
+            <% } else { %>
+            <p class="error message">
+              PS_LIBRARY_PATH must be set (probably to /ps/library), and exist.
+              See
+              <a
+                href="https://photostructure.com/server/photostructure-for-docker/"
+                >the support site for instructions.</a
+              >
+            </p>
+            <% } %> <% } else if (locals.welcome) { %>
+            <h2>
+              <i class="emj med library"></i> Where would you like your
+              PhotoStructure library stored?
+            </h2>
+            <details open>
+              <summary
+                class="more-details"
+                title="Click to toggle details"
+              ></summary>
+              <p>
+                Your
+                <a href="https://photostructure.com/faq/library/"
+                  >PhotoStructure Library</a
+                >
+                holds
+              </p>
+              <ul>
+                <li>a metadata database of your photos and videos,</li>
+                <li>web-safe previews of your images and videos,</li>
+                <li>
+                  and, if you enable
+                  <a href="#auto-organize">automatic organization</a>, a copy of
+                  all your original photos and videos.
+                </li>
+              </ul>
+              <p>A couple more things to note:</p>
+              <ul>
+                <li>
+                  This directory must have
+                  <a
+                    href="https://photostructure.com/getting-started/how-much-disk-space-do-i-need-for-my-photostructure-library/"
+                    >lots of free space</a
+                  >.
+                </li>
+                <li>This can be an existing directory.</li>
+                <li>
+                  PhotoStructure always scans your library directory for photos
+                  and videos.
+                </li>
+              </ul>
+            </details>
+            <% } else { %>
+            <h2><i class="emj med library"></i> Your PhotoStructure library</h2>
+            <details open>
+              <summary
+                class="more-details"
+                title="Click to toggle details"
+              ></summary>
+              <p>
+                Your
+                <a href="https://photostructure.com/faq/library/"
+                  >PhotoStructure Library</a
+                >
+                is currently
+                <tt id="currentLibraryDir"><%= locals.currentLibraryDir %></tt>
+              </p>
+              <p>
+                Changing your library location closes your current library and
+                either creates or opens a library in your new directory.
+              </p>
+              <p>
+                Prior library contents will not be copied over unless you import
+                your prior library directory.
+              </p>
+            </details>
+            <% } %> <% if (!locals.isDocker) { %> <% if
+            (locals.suggestedLibraryDirs) { %> <%
+            locals.suggestedLibraryDirs.forEach((ea, index) => { %>
+            <p></p>
+            <label for="libraryDir<%= index %>">
+              <input
+                name="libraryDirRadio"
+                type="radio"
+                value="<%= ea.nativePath %>"
+                id="libraryDir<%= index %>"
+                <%= index === 0 ? 'checked' : '' %>
+              />
+              <div class="wbrpath"><%- ea.wbrPath %></div>
+              <% if (ea.isCurrentLibrary) { %>
+              <div class="details">
+                This is your current PhotoStructure library.
+              </div>
+              <% } else if (ea.isLibrary) { %>
+              <div class="details">This is a PhotoStructure library.</div>
+              <% } %>
+              <div class="details">
+                (<%= ea.free %> available<% if (ea.label) { %>&nbsp;on <%=
+                ea.label %><% } %><% if (ea.remote) { %>&nbsp;on <%=
+                ea.remoteShare %>@<%= ea.remoteHost %><% } %>)
+              </div>
+            </label>
+            <% }) %> <% } else { %>
+            <p class="warning">
+              No drives were found on your computer with at least <%=
+              locals.minFreeAvailable %> free disk space.
+            </p>
+            <% } %>
+
+            <p></p>
+            <label
+              class="path-component"
+              for="libraryDirCustom"
+              name="libraryDir"
+            >
+              <input
+                id="libraryDirCustom"
+                name="libraryDirRadio"
+                type="radio"
+                value="libraryDirCustom"
+              />
+              <input
+                id="libraryDirCustomInput"
+                class="select-directory-path"
+                name="libraryDir"
+                type="text"
+                placeholder="Custom library directory"
+                max="1024"
+                value="<%= locals.libraryDir ?? '' %>"
+              />
+              <p class="only-electron"></p>
+              <button
+                class="select-directory btn-small hidden only-electron"
+                type="button"
+                data-title="Choose a directory to store your PhotoStructure library"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  width="24"
+                >
+                  <path d="M0 0h24v24H0z" fill="none" />
+                  <path
+                    d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"
+                  />
+                </svg>
+                Select custom library directory
+              </button>
+            </label>
+            <% } %>
+            <div class="buttons card-nav">
+              <a class="back btn-small" href="#section1" rel="prev">Back</a>
+              <a class="next btn-small" href="#section3" rel="next">Next</a>
+            </div>
+          </div>
+
+          <div id="section3" class="section">
+            <h2 id="scan-path-section">
+              <i class="emj med open-folder"></i> Where else are your photos and
+              videos?
+            </h2>
+            <details>
+              <summary
+                class="more-details"
+                title="Click to toggle details"
+              ></summary>
+              <ul>
+                <li>
+                  PhotoStructure automatically ignores
+                  <a
+                    href="https://photostructure.com/faq/how-to-hide-directories/"
+                    >hidden, system, application, and NoMedia directories</a
+                  >.
+                </li>
+                <li>
+                  PhotoStructure's imports are <em>additive</em>.<br />In other
+                  words, changing what paths are scanned will not remove assets
+                  already in your library.
+                </li>
+                <li>
+                  Note that "Automatic" scanning <em>also</em> uses the
+                  manually-set paths to scan. This can be useful to ensure
+                  PhotoStructure looks at more critical directories before
+                  scanning all mounted volumes.
+                </li>
+                <li>PhotoStructure always scans your library directory.</li>
+              </ul>
+            </details>
+
+            <p>
+              <label for="scanAllDrives">
+                <input
+                  id="scanAllDrives"
+                  name="scan"
+                  type="radio"
+                  value="scanAllDrives"
+                  <%= locals.scanAllDrives ? 'checked' : '' %>
+                />
+                <span class="pill green mr1em">automatic</span>
+                Scan all directories on all drives for photos and videos
+              </label>
+            </p>
+            <p></p>
+            <label class="path-component" for="scanPath">
+              <input
+                id="scanPath"
+                name="scan"
+                type="radio"
+                value="scanPath"
+                <%= !locals.scanAllDrives ? 'checked' : '' %>
+              />
+              <span class="pill purple mr1em">manual</span>
+              Scan these paths:
+              <p></p>
+              <div
+                id="scanPaths"
+                class="input-container"
+                data-placeholder="Custom path to scan for photos and videos"
+                data-paths="<%= locals.jsonScanPaths %>"
+              ></div>
+
+              <% if (!locals.isDocker) { %>
+              <button
+                id="scanMyPictures"
+                class="btn-small"
+                type="button"
+                title="Click to add <%= locals.picturesPath %>"
+                data-path="<%= locals.picturesPath %>"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  width="18"
+                  height="18"
+                >
+                  <path d="M0 0h24v24H0z" fill="none" />
+                  <path
+                    d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM5 17l4.5-6 3.5 4.51 2.5-3.01L19 17z"
+                  />
+                </svg>
+                Add My Pictures directory
+              </button>
+              <button
+                class="btn-small select-directory hidden only-electron"
+                type="button"
+                title="Click to add a directory to scan for photos and videos"
+                data-properties="openDirectory,createDirectory"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  width="18"
+                  height="18"
+                >
+                  <path d="M0 0h24v24H0V0z" fill="none" />
+                  <path
+                    d="M20 6h-8l-2-2H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-1 8h-3v3h-2v-3h-3v-2h3V9h2v3h3v2z"
+                  />
+                </svg>
+                Add
+              </button>
+              <% } %>
+            </label>
+            <div class="buttons card-nav">
+              <a class="back btn-small" href="#section2" rel="prev">Back</a>
+              <a class="next btn-small" href="#section4" rel="next">Next</a>
+            </div>
+          </div>
+
+          <div id="section4" class="section">
+            <h2 id="auto-organize">
+              <i class="emj med file-cabinet"></i> May PhotoStructure organize
+              your photos and videos?
+            </h2>
+            <details>
+              <summary
+                class="more-details"
+                title="Click to toggle details"
+              ></summary>
+              <p>
+                PhotoStructure can
+                <a
+                  href="https://photostructure.com/getting-started/automatic-library-organization/"
+                  >copy the photos and videos it finds into your PhotoStructure
+                  Library</a
+                >. This is ideal if your photos are scattered across several
+                drives, you might have duplicates, and you'd really like
+                everything to be organized into
+                <dfn
+                  tooltip="Note that this drive needs to have enough free space to hold all your photos and videos. A Network Attached Storage (NAS) or large external hard drive with lots of free disk space are both good choices."
+                  >one, tidy place</dfn
+                >.
+              </p>
+              <ul>
+                <li>
+                  PhotoStructure will
+                  <dfn
+                    tooltip="The same photo or video will not be copied more than once into your library."
+                    >de-duplicate</dfn
+                  >
+                  photos and videos automatically (<a
+                    href="https://photostructure.com/faq/what-do-you-mean-by-dedupe/"
+                    >learn&nbsp;more</a
+                  >).
+                </li>
+                <li>
+                  Photos and videos already found in your library will remain in
+                  their current location
+                </li>
+                <li>
+                  New photos and videos will be copied into
+                  <dfn
+                    tooltip="For example, photos taken today would be copied into <%= locals.samplePath %>."
+                    >date-stamped folders</dfn
+                  >
+                </li>
+              </ul>
+              <p>
+                If you don't have an active PhotoStructure
+                <span class="plus">plus</span> subscription:
+              </p>
+              <ul>
+                <li>
+                  this setting is ignored: PhotoStructure won't copy new files
+                  into your library.
+                </li>
+                <li>
+                  Existing files in your library will remain in their current
+                  location.
+                </li>
+              </ul>
+            </details>
+            <p>
+              Copy my photos and videos into my PhotoStructure library when I
+              have an active <span class="plus">plus</span> subscription.
+            </p>
+
+            <p>
+              <label for="copyEnabled">
+                <input
+                  id="copyEnabled"
+                  name="copyAssets"
+                  type="radio"
+                  value="copyEnabled"
+                  <%= (locals.copyAssets || locals.welcome) ? 'checked' : '' %>
+                />
+                <i class="emj thumbs-up"></i>
+                Yes, please
+              </label>
+            </p>
+
+            <p>
+              <label for="copyDisabled">
+                <input
+                  id="copyDisabled"
+                  name="copyAssets"
+                  type="radio"
+                  value="copyDisabled"
+                  <%= (!locals.copyAssets && !locals.welcome) ? 'checked' : '' %>
+                />
+                <i class="emj thumbs-down"></i>
+                No thanks, I like my photos and videos where they already
+                are.<br />
+              </label>
+            </p>
+
+            <div class="buttons card-nav">
+              <a class="back btn-small" href="#section3" rel="prev">Back</a>
+              <a class="next btn-small" href="#section5" rel="next">Next</a>
+            </div>
+          </div>
+
+          <div id="section5" class="section">
+            <h2 id="update-check-section">
+              <i class="emj med gift"></i> PhotoStructure updates
+            </h2>
+
+            <p>
+              <a
+                href="https://forum.photostructure.com/t/new-in-v2023-10-automated-photostructure-version-checking/1956"
+                >Read more about PhotoStructure updates here</a
+              >.
+            </p>
+
+            <p>
+              <label>
+                <input
+                  id="updateCheckDaily"
+                  name="autoUpdateCheck"
+                  type="radio"
+                  value="true"
+                  <%= locals.autoUpdateCheck === true ? 'checked' : '' %>
+                />
+                <i class="emj thumbs-up"></i>
+                Yes, PhotoStructure may check for updates automatically
+              </label>
+            </p>
+
+            <p>
+              <label>
+                <input
+                  id="updateCheckNone"
+                  name="autoUpdateCheck"
+                  type="radio"
+                  value="false"
+                  <%= locals.autoUpdateCheck === false ? 'checked' : '' %>
+                />
+                <i class="emj thumbs-down"></i>
+                No thanks, do not check for updates automatically
+              </label>
+            </p>
+
+            <div class="buttons card-nav">
+              <a class="back btn-small" href="#section4" rel="prev">Back</a>
+              <a class="next btn-small" href="#section6" rel="next">Next</a>
+            </div>
+          </div>
+
+          <div id="section6" class="section">
+            <h2>
+              <i class="emj med bar-chart"></i> Share basic installation
+              information?
+            </h2>
+
+            <p>
+              When PhotoStructure checks for updates, is it OK to share basic
+              information about your installation?
+            </p>
+
+            <details>
+              <summary
+                class="more-details"
+                title="Click to toggle details"
+              ></summary>
+              <p>
+                If enabled, your library will send a User-Agent that includes
+                basic information about your installation. This includes your
+                current PhotoStructure edition, version, operating system, and
+                your subscription state. Yours looks like this:
+              </p>
+              <tt><%= locals.userAgent %></tt>
+              <p>
+                If disabled, the User-Agent will just be
+                <tt>PhotoStructure</tt>.
+              </p>
+              <p>
+                This information in aggregate is used to help prioritize
+                platform and feature support. It is not sold or shared for
+                marketing or advertising.
+              </p>
+              <p>
+                <a
+                  href="https://forum.photostructure.com/t/new-in-v2023-10-automated-photostructure-version-checking/1956"
+                  >Read more details about PhotoStructure updates here</a
+                >.
+              </p>
+            </details>
+
+            <p>
+              <label>
+                <input
+                  id="allowUserAgentTrue"
+                  name="allowUserAgent"
+                  type="radio"
+                  value="true"
+                  <%= locals.allowUserAgent === true ? 'checked' : '' %>
+                />
+                <i class="emj thumbs-up"></i>
+                Yes, PhotoStructure may share installation information with
+                PhotoStructure, Inc.
+              </label>
+            </p>
+
+            <p>
+              <label>
+                <input
+                  id="allowUserAgentFalse"
+                  name="allowUserAgent"
+                  type="radio"
+                  value="false"
+                  <%= locals.allowUserAgent === false ? 'checked' : '' %>
+                />
+                <i class="emj thumbs-down"></i>
+                No thanks, do not share any installation information.
+              </label>
+            </p>
+
+            <div class="buttons card-nav">
+              <a class="back btn-small" href="#section5" rel="prev">Back</a>
+              <a class="next btn-small" href="#section7" rel="next">Next</a>
+            </div>
+          </div>
+
+          <div id="section7" class="section">
+            <h2><i class="emj med emergency-light"></i> Error reporting</h2>
+            <p>
+              PhotoStructure's error reports help us detect, triage, and fix
+              issues (<a href="https://photostructure.com/faq/error-reports/"
+                >learn more</a
+              >).
+            </p>
+
+            <p>
+              <label>
+                <input
+                  id="reportErrorsYes"
+                  name="reportErrors"
+                  type="radio"
+                  value="true"
+                  <%= locals.reportErrors ? 'checked' : '' %>
+                />
+                <i class="emj thumbs-up"></i>
+                Yes, PhotoStructure may report unexpected errors.
+              </label>
+            </p>
+
+            <p>
+              <label>
+                <input
+                  id="reportErrorsNo"
+                  name="reportErrors"
+                  type="radio"
+                  value="false"
+                  <%= !locals.reportErrors ? 'checked' : '' %>
+                />
+                <i class="emj thumbs-down"></i>
+                No thanks, do not send any error reports.
+              </label>
+            </p>
+
+            <div class="buttons card-nav">
+              <a class="back btn-small" href="#section6" rel="prev">Back</a>
+              <a class="next btn-small" href="#section8" rel="next">Next</a>
+            </div>
+          </div>
+
+          <div id="section8" class="section">
+            <h2><i class="emj med scales"></i> PhotoStructure license</h2>
+
+            <% if (locals.welcome) { %>
+            <details open>
+              <summary
+                class="more-details"
+                title="Click to toggle details"
+              ></summary>
+              <div class="eula"><%- include('eula.html') %></div>
+            </details>
+            <% } else { %>
+            <details>
+              <summary
+                class="more-details"
+                title="Click to toggle details"
+              ></summary>
+              <div class="eula"><%- include('eula.html') %></div>
+            </details>
+            <% } %>
+            <p>
+              <b
+                >By clicking <%= locals.welcome ? "Start" : "Save" %> you agree
+                to all terms of this license.</b
+              >
+            </p>
+          </div>
+
+          <% if (locals.welcome) { %>
+          <div class="buttons section">
+            <button
+              class="btn"
+              type="submit"
+              name="action"
+              title="Accept the EULA and save settings"
+            >
+              Start
+            </button>
+          </div>
+          <% } else { %>
+          <div class="buttons section stickybottom">
+            <a
+              class="btn cancel"
+              href="/"
+              title="Don't save any changes made on this page and return home"
+              >Cancel</a
+            >
+            <button
+              class="btn"
+              type="submit"
+              name="action"
+              title="Accept the EULA and save settings"
+            >
+              Save
+            </button>
+          </div>
+          <% } %>
+        </form>
+      </div>
+    </main>
+
+    <div class="modal hidden">
+      <div class="scrim"></div>
+      <div class="message">
+        <h3>Saving...</h3>
+        <div class="details">(this may take a minute)</div>
+        <div class="loader">
+          <svg class="circular" viewBox="25 25 50 50">
+            <circle
+              class="path"
+              cx="50"
+              cy="50"
+              r="20"
+              fill="none"
+              stroke-width="6"
+            ></circle>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <script
+      type="module"
+      src="/app/settings.js<%= locals.cacheBuster ? '?_=' + locals.cacheBuster : '' %>"
+      nonce="<%= locals.nonce %>"
+    ></script>
+    <% if (locals.subTier !== "lite" && !locals.subTrial) { %>
+    <script src="/js/confetti.min.js" nonce="<%= locals.nonce %>"></script>
+    <% } %>
+  </body>
+</html>

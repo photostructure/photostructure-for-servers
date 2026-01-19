@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>PhotoStructure Setup</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="/app/splash.css<%= locals.cacheBuster ? '?_=' + locals.cacheBuster : '' %>"
+      nonce="<%= locals.nonce %>"
+    />
+  </head>
+  <body class="animate">
+    <main class="draggable reveal">
+      <div id="bg-clip">
+        <div id="bg"></div>
+      </div>
+      <%- include('../public/images/splash.svg') %>
+      <footer class="no-draggable">
+        <div id="msg"></div>
+        <div id="version" class="right"></div>
+      </footer>
+    </main>
+    <script
+      type="module"
+      src="/app/splash.js<%= locals.cacheBuster ? '?_=' + locals.cacheBuster : '' %>"
+      nonce="<%= locals.nonce %>"
+    ></script>
+  </body>
+</html>

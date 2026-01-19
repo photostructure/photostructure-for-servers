@@ -1,87 +1,98 @@
-# To get the latest libraw-tools and a recent sqlite we need alpine 3.13:
-FROM node:16-alpine3.13 as builder
+# syntax=docker/dockerfile:1
+
+# Howdy! Need help? See
+# <https://photostructure.com/server/photostructure-for-docker/>
+
+# https://github.com/photostructure/base-tools/pkgs/container/base-tools
+FROM photostructure/base-tools:sha-f31ad9c AS builder
 
 # https://docs.docker.com/develop/develop-images/multistage-build/
 
-# Build requirements for native node libraries:
-# libraw needs libtool, pkgconf, libjpeg-turbo-dev, and zlib-dev
-# sharp needs lcms2 and libjpeg
-
-RUN apk update ; apk upgrade ; apk add --no-cache \
-  autoconf \
-  bash \
-  build-base \
-  coreutils \
-  lcms2-dev \
-  libjpeg-turbo-dev \
-  libtool \
-  pkgconf \
-  python3-dev \
-  zlib-dev
-
 # https://docs.docker.com/engine/reference/builder/#workdir
-WORKDIR /ps/app
+WORKDIR /opt/photostructure
 
-COPY package.json yarn.lock ./
+COPY package.json package-lock.json ./
 
-RUN yarn install --frozen-lockfile
+# base-tools will install build-essential and libraries that native node
+# packages require to be compiled.
+RUN npm ci --omit=dev
 
-# Build libraw (only necessary when the version with alpine is old)
-# WORKDIR /tmp
+# This must match the major version from
+# https://github.com/photostructure/base-tools/blob/main/Dockerfile
+# We use node:24 (not node:24.x) because native modules use N-API which is
+# ABI-stable across Node versions. This allows automatic security patches.
+FROM node:24-alpine
 
-# RUN wget https://www.libraw.org/data/LibRaw-0.20.2.tar.gz && \
-#   echo "dc1b486c2003435733043e4e05273477326e51c3ea554c6864a4eafaff1004a6 LibRaw-0.20.2.tar.gz" | sha256sum --check && \
-#   tar xvzf LibRaw-0.20.2.tar.gz && \
-#   cd LibRaw-0.20.2 && \
-#   ./configure --enable-static --disable-openmp && \
-#   make -j24 && \
-#   /bin/bash ./libtool --tag=CXX --mode=link g++ -all-static -g -O2 -o bin/dcraw_emu samples/bin_dcraw_emu-dcraw_emu.o lib/libraw.la -ljpeg -lz -lm && \
-#   /bin/bash ./libtool --tag=CXX --mode=link g++ -all-static -g -O2 -o bin/raw-identify samples/bin_raw_identify-raw-identify.o lib/libraw.la -ljpeg -lz -lm && \
-#   ldd bin/dcraw_emu && \
-#   strip bin/dcraw_emu && \
-#   strip bin/raw-identify && \
-#   mkdir -p /ps/app/bin && \
-#   cp dcraw_emu raw-identify /ps/app/bin && \
-#   chmod 755 /ps/app/bin/*
-
-FROM node:16-alpine3.13
-
-# Busybox's commands are a bit too bare-bones:
 # procps provides a working `ps -o lstart`
 # coreutils provides a working `df -kPl`
 # glib is for gio (for mountpoint monitoring)
 # util-linux (which should be there already) provides `renice` and `lsblk`
 # musl-locales provides `locale`
+# orc is for sharp SIMD operations
 # perl is required for exiftool.
 # libheif-tools provides "heif-convert"
-# libraw-tools provides "dcraw_emu" and "raw-identify"
+# libraw (dcraw_emu, raw-identify) is compiled in base-tools and copied to /opt/photostructure/tools
 # shadow provides usermod
 
 # https://pkgs.alpinelinux.org/contents
 
-RUN apk update ; apk upgrade ;\
-  apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/v3.12/community musl-locales ;\
-  apk add --no-cache \
+RUN apk update \
+  && apk upgrade \
+  && apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/latest-stable/community musl-locales \
+  && apk add --no-cache \
+  bash \
+  ca-certificates \
   coreutils \
   ffmpeg \
   glib \
+  heif-thumbnailer \
   lcms2 \
   libheif-tools \
   libjpeg-turbo-utils \
-  libraw-tools \
+  orc \
   pciutils \
   perl \
   procps \
   shadow \
   sqlite \
   tini \
-  util-linux
+  tzdata \
+  util-linux \
+  && npm install --force --location=global npm \
+  && touch /.running-in-container
 
-# Sets the default path to be inside app when running `docker exec -it`
-WORKDIR /ps/app
+# Sets the default path to be inside /opt/photostructure when running `docker
+# exec -it`:
+WORKDIR /opt/photostructure
 
 COPY --chown=node:node . ./
-COPY --from=builder --chown=node:node /ps/app ./
+
+# Copy in builder results (/opt/photostructure/tools, /opt/photostructure/node_modules):
+COPY --from=builder --chown=node:node /opt/photostructure ./
+
+# The node docker image sets NODE_VERSION and YARN_VERSION environment
+# variables, which has caused concern and confusion with some users.
+
+# Unfortunately, Docker doesn't support _deleting_ prior-set ENV values--you can
+# only set them to "", which is still visible to the container manager, and we're
+# just replacing a _correct_ value with an _incorrect_ value, so that's
+# certainly not _better_.
+
+# So, we're just going to decide to be OK with NODE_VERSION and YARN_VERSION.
+
+# Note that in prior versions of PhotoStructure, we used to set PS_IS_DOCKER=1.
+# PhotoStructure still will honor the value of that environment variable if it
+# is set to a truthy value, but if it is not set, PhotoStructure will look for
+# the presence of a `/.running-in-container` file (which was created in the RUN
+# command above).
+
+# These PATH elements are not required by PhotoStructure--this is only here to
+# make the command-line tooling (like `photostructure` and `sqlite3`) available
+# when people shell into their containers. 
+
+# Run `photostructure --help` or visit https://photostructure.com/tools/ for
+# details about these tools.
+ENV PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/photostructure:/opt/photostructure/tools/bin"
 
 # Your library is exposed by default to <http://localhost:1787>
 # This can be changed by setting the PS_HTTP_PORT environment variable.
@@ -92,5 +103,6 @@ HEALTHCHECK CMD wget --quiet --output-document - http://localhost:1787/ping
 
 # https://docs.docker.com/engine/reference/builder/#understand-how-cmd-and-entrypoint-interact
 
-# docker-entrypoint handles dropping privileges down to the "node" user:
-ENTRYPOINT [ "/sbin/tini", "--", "/ps/app/docker-entrypoint.sh" ]
+# docker-entrypoint.sh handles dropping privileges down to the "node" user in order
+# to support custom PUID/PGID
+ENTRYPOINT [ "/sbin/tini", "--", "/opt/photostructure/docker-entrypoint.sh" ]

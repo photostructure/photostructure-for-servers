@@ -2,6 +2,7 @@
 .env
 .history
 .npm
+*.js.map
 *.log*
 *.tgz
 node_modules/

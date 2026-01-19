@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title><%= locals.title %> - Welcome</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="/app/settings.css<%= locals.cacheBuster ? '?_=' + locals.cacheBuster : '' %>"
+      nonce="<%= locals.nonce %>"
+    />
+  </head>
+  <body id="app" class="<%= locals.bodyClass ?? '' %>">
+    <main>
+      <% if (locals.err) { %>
+      <div class="error sticky message">
+        <p><%= locals.err %></p>
+      </div>
+      <% } %>
+
+      <div class="container mh100vh flex-center">
+        <div class="section reveal">
+          <form action="/welcome" method="post">
+            <div class="hero center mt4em">
+              <h2>Welcome to</h2>
+              <img
+                class="logo"
+                src="/images/logo-horizontal.svg"
+                alt="PhotoStructure"
+              />
+            </div>
+
+            <div class="notes">
+              <div class="info">
+                <i class="emj computer"></i>
+                PhotoStructure runs <br />
+                on
+                <dfn
+                  tooltip="PhotoStructure is self-hosted: you retain control of all your files."
+                  >this computer</dfn
+                >.<br />
+                <b
+                  >Your photos and videos <br />
+                  stay with you.</b
+                >
+              </div>
+
+              <div class="info">
+                <i
+                  class="emj home"
+                  title="Your home for all your photos and videos"
+                ></i>
+                PhotoStructure is designed to organize <b>all</b> your photos
+                and videos. The initial import may take a while.
+              </div>
+
+              <div class="info">
+                <i
+                  class="emj starry-night"
+                  title="Let PhotoStructure work while you're sleeping"
+                ></i>
+                You may want to leave your computer running
+                <dfn tooltip="If this is a laptop, make sure it's plugged in!"
+                  >overnight</dfn
+                >
+                during your initial import.
+              </div>
+            </div>
+
+            <div class="buttons mt1em">
+              <input
+                class="btn"
+                type="submit"
+                title="Choose a PhotoStructure plan"
+                value="Continue"
+              />
+            </div>
+          </form>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

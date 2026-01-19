@@ -1,7 +1,6 @@
 ---
 name: Feature request
 about: Suggest an idea for this project
-
 ---
 
 ## Welcome to PhotoStructure!
@@ -14,6 +13,6 @@ If it has, be sure to add your comments on how you think the feature could be ha
 
 If it hasn't, [click "new topic" in the feature requests category](https://forum.photostructure.com/c/feature-requests/7/l/latest?order=votes), and provide as many details as you can.
 
-Remember to vote on what you want built next: it really helps prioritize next work. 
+Remember to vote on what you want built next: it really helps prioritize next work.
 
 Cheers!

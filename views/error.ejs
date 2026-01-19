@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Error - PhotoStructure</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="/app/splash.css<%= locals.cacheBuster ? '?_=' + locals.cacheBuster : '' %>"
+      nonce="<%= locals.nonce %>"
+    />
+    <style nonce="<%= locals.nonce %>">
+      .error-container {
+        max-width: 600px;
+        margin: 2rem auto;
+        padding: 2rem;
+        text-align: center;
+      }
+      .error-title {
+        color: #c0392b;
+        margin-bottom: 1rem;
+      }
+      .error-message {
+        margin-bottom: 1.5rem;
+      }
+      .error-details {
+        font-family: monospace;
+        font-size: 0.85rem;
+        background: rgba(0, 0, 0, 0.1);
+        padding: 1rem;
+        border-radius: 4px;
+        text-align: left;
+        overflow-x: auto;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+      .home-link {
+        display: inline-block;
+        margin-top: 1.5rem;
+        padding: 0.5rem 1.5rem;
+        background: #3498db;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+      }
+      .home-link:hover {
+        background: #2980b9;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="error-container">
+      <h1 class="error-title"><%= locals.title %></h1>
+      <p class="error-message"><%= locals.message %></p>
+      <% if (locals.details) { %>
+      <div class="error-details"><%= locals.details %></div>
+      <% } %>
+      <a href="/" class="home-link">Return Home</a>
+    </main>
+  </body>
+</html>

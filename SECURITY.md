@@ -15,8 +15,8 @@ If you find a vulnerability in PhotoStructure, _or even think you have_, please 
 Please use whatever channel is most convenient for you:
 
 - send an email to [security@photostructure.com](mailto:security@photostructure.com), or
-- send a direct message to [@PhotoStructure](https://forum.photostructure.com/u/photostructure/summary) on [forum.photostructure.com](https://forum.photostructure.com/), or
-- send a direct message to [@PhotoStructure](https://twitter.com/PhotoStructure) on Twitter.
+- send a direct forum message to [@mrm](https://forum.photostructure.com/u/mrm/summary), or
+- send a direct message to @photostructure on [discord](https://photostructure/go/discord)
 
 Expect a reply in under 36 hours. Please try an alternative contact method if you don't get a response.
 

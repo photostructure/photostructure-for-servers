@@ -1,0 +1,889 @@
+{
+  "info": "This is used in validating PhotoStructure library databases after repair and restore operations.",
+  "generator": "src/library/db/DbSchemaValid.ts",
+  "tableInfo": [
+    {
+      "tableName": "Asset",
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": true
+        },
+        {
+          "name": "shown",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "hidden",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "capturedAtLocal",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "mimetype",
+          "type": "TEXT",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "rating",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "durationMs",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "flags",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "deletedAt",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "excludedAt",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "createdAt",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "updatedAt",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "updateCount",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        }
+      ]
+    },
+    {
+      "tableName": "AssetFile",
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": true
+        },
+        {
+          "name": "dirUriId",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "basename",
+          "type": "TEXT",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "assetId",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "isPrimary",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "mtime",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "fileSize",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "mimetype",
+          "type": "TEXT",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "width",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "height",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "rotation",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "durationMs",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "cameraId",
+          "type": "TEXT",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "lensId",
+          "type": "TEXT",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "imageDataHash",
+          "type": "TEXT",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "imageId",
+          "type": "TEXT",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "metadataDate",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "sha",
+          "type": "TEXT",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "capturedAtLocal",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "capturedAtPrecisionMs",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "capturedAtZone",
+          "type": "TEXT",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "capturedAtSrc",
+          "type": "TEXT",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "make",
+          "type": "TEXT",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "model",
+          "type": "TEXT",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "rating",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "aperture",
+          "type": "REAL",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "focalLength",
+          "type": "TEXT",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "fps",
+          "type": "REAL",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "geohash",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "iso",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "shutterSpeed",
+          "type": "TEXT",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "monochrome",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "pHash",
+          "type": "TEXT",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "rHash",
+          "type": "TEXT",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "wHash",
+          "type": "TEXT",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "pHash0",
+          "type": "TEXT",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "rHash0",
+          "type": "TEXT",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "wHash0",
+          "type": "TEXT",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "flags",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "createdAt",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "updatedAt",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "updateCount",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "lastVisitedGeneration",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        }
+      ]
+    },
+    {
+      "tableName": "AssetRevision",
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": true
+        },
+        {
+          "name": "assetId",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "createdAt",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "field",
+          "type": "TEXT",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "op",
+          "type": "TEXT",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "_priorValueJson",
+          "type": "TEXT",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "_newValueJson",
+          "type": "TEXT",
+          "notnull": false,
+          "pk": false
+        }
+      ]
+    },
+    {
+      "tableName": "AssetTag",
+      "columns": [
+        {
+          "name": "assetId",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "tagId",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        }
+      ]
+    },
+    {
+      "tableName": "DirUri",
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": true
+        },
+        {
+          "name": "uri",
+          "type": "TEXT",
+          "notnull": true,
+          "pk": false
+        }
+      ]
+    },
+    {
+      "tableName": "Example",
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": true
+        },
+        {
+          "name": "name",
+          "type": "TEXT",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "isExample",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "createdAt",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "updatedAt",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        }
+      ]
+    },
+    {
+      "tableName": "Heartbeat",
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": true
+        },
+        {
+          "name": "name",
+          "type": "TEXT",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "createdAt",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "updatedAt",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        }
+      ]
+    },
+    {
+      "tableName": "Operation",
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": true
+        },
+        {
+          "name": "name",
+          "type": "TEXT",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "value",
+          "type": "TEXT",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "createdAt",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "updatedAt",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "completedAt",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        }
+      ]
+    },
+    {
+      "tableName": "Progress",
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": true
+        },
+        {
+          "name": "uri",
+          "type": "TEXT",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "hostname",
+          "type": "TEXT",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "pid",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "volume",
+          "type": "TEXT",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "state",
+          "type": "TEXT",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "hed",
+          "type": "TEXT",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "dekJSON",
+          "type": "TEXT",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "completePct",
+          "type": "REAL",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "incompletePct",
+          "type": "REAL",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "scanningPct",
+          "type": "REAL",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "createdAt",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "updatedAt",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "completedAt",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        }
+      ]
+    },
+    {
+      "tableName": "ProgressMeta",
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": true
+        },
+        {
+          "name": "progressId",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "name",
+          "type": "TEXT",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "value",
+          "type": "TEXT",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "createdAt",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "updatedAt",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        }
+      ]
+    },
+    {
+      "tableName": "RejectedFile",
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": true
+        },
+        {
+          "name": "dirUriId",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "basename",
+          "type": "TEXT",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "mtime",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "fileSize",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "why",
+          "type": "TEXT",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "updatedAt",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        }
+      ]
+    },
+    {
+      "tableName": "Session",
+      "columns": [
+        {
+          "name": "sid",
+          "type": "TEXT",
+          "notnull": true,
+          "pk": true
+        },
+        {
+          "name": "expired",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "sess",
+          "type": "TEXT",
+          "notnull": true,
+          "pk": false
+        }
+      ]
+    },
+    {
+      "tableName": "ShaBlocklist",
+      "columns": [
+        {
+          "name": "sha",
+          "type": "TEXT",
+          "notnull": true,
+          "pk": true
+        }
+      ]
+    },
+    {
+      "tableName": "Tag",
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": true
+        },
+        {
+          "name": "parentId",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "_path",
+          "type": "TEXT",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "ordinal",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "createdAt",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "updatedAt",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "assetCount",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "_displayName",
+          "type": "TEXT",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "description",
+          "type": "TEXT",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "releasedAt",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        }
+      ]
+    },
+    {
+      "tableName": "TagHierarchy",
+      "columns": [
+        {
+          "name": "tagId",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": true
+        },
+        {
+          "name": "descendantId",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "depth",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        }
+      ]
+    },
+    {
+      "tableName": "Volume",
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": true
+        },
+        {
+          "name": "authority",
+          "type": "TEXT",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "mountPoint",
+          "type": "TEXT",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "lastSeenAt",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        }
+      ]
+    },
+    {
+      "tableName": "migrations",
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": true
+        },
+        {
+          "name": "name",
+          "type": "TEXT",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "migration_time",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        }
+      ]
+    }
+  ]
+}

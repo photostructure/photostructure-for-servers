@@ -1,0 +1,1 @@
+-- This file will run db/Migrations.drop_tc_tables

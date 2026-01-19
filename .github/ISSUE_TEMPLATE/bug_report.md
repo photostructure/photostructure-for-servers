@@ -1,7 +1,6 @@
 ---
 name: Bug report
 about: Create a report to help us improve
-
 ---
 
 ## Welcome to PhotoStructure!
@@ -16,4 +15,4 @@ If it has, please add any additional context or system information that you thin
 
 If it hasn't, the more context the better: and if there is information that you'd rather keep private, please email support@photostructure.com with a reference to the bug and those additional details.
 
-Cheers! 
+Cheers!
