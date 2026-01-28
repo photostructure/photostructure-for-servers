@@ -133,10 +133,7 @@ if [ "$(id --real --user)" = "0" ] && [ "$PUID" != "0" ]; then
   # Ensure the new "photostructure" user is in the "node" group so it can run
   # node and everything in /opt/photostructure:
 
-  # We use --quiet as this may be a no-op if the "node" and "photostructure"
-  # groups share the same group id
-
-  adduser --quiet photostructure node
+  adduser photostructure node
 
   maybe_chown_dir() {
     if [ -d "$0" ] && [ "$(stat -c '%u' "$0")" != "$PUID" ]; then
@@ -146,6 +143,7 @@ if [ "$(id --real --user)" = "0" ] && [ "$PUID" != "0" ]; then
 
   if [ -z "$PS_NO_PUID_CHOWN" ]; then
     for dir in \
+      /ps/library \
       /ps/library/.photostructure \
       /ps/tmp \
       /ps/cache \
