@@ -4,46 +4,55 @@
 # <https://photostructure.com/server/photostructure-for-docker/>
 
 # https://github.com/photostructure/base-tools/pkgs/container/base-tools-debian
-FROM photostructure/base-tools-debian:sha-2f5c9bb as builder
+FROM photostructure/base-tools-debian:sha-030fda9 AS builder
 
 # https://docs.docker.com/develop/develop-images/multistage-build/
 
 # https://docs.docker.com/engine/reference/builder/#workdir
 WORKDIR /opt/photostructure
 
-COPY package.json yarn.lock ./
+COPY package.json package-lock.json ./
 
 # base-tools-debian will install build-essential and libraries that native
 # node packages require to be compiled. We don't need the compilation
 # toolchain, though--just the compiled native libraries, so once this is done,
 # we switch to the smaller base image.
-RUN yarn install --frozen-lockfile --production --no-cache
+RUN npm ci --omit=dev
 
-# This must match the base image from
+# This must match the major version from
 # https://github.com/photostructure/base-tools-debian/blob/main/Dockerfile
-FROM node:20.11-bookworm-slim
+# We use node:24 (not node:24.x) because native modules use N-API which is
+# ABI-stable across Node versions. This allows automatic security patches.
+FROM node:24-bookworm-slim
 
-# ffmpeg is used for video frame extraction and transcoding
+# Native Node.js module runtime dependencies:
+# libglib2.0-0 is required by @photostructure/fs-metadata (GIO volume metadata)
+#
+# External tool runtime dependencies:
 # libheif-examples provides "heif-convert"
 # libjpeg-turbo-progs includes `jpegtran` for lossless rotation and JPEG file validation
-# libjpeg62-turbo-dev is used by VIPS for JPEG handling
-# liblcms2-dev supports color management
-# liborc-0.4-dev is for sharp SIMD operations
+# libjpeg62-turbo is the JPEG runtime used by heif-convert
+# liblcms2-2 supports color management (used by heif-convert)
+# liborc-0.4-0 is used by heif-convert
+# libreadline8 is for the static sqlite3 CLI tool
 # passwd provides `usermod` and `groupmod` (used by docker-entrypoint.sh)
-# perl is required for exiftool.
+# perl is required for exiftool
 # procps provides a working `ps -o lstart`
-# wget is used by the health check.
+# wget is used by the health check
 # tini is an `init` that supports proper zombie and signal handling
 
 RUN apt-get update \
   && apt-get upgrade -y \
   && apt-get install -y --no-install-recommends \
-  ffmpeg \
+  ca-certificates \
+  heif-thumbnailer \
+  libglib2.0-0 \
   libheif-examples \
   libjpeg-turbo-progs \
   libjpeg62-turbo \
   liblcms2-2 \
   liborc-0.4-0 \
+  libreadline8 \
   locales-all \
   passwd \
   perl \
@@ -52,7 +61,7 @@ RUN apt-get update \
   tzdata \
   wget \
   && rm -rf /var/lib/apt/lists/* \
-  && npm install --force --location=global npm yarn \
+  && npm install --force --location=global npm \
   && touch /.running-in-container
 
 # Sets the default path to be inside /opt/photostructure when running `docker exec -it`:
@@ -60,11 +69,24 @@ WORKDIR /opt/photostructure
 
 COPY --chown=node:node . ./
 
-# Overwrite source with builder results (/opt/photostructure/tools/bin):
+# Overwrite source with builder results (/opt/photostructure/tools):
 COPY --from=builder --chown=node:node /opt/photostructure ./
 
+# FFmpeg 8.0.1 static binaries (Debian bookworm has 5.1.6)
+# https://github.com/wader/static-ffmpeg - pinned to digest for supply chain security
+
+COPY --from=mwader/static-ffmpeg@sha256:252705ff88532fa338e7065c21792756552f8fe7c212f84bc503d3c340689594 \
+  /ffmpeg /ffprobe /opt/photostructure/tools/
+
+
+# To update the digest in the future when a new version releases, visit
+# https://hub.docker.com/r/mwader/static-ffmpeg/tags, click the latest version
+# tag, and copy the "Index digest"
+
+# ---
+
 # The node docker image sets NODE_VERSION and YARN_VERSION environment
-# variables, which has causes concern and confusion with some users.
+# variables, which has caused concern and confusion with some users.
 
 # Unfortunately, Docker doesn't support _deleting_ prior-set ENV values--you
 # can only set them to "", which is still visible to the container manager and
@@ -79,24 +101,24 @@ COPY --from=builder --chown=node:node /opt/photostructure ./
 # PhotoStructure will look for the presence of a /.running-in-container file
 # (which was created in the RUN command above).
 
-# Node.js and several third-party libraries look for this value to run in
-# "production mode" (rather than "development mode").
-ENV NODE_ENV="production"
-
 # These PATH elements are not required by PhotoStructure--this is only here to
 # make the command-line tooling (like `photostructure` and `sqlite3`)
 # available when people shell into their containers. 
 
 # Run `photostructure --help` or visit https://photostructure.com/tools/ for
 # details about these tools.
-ENV PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/photostructure:/opt/photostructure/tools/bin"
+ENV PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/photostructure:/opt/photostructure/tools"
 
 # Your library is exposed by default to <http://localhost:1787>
 # This can be changed by setting the PS_HTTP_PORT environment variable.
 EXPOSE 1787
 
-# We're not installing curl, but busybox has a wget workalike:
-HEALTHCHECK CMD wget --quiet --output-document - http://localhost:1787/ping
+# Healthcheck: ping the web server to verify it's responding.
+# - Uses PS_HTTP_PORT if set, otherwise defaults to 1787
+# - start-period: PhotoStructure can take time to initialize on first run
+# - interval/timeout: balance between responsiveness and resource usage
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+  CMD wget --quiet --output-document - "http://localhost:${PS_HTTP_PORT:-1787}/ping"
 
 # https://docs.docker.com/engine/reference/builder/#understand-how-cmd-and-entrypoint-interact
 

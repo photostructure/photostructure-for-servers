@@ -11,7 +11,7 @@ PhotoStructure for Servers requires:
 
 ## Installation instructions
 
-1. Read and accept the [**end-user license agreement**](https://photostructure.com/eula), then 
+1. Read and accept the [**end-user license agreement**](https://photostructure.com/eula), then
 
 2. check out instructions for [**docker**](https://photostructure.com/server/photostructure-for-docker/) or [**docker-compose**](https://photostructure.com/server/photostructure-for-docker-compose/).
 

@@ -8,6 +8,6 @@ DROP INDEX IF EXISTS assetfile_sha_idx;
 -- 192 bits, base64 encoded, is (192 / Math.log2(64)) == 32:
 UPDATE AssetFile
 SET
-  sha = substr (sha, 0, 32);
+  sha = substr(sha, 0, 32);
 
 CREATE INDEX assetfile_sha_idx ON AssetFile (sha);

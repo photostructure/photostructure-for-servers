@@ -1,5 +1,4 @@
-libjpeg-turbo Licenses
-======================
+# libjpeg-turbo Licenses
 
 libjpeg-turbo is covered by three compatible BSD-style open source licenses:
 
@@ -18,16 +17,13 @@ libjpeg-turbo is covered by three compatible BSD-style open source licenses:
   This license is a subset of the other two, and it covers the libjpeg-turbo
   SIMD extensions.
 
-
-Complying with the libjpeg-turbo Licenses
-=========================================
+# Complying with the libjpeg-turbo Licenses
 
 This section provides a roll-up of the libjpeg-turbo licensing terms, to the
 best of our understanding.
 
 1.  If you are distributing a modified version of the libjpeg-turbo source,
     then:
-
     1.  You cannot alter or remove any existing copyright or license notices
         from the source.
 
@@ -54,7 +50,6 @@ best of our understanding.
 2.  If you are distributing only libjpeg-turbo binaries without the source, or
     if you are distributing an application that statically links with
     libjpeg-turbo, then:
-
     1.  Your product documentation must include a message stating:
 
         This software is based in part on the work of the Independent JPEG
@@ -86,11 +81,9 @@ best of our understanding.
     - Modified BSD License
     - zlib License
 
+# The Modified (3-clause) BSD License
 
-The Modified (3-clause) BSD License
-===================================
-
-Copyright (C)\<YEAR\> \<AUTHOR\>.  All Rights Reserved.
+Copyright (C)\<YEAR\> \<AUTHOR\>. All Rights Reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -107,7 +100,7 @@ modification, are permitted provided that the following conditions are met:
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS",
 AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE
 LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
 CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
 SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
@@ -116,14 +109,12 @@ CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 
-
-The zlib License
-================
+# The zlib License
 
 Copyright (C) \<YEAR\>, \<AUTHOR\>.
 
 This software is provided 'as-is', without any express or implied
-warranty.  In no event will the authors be held liable for any damages
+warranty. In no event will the authors be held liable for any damages
 arising from the use of this software.
 
 Permission is granted to anyone to use this software for any purpose,
