@@ -1,5 +1,6 @@
 {
   "info": "This is used in validating PhotoStructure library databases after repair and restore operations.",
+  "generator": "src/library/db/DbSchemaValid.ts",
   "tableInfo": [
     {
       "tableName": "Asset",
@@ -9,12 +10,6 @@
           "type": "INTEGER",
           "notnull": true,
           "pk": true
-        },
-        {
-          "name": "capturedAtLocal",
-          "type": "INTEGER",
-          "notnull": true,
-          "pk": false
         },
         {
           "name": "shown",
@@ -29,15 +24,45 @@
           "pk": false
         },
         {
+          "name": "capturedAtLocal",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "mimetype",
+          "type": "TEXT",
+          "notnull": true,
+          "pk": false
+        },
+        {
           "name": "rating",
           "type": "INTEGER",
           "notnull": false,
           "pk": false
         },
         {
-          "name": "version",
+          "name": "durationMs",
           "type": "INTEGER",
-          "notnull": true,
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "flags",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "deletedAt",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "excludedAt",
+          "type": "INTEGER",
+          "notnull": false,
           "pk": false
         },
         {
@@ -57,24 +82,6 @@
           "type": "INTEGER",
           "notnull": true,
           "pk": false
-        },
-        {
-          "name": "deletedAt",
-          "type": "INTEGER",
-          "notnull": false,
-          "pk": false
-        },
-        {
-          "name": "durationMs",
-          "type": "INTEGER",
-          "notnull": false,
-          "pk": false
-        },
-        {
-          "name": "excludedAt",
-          "type": "INTEGER",
-          "notnull": false,
-          "pk": false
         }
       ]
     },
@@ -88,27 +95,27 @@
           "pk": true
         },
         {
+          "name": "dirUriId",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "basename",
+          "type": "TEXT",
+          "notnull": true,
+          "pk": false
+        },
+        {
           "name": "assetId",
           "type": "INTEGER",
-          "notnull": true,
+          "notnull": false,
           "pk": false
         },
         {
-          "name": "shown",
+          "name": "isPrimary",
           "type": "INTEGER",
           "notnull": true,
-          "pk": false
-        },
-        {
-          "name": "uri",
-          "type": "TEXT",
-          "notnull": true,
-          "pk": false
-        },
-        {
-          "name": "mountpoint",
-          "type": "TEXT",
-          "notnull": false,
           "pk": false
         },
         {
@@ -130,6 +137,60 @@
           "pk": false
         },
         {
+          "name": "width",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "height",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "rotation",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "durationMs",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "cameraId",
+          "type": "TEXT",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "lensId",
+          "type": "TEXT",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "imageDataHash",
+          "type": "TEXT",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "imageId",
+          "type": "TEXT",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "metadataDate",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
           "name": "sha",
           "type": "TEXT",
           "notnull": true,
@@ -142,62 +203,20 @@
           "pk": false
         },
         {
-          "name": "capturedAtOffset",
-          "type": "INTEGER",
-          "notnull": false,
-          "pk": false
-        },
-        {
           "name": "capturedAtPrecisionMs",
           "type": "INTEGER",
           "notnull": false,
           "pk": false
         },
         {
+          "name": "capturedAtZone",
+          "type": "TEXT",
+          "notnull": false,
+          "pk": false
+        },
+        {
           "name": "capturedAtSrc",
           "type": "TEXT",
-          "notnull": true,
-          "pk": false
-        },
-        {
-          "name": "focalLength",
-          "type": "TEXT",
-          "notnull": false,
-          "pk": false
-        },
-        {
-          "name": "aperture",
-          "type": "REAL",
-          "notnull": false,
-          "pk": false
-        },
-        {
-          "name": "shutterSpeed",
-          "type": "TEXT",
-          "notnull": false,
-          "pk": false
-        },
-        {
-          "name": "iso",
-          "type": "INTEGER",
-          "notnull": false,
-          "pk": false
-        },
-        {
-          "name": "width",
-          "type": "INTEGER",
-          "notnull": false,
-          "pk": false
-        },
-        {
-          "name": "height",
-          "type": "INTEGER",
-          "notnull": false,
-          "pk": false
-        },
-        {
-          "name": "rotation",
-          "type": "INTEGER",
           "notnull": false,
           "pk": false
         },
@@ -214,32 +233,26 @@
           "pk": false
         },
         {
-          "name": "cameraId",
-          "type": "TEXT",
-          "notnull": false,
-          "pk": false
-        },
-        {
-          "name": "imageId",
-          "type": "TEXT",
-          "notnull": false,
-          "pk": false
-        },
-        {
-          "name": "lensId",
-          "type": "TEXT",
-          "notnull": false,
-          "pk": false
-        },
-        {
-          "name": "durationMs",
+          "name": "rating",
           "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "aperture",
+          "type": "REAL",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "focalLength",
+          "type": "TEXT",
           "notnull": false,
           "pk": false
         },
         {
           "name": "fps",
-          "type": "INTEGER",
+          "type": "REAL",
           "notnull": false,
           "pk": false
         },
@@ -250,57 +263,63 @@
           "pk": false
         },
         {
-          "name": "meanHash",
+          "name": "iso",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "shutterSpeed",
           "type": "TEXT",
           "notnull": false,
           "pk": false
         },
         {
-          "name": "mode0",
+          "name": "monochrome",
           "type": "INTEGER",
           "notnull": false,
           "pk": false
         },
         {
-          "name": "mode1",
-          "type": "INTEGER",
+          "name": "pHash",
+          "type": "TEXT",
           "notnull": false,
           "pk": false
         },
         {
-          "name": "mode2",
-          "type": "INTEGER",
+          "name": "rHash",
+          "type": "TEXT",
           "notnull": false,
           "pk": false
         },
         {
-          "name": "mode3",
-          "type": "INTEGER",
+          "name": "wHash",
+          "type": "TEXT",
           "notnull": false,
           "pk": false
         },
         {
-          "name": "mode4",
-          "type": "INTEGER",
+          "name": "pHash0",
+          "type": "TEXT",
           "notnull": false,
           "pk": false
         },
         {
-          "name": "mode5",
-          "type": "INTEGER",
+          "name": "rHash0",
+          "type": "TEXT",
           "notnull": false,
           "pk": false
         },
         {
-          "name": "mode6",
-          "type": "INTEGER",
+          "name": "wHash0",
+          "type": "TEXT",
           "notnull": false,
           "pk": false
         },
         {
-          "name": "version",
+          "name": "flags",
           "type": "INTEGER",
-          "notnull": true,
+          "notnull": false,
           "pk": false
         },
         {
@@ -322,62 +341,8 @@
           "pk": false
         },
         {
-          "name": "rating",
+          "name": "lastVisitedGeneration",
           "type": "INTEGER",
-          "notnull": false,
-          "pk": false
-        },
-        {
-          "name": "mode0pct",
-          "type": "INTEGER",
-          "notnull": false,
-          "pk": false
-        },
-        {
-          "name": "mode1pct",
-          "type": "INTEGER",
-          "notnull": false,
-          "pk": false
-        },
-        {
-          "name": "mode2pct",
-          "type": "INTEGER",
-          "notnull": false,
-          "pk": false
-        },
-        {
-          "name": "mode3pct",
-          "type": "INTEGER",
-          "notnull": false,
-          "pk": false
-        },
-        {
-          "name": "mode4pct",
-          "type": "INTEGER",
-          "notnull": false,
-          "pk": false
-        },
-        {
-          "name": "mode5pct",
-          "type": "INTEGER",
-          "notnull": false,
-          "pk": false
-        },
-        {
-          "name": "mode6pct",
-          "type": "INTEGER",
-          "notnull": false,
-          "pk": false
-        },
-        {
-          "name": "dctHash",
-          "type": "TEXT",
-          "notnull": false,
-          "pk": false
-        },
-        {
-          "name": "diffHash",
-          "type": "TEXT",
           "notnull": false,
           "pk": false
         }
@@ -442,6 +407,23 @@
         {
           "name": "tagId",
           "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        }
+      ]
+    },
+    {
+      "tableName": "DirUri",
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": true
+        },
+        {
+          "name": "uri",
+          "type": "TEXT",
           "notnull": true,
           "pk": false
         }
@@ -683,6 +665,53 @@
       ]
     },
     {
+      "tableName": "RejectedFile",
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": true
+        },
+        {
+          "name": "dirUriId",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "basename",
+          "type": "TEXT",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "mtime",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "fileSize",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "why",
+          "type": "TEXT",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "updatedAt",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        }
+      ]
+    },
+    {
       "tableName": "Session",
       "columns": [
         {
@@ -782,36 +811,53 @@
       ]
     },
     {
-      "tableName": "Task",
+      "tableName": "TagHierarchy",
       "columns": [
         {
-          "name": "id",
+          "name": "tagId",
           "type": "INTEGER",
           "notnull": true,
           "pk": true
         },
         {
-          "name": "fn",
+          "name": "descendantId",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "depth",
+          "type": "INTEGER",
+          "notnull": true,
+          "pk": false
+        }
+      ]
+    },
+    {
+      "tableName": "Volume",
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": true
+        },
+        {
+          "name": "authority",
           "type": "TEXT",
           "notnull": true,
           "pk": false
         },
         {
-          "name": "argsJSON",
+          "name": "mountPoint",
           "type": "TEXT",
-          "notnull": false,
+          "notnull": true,
           "pk": false
         },
         {
-          "name": "priority",
+          "name": "lastSeenAt",
           "type": "INTEGER",
-          "notnull": false,
-          "pk": false
-        },
-        {
-          "name": "retries",
-          "type": "INTEGER",
-          "notnull": false,
+          "notnull": true,
           "pk": false
         }
       ]

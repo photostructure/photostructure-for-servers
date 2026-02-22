@@ -1,273 +1,375 @@
 
 <div class="release-notes">
 
-This page contains a detailed list of changes made in every build of PhotoStructure.
+## v2026.2.0-beta - To be released
 
-## PhotoStructure versions
+{{< note >}}
+This version has not yet been released. We hope to release it soon!
+{{< /note >}}
 
-- Major versions may have posts summarizing more visible changes. Check out [the posts tagged with "release notes"](/tags/release-notes/).
+Check out the [v2026.2](/about/v2026.2/) release notes for higher-level information about this release.
 
-- PhotoStructure uses "calendar versioning," or [CalVer](https://calver.org/), using the template `YYYY.MM.BUILD`. `BUILD` starts at zero at the beginning of the month, so `2024.3.3` is the _fourth_ build from March 2024.
+### ⚠️ Breaking changes
 
-### Experimental builds
+#### Node.js 22.3+ required
 
-- Experimental builds end with a `-prealpha`, `-alpha`, or `-beta` suffix.
+PhotoStructure now requires Node.js 22.3+, 24.x, or 25.x. Node.js 20, 21, and 23 are not supported. The minimum was bumped from 22.2.0 for `zlib.crc32` support. This only applies to PhotoStructure for Node users; Docker and Desktop editions bundle a compatible Node.js runtime automatically.
 
-- **These experimental builds have not been thoroughly tested, and may not even launch.**
+#### `resyncAssetOnVisit` setting removed
 
-- Only run these builds if you have [recent backups](/faq/how-do-i-safely-store-files/).
+This deprecated setting has been removed. Directory resync is now handled through the Sync Activity page's "Resync" button, which writes a `forceSyncPath` operation and restarts sync.
 
-- If you run one of these builds, please consider hopping into our [chat](/go/discord) to make sure we can squash any bugs you encounter.
+#### File copy settings consolidated into `fileCopyStrategy`
 
-### Version upgrades
+The boolean settings `fileCopyOnlyNative` and `fileCopyWithReflink` have been replaced with a single `fileCopyStrategy` setting. See [How PhotoStructure copies your files](/faq/file-copy-strategies/) for details on available strategies, TrueNAS troubleshooting, and configuration options. Thanks for the report, Zandr!
 
-- Library upgrades to new versions of PhotoStructure are automatic, but older versions of PhotoStructure cannot open libraries from newer versions of PhotoStructure.
+### ✨ New features
 
-<!-- TODO: -->
-<!-- - ✨ Logs are now viewable in the UI -->
-<!-- - 🐛 [Tag reparenting doesn't seem to work properly on rebuilds](https://forum.photostructure.com/t/who-tags-are-incorrectly-excluded-from-keywords/676/6?u=mrm). -->
-<!-- - 🐛 Sync resume (after pause) on mac via the menubar (not the main window nav button) doesn't seem to support "resume" properly -->
+#### Sync Activity page
 
-<!-- - 📦 Fixed "tag context" for "next previous" context. I'd always done a search, clicked a thumb, and then clicked esc to go back to the search results. But...  if you click a thumb from a search,  and then click "next" or "previous", it ignores that you can from a search, and does the chronological next asset, which is very confusing/irritating. -->
+The new Sync Activity page (`/sync`) provides real-time visibility into what PhotoStructure is doing:
 
-<!-- - 🐛 (todo): Thumbnails in tag samples are [chronologically ordered](https://discord.com/channels/818905168107012097/1148116413190520923) -->
+{{< figure src="/img/2026/01/sync-activity.jpg" alt="Sync Activity page showing live feed, scanned directories, and sync reports" >}}
 
-<!-- - 🐛 (need to verify): Ensure progress is updated during library rebuild (the prior build didn't properly update the `Progress` table, so your computer was busy but you didn't know why). -->
+- **Live feed**: Watch sync activity in real-time with filters for imported, excluded, and error rows
+- **Real time control**: Pause, resume, restart, and rebuild on demand
+- **Scanned directories**: See each directory's sync status, file counts, and next scheduled sync time
+- **Running tasks & performance timings**: Monitor active tasks and identify bottlenecks
+- **Stalled tasks**: Identify tasks that appear to have stalled during sync
+- **Problematic files**: View files that have caused sync issues, with strike counts and cooldown status
+- **Sync reports**: Download detailed CSV reports with optional filtering
+- **Log files**: Quick access to recent log files for troubleshooting
 
-<!-- - 📦 (TODO) Add sync reports for AssetFile re-syncs during library rebuilds and video transcodes -->
+#### 🏷️ Apply tag renames to existing tags
 
-<!-- - ✨ Add "county" support for the geotagger (to help discriminate between [same-named cities](https://discord.com/channels/818905168107012097/1218392684302172170)). This version will automatically schedule a "retag library" job, which is much faster than a "library rebuild," as we skip asset re-aggregation, transcoding, and preview generation, and only re-tag every asset. -->
+The new `fix --apply-tag-renames` command retroactively applies your `tagPathRenames` settings to existing tags in the database. Previously, `tagPathRenames` only affected newly-imported tags. Now you can rename or reorganize tags without rebuilding your library.
 
-## v2024.3.3-prealpha
+Example: If you've configured `tagPathRenames = { "USA" = "United States" }`, running `photostructure fix --apply-tag-renames` will rename all existing "USA" tags to "United States", including updating all child tags and merging with any existing "United States" tags.
 
-**released 2024-03-20**
+#### 📝 Log flight recorder
 
-- 🐛 Replaced the ExifTool health check timeout with `statTimeoutMs` (which defaults to 30s -- prior builds timed out after 7 seconds)
+PhotoStructure's logging system now includes a "flight recorder" that captures recent log entries even when they're below your configured log level threshold. When an error occurs, these buffered entries are automatically flushed to the log file, providing debugging context about what happened leading up to the error. Configure with `logFlightRecorderCapacity`, `logFlightRecorderMinLevel`, and `logFlightRecorderTriggerLevel` settings.
 
-- 🐛 Node.js v21 support: fixed `DeprecationWarning: The ``punycode`` module is deprecated.`
+#### 🐕 Progress watchdog
 
-- 📦 Update Docker image to Node.js 20.11
+A new system-wide health check detects when sync becomes "wedged" - stuck with no task completions for a configurable timeout while work is pending. Unlike the previous approach that reacted to individual task aborts, this detects genuine sync stalls regardless of whether specific tasks are timing out. When wedged, PhotoStructure automatically marks running tasks as problematic and restarts sync. Configure with `progressWatchdogTimeoutMs` (default: 5 minutes).
 
-- 📦 Update SQLite tooling to 3.45
+#### ⚖️ Three strikes policy for problematic files
 
-<a id="v2024.3.2-alpha"></a>
-<a id="v2024.3.2-prealpha"></a>
+Files that cause sync problems now accumulate "strikes" with progressive cooldown periods:
 
-## v2024.3.2-beta
+- **1st strike**: File is blocked for 24 hours, then eligible for retry
+- **2nd strike**: Blocked for 48 hours (cooldown × strike count)
+- **3rd strike**: Permanently blocked until strikes decay
 
-**`-prealpha` released 2024-03-14 🥧 and promoted to `-beta` on 2024-03-20**
+Strikes automatically decay after 45 days, allowing files to rehabilitate if the underlying issue is fixed (PhotoStructure update, network stabilized, file repaired, etc.). This handles "innocent bystander" files that were running during a wedge but weren't the cause - they get one strike that eventually decays. Problematic file data is now stored as JSON instead of in the database, ensuring it's persisted even if the database is the source of the wedge. Configure with `problematicCooldownMs`, `problematicMaxStrikes`, and `problematicDecayMs`.
 
-- 🐛 The warning message `Error: env(): failed to read .env file` caused [sync to fail to run](https://discord.com/channels/818905168107012097/818907922767544340/1217724819483791421]). This warning is now only emitted by the main service, and only if the file exists.
+#### 🎨 Greyscale vs color mismatch detection
 
-- 🐛 Database migrations were edited to try to gracefully recover from some types of partially-applied migrations. This should remedy many issues like [this](https://discord.com/channels/818905168107012097/818907922767544340/1215748274401710191).
+The asset matching algorithm now detects when one file is greyscale and another is color, preventing incorrect groupings of black-and-white versions with their color originals.
 
-- 🐛 Geolocation fields are now deleted if GPS is [(0,0)](https://en.wikipedia.org/wiki/Null_Island). Upgraded libraries will auto-resync all assets tagged with `Where|Ghana|Western|Takoradi` (the nearest city to [Null Island](https://en.wikipedia.org/wiki/Null_Island)).
+{{< note >}}
+**Note for beta users**: Earlier beta documentation mentioned a configurable `assetMatching` setting with `all`, `any`, and `primary` modes. We found fundamental issues with the `any` and `primary` strategies that caused incorrect groupings. PhotoStructure now uses only the `all` strategy (complete-link clustering), which prevents chaining.
+{{< /note >}}
 
-- 📦 The `/settings` page redirected to the health check page if settings took longer than a second to fetch(!!).
+#### 🌍 Multi-language root tag aliases
 
-- 📦 Added several more `/System/Volume` exclude globs to avoid macOS system subdirectories (thanks for the [assist, AlanH!](https://discord.com/channels/818905168107012097/818907922767544340/1216585399615492136)
+New `rootTagWhatAliases`, `rootTagWhenAliases`, `rootTagWhereAliases`, and `rootTagWhoAliases` settings let you define equivalent terms for root tag categories in multiple languages. For example, configure "Quoi", "Was", and "Qué" as aliases for "What" to normalize tags from multilingual photo libraries. See [forum discussion](https://forum.photostructure.com/t/support-for-different-languages-tags-in-lightroom/2474).
 
-- 📦 Add `tagGeoSynonyms` setting:
+#### 🙈 Hidden root tags
 
-  > Due to EXIF and XMP specification drift, there are several ways for geolocation information to be encoded in files. When PhotoStructure applies the "tagGeoTemplate", we'll use these "synonyms" to build the geo tag (first synonym with a value wins). See https://exiftool.org/forum/index.php?topic=13811.msg74413#msg74413 for details.
+The new `hiddenRootTags` setting lets you hide specific root tag categories from the navigation menu. For example, set `hiddenRootTags = ["Who"]` to hide the "Who" category if you don't use face tagging.
 
-- 📦 Add `writeGeolocationTagsToLibraryCopies` setting:
+#### 👤 "View by Who" navigation
 
-  > When enabled, inferred geolocation tags will backfill into Country/State/City tags in the library copy (by default, into an XMP sidecar).
-  >
-  > This defaults to false, as reverse-geo lookup results can change over time (and should be done on-demand, rather than stored statically and drift into inaccuracies).
+Added "View by Who" option to the navigation menu for quick access to person/face tags.
 
-- 📦 Merged `commandTimeoutMs` and `statTimeoutMs` settings--they both defaulted to 30s, and given the presence of `taskTimeoutMs` (which defaults to 2m) having all three timeouts was confusing.
+#### 🩺 Error acknowledgement and service errors health check
 
-- 📦 `syncCronTZ` now defaults to `TZ` if `TZ` is a valid IANA time zone (like "America/Los_Angeles").
+The health page now shows a dedicated health check for recent fatal service errors. When errors are present, an "Acknowledge" button lets you dismiss them and restart sync directly from the health page. Acknowledged errors are archived (moved out of the active fatal log directory) so they don't resurface. A new "Recheck health" button also lets you refresh health status on demand.
 
-- 📦 `info` improvements: include captured-at raw EXIF values for files, and if `--load-library` is specified, include db library setup metadata (like `libraryDbFile`, `libraryDbBackupDir`, and `useReplica`).
+#### 🐳 Docker healthcheck improvements
 
-<a id="v2024.3.1-prealpha"></a>
+The Docker healthcheck command now supports configurable port and parameters, making it work correctly with non-default `PS_HTTP_PORT` configurations.
 
-## v2024.3.1-prealpha ["Zep"](https://discord.com/channels/818905168107012097/818905168690413611/1215774241979502612)
+#### 🔗 Troubleshooting URLs in fatal errors
 
-**Released 2023-03-08**
+When PhotoStructure encounters a fatal startup error, the error message now includes relevant troubleshooting URLs to help you resolve the issue without searching the documentation.
 
-- 🐛 Extended database migration timeouts to 2 minutes by default. See `dbMaintenanceTimeoutMs` setting for details. Should resolve [this issue](https://discord.com/channels/818905168107012097/818907922767544340/1215748274401710191).
+#### 📊 Progress panel markdown
 
-- 🐛 Added new migration to re-assert the `Progress` table schema. Should resolve [this issue](https://discord.com/channels/818905168107012097/1215730724020293752).
+The progress panel now renders markdown in status messages, including links to relevant documentation and formatted text.
 
-- 🐛 The webservice now re-writes `settings.toml` files from prior versions, to ensure the latest settings are visible. Thanks for reporting, [@tkohhh](https://discord.com/channels/818905168107012097/1215760858664140841)! Older versions of `settings.toml` are now moved to `./archive` (it had been `./old`).
+#### 🔑 SHORTSHA token for library copies
 
-- 🐛 `sync` won't be started if any health checks post fatal errors.
+New `SHORTSHA` token available in `assetPathnameFormat` for deterministic library copy filenames. This prevents nondeterministic naming when multiple files compute to the same library path.
 
-- 🐛 `main` renders service startup errors to `stderr` now _and still tries to spin up the web service_ (in an effort to try to get the health check page to the user)
+#### 🏥 Workers health check
 
-<a id="v2024.1.0-alpha"></a>
-<a id="v2024.2.0-alpha"></a>
-<a id="v2024.3.0-alpha"></a>
+New health check monitors worker process status and reports issues when workers are unhealthy or unavailable.
 
-## v2024.3.0-prealpha
+#### ⚙️ `singleThreaded` setting
 
-**Released 2023-03-08**
+New `singleThreaded` boolean setting forces single-CPU operation, exposed in the system load health check. Replaces the old magic `cpuBusyPercent=1` behavior.
 
-### ✒️ Version format change
+#### 🌍 Majority-vote timezone inference
 
-I'm adopting a simpler version format: `$year.$month.$build`, where `$build` starts at zero at the beginning of the month, and gets incremented for every prealpha, alpha, beta, or stable release. For non-stable releases, `-$channel` is appended to the version format.
+Tag inference now uses a majority-vote timezone from sibling files, improving accuracy when files in the same directory have mixed timezone metadata. The `siblingInference` enum has been replaced with the `inferenceSiblingRadius` integer setting for finer-grained control over how many neighboring files are considered.
 
-As an example, a build might be `v2024.1.7-beta`. If it proves sufficiently stable, the same code may be re-released as `v2024.1.7`.
+### 🐛 Bug fixes
 
-### 🗺️ New geo location tagger
+- **Month view missing new months**: Fixed monthly tag views not showing newly-added months after initial sync. When new photos were added for a month that didn't exist before (e.g., adding February photos after January already existed), the monthly breakdown wouldn't appear until the server restarted. The tag redirect cache now properly invalidates when child tags are created. (Thanks for the report, tkohhh
+!)
 
-PhotoStructure now adds `Where/Country/Region/City` tags for those photos and videos with Latitude and Longitude metadata.
+- **iOS Photos metadata excluded**: iPhone backup directories containing `PhotoData/Metadata/DCIM/` are now automatically excluded. These directories store adjusted image data that shouldn't be imported as separate assets.
 
-Note that this feature uses an embedded geo database, so no network access is required. This initial implementation only includes cities with a population of 1000 or greater. See the new `tagGeo` and `tagGeoTemplate` [settings](/go/settings) for more details.
+- **Keywords**: Fixed "TypeError: e.trim is not a function" error when importing photos with ACDSee Categories metadata containing numeric category names (like album years). Reported by kayhadrin.
 
-### 🔃 Sync improvements
+- **CLI**: Fixed `--pidfile` argument not accepting a path. Thanks for the report, B!z0.
 
-Previous builds of PhotoStructure had two work queues: one single-threaded work queue for videos, and one multithreaded work queue for images. This was a ~~hack~~ workaround to prevent concurrent `ffmpeg` invocations as `ffmpeg` attempts to use all cores by default, resulting in CPU overscheduling.
+- **Daemon mode**: Fixed `EPIPE` crash when running PhotoStructure with `-d` flag. The daemon child process would crash immediately after the parent exited due to broken `stdio` pipes. Thanks for the report, B!z0.
 
-We've since found a fairly reliable way to single-thread ffmpeg, so `sync` now schedules both video and image work in a single queue, which greatly simplifies the code, and results in higher parallelism (!!). Anecdotally, prior builds would sync several hundred exemplar videos and photos in roughly 3 minutes. This build now completes that same task in under 90 seconds on the same hardware.
+- **EPIPE nightmare**: Many many moons ago, we added a `SIGPIPE` handler to the web service to avoid crashes from Firefox's sloppy connection handling. However, newer versions of Node.js/libuv ignores `SIGPIPE` by default (`SIG_IGN`). HOWEVER, if you register a listener with process.on("SIGPIPE", ...), `libuv` calls `uv_signal_start()` which **REPLACES** `SIG_IGN` with a real handler. This causes `SIGPIPE` to be **delivered** instead of ignored, making writes to broken pipes fail with `EPIPE` and crash the service. YAY SOFTWARE ENGINEERING. See https://github.com/libuv/libuv/issues/2435
 
-PhotoStructure's task queuing system was also rewritten. Previous builds used a completely separate SQLite schema and database for work scheduling, in an attempt to keep that workload partitioned from the `web` service. With the new `taskListCap` setting, task schedulers receive backpressure if the `Task` table is "full." This backpressure ensures the table doesn't grow unbounded, so it felt safe to migrate it into the `models` database and delete the work queue database. This also allows `web` to schedule work for `sync` reliably without socket RPC or JSON watchfile overhead (again, allowing another good chunk of code to be deleted).
+- **Directory exclusion filters now apply to existing files**: Adding directory patterns to `excludeGlobsAdd` (e.g., `**/cats/`) now correctly removes matching files that were already imported. Previously, directory-level filters were only evaluated during initial discovery, not when re-syncing existing files. Thanks for the report, Nighthawk!
 
-### 🐕 New stuck-task watchdog
+- **Finalization death loop**: Corrupt or unrenderable files could cause infinite finalization retries. A new `failedFinalize` flag gives files two chances, then moves on. Force-restarting sync clears the flag globally.
 
-For larger libraries with tens of thousands of `ffmpeg` transcodes, a `sync` could get "stuck" waiting for an ffmpeg transcode completion that exited abnormally. v2 builds had a hard timeout value based on video duration, but that proved problematic for slower computers and for more advanced codecs that require more computation to decode, so video transcode timeouts were dropped in v2023. More advanced video transcode timeouts were built that adjusted dynamically based on current system performance and processed pixel count, but this implementation was difficult to test rigorously, and the least-squares interpolation implementation was replaced with a new stuck-task watchdog.
+- **Error grouping masking severity**: The crash/resource error category could mask count-based severity thresholds, hiding relevant health check warnings.
 
-When users reported their sync process was "stuck," they'd always report that their system's CPU was idle but that things weren't done.
+- **RPC timeout handling**: Sync RPC requests could hang indefinitely. Added timeout handling to prevent the web service from becoming unresponsive.
 
-So, instead of fancy-pants pixels-processed-per-mimetype least-squares timeout interpolation complexity, _why can't PhotoStructure just do what the users are doing in these situations?_
+- **Mobile breadcrumbs**: Fixed breadcrumb elements overlapping on small screens.
 
-So now it does!
+- **Sync restart logic**: Improved sync restart decisions based on health check levels, preventing unnecessary restarts when health checks change.
 
-While `sync` is currently processing, every five minutes it will check if the system load is "idle" (by default, less than 50% of one busy core, but this is adjustable). If it is, any task that has run longer than the last check will be assumed to be stuck, and will be marked as failed. See the new `stuckCheckIntervalMs` and `minBusyPct` settings for more details.
+- **Tag asset counts**: Fixed NULL accumulation in tag `assetCount` when tags were created without an initial count value.
 
-To make this work, Tasks are now be abortable externally, and know how to clean up gracefully, including killing child processes and notifying sync-report.
+- **Dropdown click handling**: Interactive form controls (row/aspect toggles) inside dropdowns no longer cause the dropdown to close.
 
-### Improvements and bug fixes
+- **Breadcrumb remeasurement**: Breadcrumb dropdown no longer remeasures while open, preventing accidental immediate dismissal.
 
-- ✨ Sync is now scheduled by a crontab entry. Prior builds waited a static amount of time between completion of last sync and start of next sync, which resulted in unpredictable sync run times. By default PhotoStructure will now kick off `sync` every night at 2AM local time, but this is configurable now--and don't worry, any scheduling overruns are automatically skipped. See `syncCron` and `syncCronTZ` settings for details -- **be sure to set `syncCronTZ` to ensure "2AM" really is in local time**.
+- **Sync path removal**: Removed scan paths are now propagated to the child sync process and properly skipped.
 
-- 🐛 Fixed `Error: cannot store REAL value in INTEGER column Progress.completePct`. This could cause library upgrades from v1.1.0 to fail as well. [Thanks for reporting, Alan!](https://discord.com/channels/818905168107012097/818907922767544340/1193326788466724912)
+- **Volume discovery persistence**: Lookup shim is now correctly wired for automatic volume discovery.
 
-- 🐛 Using force-sync via the nav menu in some situations would _only work once_, as the persistent operation wasn't resolved after sync completed if there were any rejected tasks. This should be resolved.
+- **`cpuBusyPercent=0` fix**: Now correctly means "no throttling" (use all CPUs). Previously behaved incorrectly.
 
-- 🐛 `.NoMedia` could be ignored in some situations after initial directory scans. This should be resolved.
+- **`forceRestartSync` orphaning**: Operations now complete immediately to prevent being orphaned on restart.
 
-- 🐛 There were several edge cases that could prevent `sync` from properly no-op'ing unchanged files, which could result in `sync` taking a long time to process previously-scanned directories. This should be resolved.
+- **Minimum video duration**: Default `minVideoDurationS` increased to 3.5 seconds to avoid short clips from live videos that browsers can't render.
 
-- 🐛 PhotoStructure for Docker's About > Sync Information table could show the library path twice. This should be resolved. [Thanks for the report, Gijsh!](https://forum.photostructure.com/t/two-libraries/2113)
+- **Null tag IDs**: Progress provider now handles null tag IDs without runtime errors.
 
-- 🐛/📦 Overlapping "Empty trash" and "Remove assets" actions could result in only a subset of assets actually being removed or excluded. These operations have been converted to the new task infrastructure with serial mutexes to avoid issues around concurrency.
+- **Desktop splash**: Increased retry count from 10 to 20 for improved connection stability during startup.
 
-- 🐛/📦 `LibRAW`'s support for a number of current flagship mirrorless camera RAW file formats is... _not great_. PhotoStructure can still show a preview for those RAW images, most of which embed a full-resolution JPEG, so we're changing the default setting for `validateRawImages` to be `false` in this build. Future builds will probably switch to using rawtherapee for RAW rasterization.
+### 🏗️ Under the hood
 
-- 📦 `Empty trash` and `Remove assets` now write sync report records.
+- **`@photostructure/sqlite` migration**: Migrated from `better-sqlite3` to `@photostructure/sqlite`, built on Node.js's native `node:sqlite` module. This eliminates the native addon compilation step and reduces startup complexity.
 
-- 📦 `SyncDirectory` writes both scan-complete and sync-complete sync report records with elapsed time.
+- **SQLite 3.51.2**: Upgraded from 3.49.1 with performance improvements and bug fixes.
 
-- 📦 Added `excludeHidden` setting:
+- **Sync rebuild consolidated**: Library rebuild went from 5 phases to 3. The separate `reaggregateAsset` pass was merged into `validateAssetSiblings` using a "dissolve" pattern — duplicate assets orphan their files for re-adoption instead of stealing files from other assets.
 
-  > PhotoStructure may check for filesystem "hidden" metadata flags on macOS and Windows filesystems, and automatically skip importing those files.
-  >
-  > As of v2023, this defaults to "false", as most people don't use this filesystem feature, and it's expensive for PhotoStructure to check for this flag on every file it imports.
-  >
-  > This setting is ignored on Linux systems.
+- **Push-based sync events**: Internal sync-to-web communication now uses JSON Lines over TCP (`SyncEventServer`) instead of polling, reducing latency for live feed updates.
 
-- 📦 Added `skipWriteVolumeUuidFilesWithNoMedia` setting:
+- **`resyncDirectory` RPC removed**: Directory resync is now handled via `forceSyncPath` operations written to the database, replacing the old direct RPC call.
 
-  > When true, PhotoStructure will NOT write files with universally unique identifiers into the root directory of volumes that have been marked with a [NoMedia file or folder](https://phstr.com/nomedia). If writeVolumeUuidFiles is false this setting is ignored.
+- **AssetFileHash rename**: The `Vec0` virtual table and related code were renamed to `AssetFileHash` for clarity. Added `capturedAtLocal` and `capturedAtFuzzy` metadata columns for filtering during KNN queries.
 
-- 📦 Added `workQueueHighWater`/`taskListCap` setting:
+- **Task serialization reduced**: Removed basename and capturedAt locks from `LockNames`, significantly reducing unnecessary task serialization during sync.
 
-  > When PhotoStructure scans a directory, the first step is to walk the directory and search for files to import. When the work queue is larger than this value, sync will pause looking for additional files to process. This limits the size of the work queue to not fall over when there are hundreds of thousands or millions of files to import due to IOWAIT or memory oversubscription. Note that until the last batch of work is scheduled, ETAs will be inaccurate.
-  >
-  > Set this to 0 to disable.
+- **`repairAsset` fire-and-forget**: Fixes priority inversion where sub-tasks could be starved when the queue was full of other work.
 
-- 📦 Added `maxValidFutureMs` setting:
+- **SSE reconnection**: Sync client reconnects after shutdown; dead subscriptions are cleaned up.
 
-  > If PhotoStructure encounters a year that is more than this value in the future, it will consider that source to be invalid and look elsewhere for the captured-at date for that given file.
-  >
-  > Set to 0 to disable future date filtering.
+- **Raw tags on workers**: `_readRawTags` now runs on worker processes instead of locally, improving sync throughput.
 
-- 📦 Added `forceFilters` setting:
+- **Clustering logic**: Updated to compare against all cluster members, enhancing transitive clustering correctness.
 
-  > When set, all files filters will be applied to visited files. If this is false, files already in the library database will be assumed to be validly passing all import filters. This is set to true by default when rebuilding libraries.
-  >
-  > This setting is transient and only set via environment variables.
+- **Camera metadata**: Updated image dimensions for Canon EOS R5 Mark II and Sony ZV-E10 II.
 
-- 📦 Setting `cpuBusyPercent=0` now supports "single threaded" mode, which tells sync to:
+### 📦 Packaging changes
 
-  - **ignore system load**, and
-  - **consume one CPU core (roughly)**
+v2026.1.0-beta was an Alpine-based Docker image. To simplify maintenance and improve compatibility, PhotoStructure for Docker is now based on Debian Bookworm-slim. The new image also now includes a static build of ffmpeg v8.0.1 (debian's old ffmpeg was a driver for switching to Alpine).
 
-  Note that we don't do CPU pinning, so load from the single-threaded process will probably bounce across portions of different cores, depending on your OS. Expect system load to be about 0.75-1.5 (or about ~75-150% of a core) due to graphics, SQLite, ExifTool overhead.
+---
 
-- 📦 Database maintenance tasks and relevant health check timeouts have been extended to 1 minute and can be configured with `dbMaintenanceTimeoutMs` setting, which default to 1 minute _per database operation_
+## v2026.1.0-beta - Released January 18, 2026
 
-- 📦 `start.sh`, used by the [PhotoStructure for Node](https://photostructure.com/server/photostructure-for-node/) edition, will now `source` your `~/.psenv` (if it's a readable file), and will start up if there is no external network available and all current dependencies are already installed. [Read more about psenv here.](https://photostructure.com/server/photostructure-for-node/#psenv)
+### ⚠️ Breaking changes
 
-- 📦 Maintenance tasks check periodically if the service is ending, rather than running to completion (which could take several minutes, causing the library database to be left in a corrupt state).
+#### 🗄️ Database schema v3 migration
 
-- 📦 `taskTimeoutMs` and `commandTimeoutMs` can now be validly `0`: previous builds would pass this value directly on to [batch-cluster](https://photostructure.github.io/batch-cluster.js/classes/BatchClusterOptions.html#taskTimeoutMillis), which does not accept values of less than 10.
+This release includes a database schema migration (v2 to v3). The migration runs automatically on first launch and includes:
 
-- 📦 `AbortError`s are no longer considered "retriable" (which could cause issues under high concurrency).
+- New `DirUri` table for normalized directory storage (reduces database size)
+- New `TagHierarchy` table for faster tag tree queries
+- New `RejectedFile` table for tracking why files were skipped
+- Removal of dominant color columns (`mode0`-`mode6`) from `AssetFile` table
 
-- 📦 Tag asset count rebuilds now run non-recursive updates for leaf tags, which are dramatically faster than CTE queries. This can speed up tag asset count rebuilds for larger libraries by more than 5-10x. You can force a `Tag.assetCount` rebuild with `./photostructure info --reindex`.
+**Note**: Dominant color extraction has been removed from asset aggregation. The feature added complexity without sufficient benefit for asset matching, and the color similarity search was rarely used.
 
-- 📦 Replace `axios` with direct `node:http` (less dependencies are always better)
+#### 🔨 CLI argument renamed: `--init` (formerly `--write-settings`)
 
-- 📦 Volume and mountpoint watches are now only enabled if `scanAllDrives` is enabled. This may reduce idle CPU and disk activity.
+The `--write-settings` CLI argument has been renamed to `--init`. Update any scripts that use this flag.
 
-- 📦 When available, volume and mountpoint metadata reads directly from `/proc/` instead of forking `df` and `mount` to gather the same information.
+#### 🍎 Upgraded to Node.js v24 LTS
 
-- 📦 Library rebuilds now serialize only asset re-aggregation tasks. All other steps are parallelized.
+PhotoStructure now requires Node.js v24.x LTS. Node.js v21.x and v22.x are [end of life](https://github.com/nodejs/Release).
 
-- 📦 `UV_THREADPOOL_SIZE` can be overridden via the new `webUvThreads` and `syncUvThreads` settings:
+#### 🛣️ Simplified PATH settings
 
-  > Higher values may allow for more concurrent requests, but may also consume more memory and CPU and overwhelm non-SSD storage. The default is 4, which should be fine for most installations. Read more about `UV_THREADPOOL_SIZE`: https://nodejs.org/api/cli.html#cli_uv_threadpool_size_size
+PhotoStructure now uses just the `$PATH` environment variable and the (optional) `PS_TOOLS_PATH` setting to find external tools. Individual tool path settings (`ffmpegPath`, `dcraw_emuPath`, `heifConvertPath`) have been removed. [Read more on Discord.](https://discord.com/channels/818905168107012097/1225106697362604032/1225224946754519062)
 
-- 🐛 Several tools didn't respond correctly to the `--no-color` option.
+#### 🎬 Video encoding migrated to CRF
 
-- 📦 Non-retriable library database errors now force-close and reopen the database handle, which should make error recovery more robust.
+Video transcoding settings have migrated from bitrate-based to CRF-based (Constant Rate Factor) encoding. CRF provides more consistent quality across different video content. If you had custom `videoBitrate` settings, configure the new `transcodeCrf` setting instead.
 
-- 📦 Most file operations now use "work-in-progress" files. These files are now unique _per-call_ (using `.WIP-${RANDOM_SHORT_UID}-${destination_basename}`), which helps avoid issues from inadvertent concurrent file operations.
+### ✨ New features
 
-- 📦 Database models are now batch-reloaded on upsert, which can dramatically reduce db query load during `sync`.
+#### 🔧 New `fix` tool
 
-- 📦 When `sync` is killed or shut down while actively importing files, those files are now marked as a new `canceled` state in the sync report. The next time `sync` is restarted, those tasks should be retried automatically. Prior builds would mark those files as failed and require another full `sync` run to recover gracefully.
+For server editions, the new `photostructure fix` command runs maintenance and validation jobs:
 
-### 🔦 `list` improvements:
+- `fix --tags`: Validate tags, rebuild search index, recount assets
+- `fix --db`: Run VACUUM, ANALYZE, and integrity checks (auto-repairs if corruption detected)
+- `fix --db-backup`: Create a backup of the library database
+- `fix --cleanup`: Kill orphaned processes, remove stale files
 
-- 📦 The `list` tool has a bunch of new options:
+#### 🔄 Automatic re-application of asset file filters
 
-  ```
-  --primary        Only include the primary, or "best" asset file variation
-                   found for every asset. See https://phstr.com/dedupe for
-                   details.
+PhotoStructure now tracks a hash of all `Filters` settings. When filter settings change, affected files are automatically re-evaluated during the next sync. This ensures your library stays consistent when you adjust file inclusion/exclusion rules.
 
-  --no-primary     Exclude primary asset file variation for every asset.
-                   This is mutually exclusive with the --primary option,
-                   and returns all rows that option omits.
+#### 🖼️ Tag gallery improvements
 
-  -0, --print0     Print each full native path name to standard output,
-                   followed by a null character (instead of the newline
-                   character).
-                   This is suitable for properly handling filenames that
-                   include whitespace characters in shell pipelines using
-                   commands like xargs, which has a "--null" mode which
-                   expects filenames to be separated by the null character.
-                   This cannot be used with --json or --dump.
+- **Child tag dropdown**: New dropdown in the tag gallery header showing all direct child tags for quick navigation
+- **Thumb row controls**: New `+/-` buttons to [control how many rows of thumbnails to show](https://forum.photostructure.com/t/support-choosing-the-number-of-displayed-thumbnails/487)
 
-  --todo           List the currently enqueued files that sync is going to
-                   process next. Implies --json. Does not support --print0.
+#### 🗺️ Enhanced geotagger with county support
 
-  --tags           List all tag paths along with their counts. Implies
-                   --json. Does not support --print0.
-  ```
+Added "county" support for geographic tagging to help discriminate between [same-named cities](https://discord.com/channels/818905168107012097/1218392684302172170). The default `tagGeoTemplate` is now `["Country","State","County","City"]`. To restore the prior format, set `tagGeoTemplate=["Country","State","City"]` in your library's `settings.toml`.
 
-- 🐛 `list --limit` works now. Prior builds could miss adding the sql `LIMIT` clause to the query.
+#### 📁 Directory-level sidecar support
 
-- 🐛 `list --json` now emits a valid JSON array of objects, so you can pipe the output to, say, `jq .` Prior builds would emit individual JSON objects separated by newlines, which most JSON-consuming tools don't know how to deal with.
+PhotoStructure now looks for `album.xmp` and `metadata.xmp` files in each directory and applies their metadata as low-priority sidecars to all files in that directory. See the `directorySidecars` setting for details. Note: filenames are case-sensitive and sidecars are not inherited by child directories.
+
+#### 🏷️ Separate keyword delimiter for pathname extraction
+
+New `keywordDashDashDelimiters` setting for filename "dash-dash" keyword extraction. This lets you retain whitespace for multi-word keywords (like `/photos/--/Places|United Kingdom/P437289.JPG`). The `keywordDelimiters` setting now only applies to metadata-encoded tags.
+
+### 🎞️ Video transcoding improvements
+
+#### ⚡ Optimized transcoding pipeline
+
+PhotoStructure now analyzes codec/container compatibility to choose the fastest transcoding strategy:
+
+- **Remux** (lossless, seconds): When codecs are browser-compatible but container isn't (e.g., MKV with H.264+AAC to MP4)
+- **Audio-only**: When video is compatible but audio needs transcoding (e.g., MTS with H.264+AC-3)
+- **Video-only**: When audio is compatible but video needs transcoding
+- **Full**: Only when both streams need re-encoding
+
+This can reduce transcode time from minutes to seconds for compatible content.
+
+#### 🌈 Automatic colorspace handling
+
+Video transcoding now detects and correctly handles colorspace metadata:
+
+- HDR content (BT.2020/PQ/HLG) is preserved without conversion
+- BT.709 (HD) content is tagged correctly
+- BT.601 (SD) content is converted to BT.709 for consistent browser playback
+- Unknown metadata uses height-based heuristics
+
+#### 📹 HEVC/H.265 output by default
+
+Transcoded videos now use libx265 (CRF 28) for 25-40% smaller files vs H.264. Configure with `transcodeVideoCodec` and `transcodeCrf` settings.
+
+#### 🔍 Improved codec detection
+
+MKV and MTS containers now correctly detect codecs via ffprobe fallback when ExifTool metadata is incomplete.
+
+### 🎯 Other improvements
+
+#### 📸 Image and media processing
+
+- **ffprobe integration**: Video metadata is now enriched by `ffprobe` (if installed), providing per-stream metadata and supporting many more video formats than ExifTool alone
+- **HEIF/HEIC thumbnail optimization**: Thumbnails are now generated by `heif-thumbnailer` (if available), rendering in 10-100ms instead of 2-8 seconds with `heif-convert`
+- **ImageDataHash aggregation**: ExifTool's [ImageDataHash](https://exiftool.org/ExifTool.html#ImageHashType) is now used to ensure assets differing only in metadata get correctly grouped together. See the `imageDataHashType` setting
+
+#### 🌐 Platform support
+
+- Added support for Ubuntu 24.04
+- Improved soft-delete (trash) support on all platforms, with proper Docker support. [Read about Docker configuration](/server/photostructure-for-docker/#soft-delete-support)
+
+#### ⚙️ New settings
+
+- `fileSizeEpsilon` / `mtimeMsEpsilon`: Control how `sync` detects changed files
+- `exactFitResolutions`: Ensure previews fit within specific resolutions (useful for Chromecast)
+- `logRetention`: Configure automatic log file cleanup
+- `sessionTimeout`: Control web UI session duration
+- `dbWalAutoCheckpointPages`: Advanced SQLite WAL checkpoint tuning
+- `rejectedFileCacheThresholdMs`: Performance tuning for rejected file caching
+
+#### 🏥 Health check improvements
+
+- Added `$TZ`, `$PUID`, and `$PGID` to environment variable health checks (Docker)
+- Added shutdown link from the health page for graceful shutdown when library is unhealthy
+- New file watcher health check with platform-specific limits
+- Improved OS & CPU architecture detection
+
+### 🐛 Bug fixes
+
+- **ISO token in `assetPathnameFormat`**: Fixed file copies failing when filenames included `:` from ISO timestamps. The default `ISO` token now uses `yyyy-MM-dd'T'HH-mm-ss.SSS`, and invalid filename characters are replaced with `_`
+- **`PS_FORCE_LOCAL_DB_REPLICA`**: Fixed setting being ignored in some situations
+- **UNIQUE constraint on AssetFile**: Fixed [`UNIQUE constraint failed: AssetFile`](https://discord.com/channels/818905168107012097/818907922767544340/1229863850476568707) errors, including support for in-place URI upgrades to `pslib:` and `psfile:` schemes
+- **Health check timeouts**: Fixed spurious failures from incorrect timeout closure boundaries
+- **SQLite fts5 integrity**: Upgraded SQLite (now 3.51.1) which fixes a regression where `fts5` indexes could cause integrity checks to fail
+- **Asset visibility in sync**: Sync now verifies that an [asset is marked as "shown"](https://discord.com/channels/818905168107012097/818907922767544340/1222232392987578540) before skipping re-processing
+- **Duplicate `#id` attributes**: Fixed duplicate HTML IDs on the settings page
+
+### 🏗️ Under the hood
+
+#### 📦 PhotoStructure for Node improvements
+
+- **New bootstrap system**: Replaced shell-based `start.sh` with `bootstrap.js` for more reliable upgrades. Both `./start.sh` and `./photostructure` now work identically
+- **`--reinstall` flag**: Pass to `./photostructure` to re-download and recompile third-party libraries
+- **macOS Homebrew fix**: Automatically runs `brew install -q python-setuptools` when needed to [solve installation issues](https://forum.photostructure.com/t/trying-to-install-node-on-mac-m1-14-2-1/2166)
+
+#### 🔐 Simplified .env support
+
+PhotoStructure now reads from `/.psenv`, `$HOME/.psenv`, and `$PS_ENV_FILE` with simple key=value parsing. No more conditionals, variable expansion, or `export` required. Last value wins. [See documentation](/go/psenv).
+
+#### 🔧 Other technical changes
+
+- **platform-folders replacement**: Native dependency replaced with equivalent TypeScript
+- **Tag gallery PRNG**: New random number generator validated with [dieharder](https://webhome.phy.duke.edu/~rgb/General/dieharder.php), with faster SQL `ORDER BY` and shorter seeds
+- **`renice()` behavior**: No-op when `PS_PROCESS_PRIORITY=NORMAL`
+- **In-memory task queue**: Task management moved from database table to memory, simplifying code and improving performance
+- **JSON de-cycling**: New custom format that doesn't require `eval`
+- **POSIX uid/gid handling**: Properly handles platforms without numeric user/group IDs (Windows)
+- **`PS_LOG_LEVEL` token format**: Now supports `[TOKEN:]LEVEL,...` for context-specific log levels
+- **`PS_OPT_OUT` / `PS_NO_NETWORK`**: Either setting now disables the version health check
+- **`PS_AUTO_UPGRADE_SETTINGS`**: Set to `false` to disable automatic settings.toml upgrades
+- **`volumeUuidFilePaths` change**: Removed `System Volume Information/IndexerVolumeGuid` from defaults (requires admin privileges on Windows)
+- **defaults.env cleanup**: No longer suggests camelCased versions of transient settings
+- **fs-extra removal**: Migrated to native `node:fs` APIs
+- **Ubuntu 20.04 compatibility**: Rebuilt linux-x64 and linux-arm64 tools to fix libc errors
+- **Improved emoji**: Better [emoji](https://discord.com/channels/818905168107012097/818905168690413611/1221567066004390078) for "Share basic installation information?"
+
+### 🐳 PhotoStructure for Docker
+
+- **Updated to Node.js v24 LTS** (bookworm-slim base image)
+- **SQLite 3.51.1**: Latest SQLite with performance improvements and bug fixes
+- **LibRaw 0.22**: Updated RAW image processing library with new camera support
+- `$PS_LIBRARY_DIR` and `$PS_CONFIG_DIR` respected when determining default `$PUID` and `$PGID`
+- `$PUID` / `$PGID` respected when spawning shells into containers
+- Set `$PS_NO_PUID_CHOWN=1` to skip `chown` calls on library files
 
 ## Prior release notes
+
+- [**Release notes from 2025**](/about/2025-release-notes) (no releases)
+
+- [**Release notes from 2024**](/about/2024-release-notes)
 
 - [**Release notes from 2023**](/about/2023-release-notes)
 

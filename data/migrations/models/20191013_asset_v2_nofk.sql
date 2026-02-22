@@ -6,7 +6,7 @@ WITH
   CTE AS (
     SELECT
       assetId,
-      first_value (capturedAtLocal) OVER win AS cal
+      first_value(capturedAtLocal) OVER win AS cal
     FROM
       AssetFile
     WINDOW

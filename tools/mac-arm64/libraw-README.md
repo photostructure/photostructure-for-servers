@@ -3,14 +3,12 @@
 To reproduce on macOS:
 
 ```sh
-brew install autogen autoconf automake libtool pkg-config libjpeg zlib
+brew install autogen autoconf automake libtool pkg-config
 
-mkdir -p ~/src
-cd ~/src
-git clone https://github.com/LibRaw/LibRaw.git --depth 3
+cd /tmp
+git clone https://github.com/LibRaw/LibRaw.git --depth 10
 cd LibRaw
-git clean -dfx
-git checkout --force 6fffd414bfda63dfef2276ae07f7ca36660b8888 
+git checkout 0.22.0
 
 export LDFLAGS="-L/opt/homebrew/lib"
 autoreconf -fiv
@@ -27,9 +25,9 @@ make -j8
 
 # This line is created by taking the line that libtool links dcraw_emu, and adding "-all-static" after "g++":
 
-/bin/bash ./libtool  --tag=CXX   --mode=link g++ -all-static -g -O2   -o bin/dcraw_emu samples/bin_dcraw_emu-dcraw_emu.o lib/libraw.la /opt/homebrew/opt/jpeg/lib/libjpeg.a -lz -lm
+/bin/bash ./libtool --tag=CXX --mode=link g++ -all-static -g -O2 -o bin/dcraw_emu samples/bin_dcraw_emu-dcraw_emu.o lib/libraw.la /opt/homebrew/lib/libjpeg.a -lz -lm
 
-/bin/bash ./libtool  --tag=CXX   --mode=link g++ -all-static -g -O2   -o bin/raw-identify samples/bin_raw_identify-raw-identify.o lib/libraw.la /opt/homebrew/opt/jpeg/lib/libjpeg.a -lz -lm
+/bin/bash ./libtool --tag=CXX --mode=link g++ -all-static -g -O2 -o bin/raw-identify samples/bin_raw_identify-raw-identify.o lib/libraw.la /opt/homebrew/lib/libjpeg.a -lz -lm
 
 otool -L bin/dcraw_emu
 

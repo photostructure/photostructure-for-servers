@@ -3,18 +3,26 @@
 To reproduce on macOS:
 
 ```sh
-brew install autogen autoconf automake libtool pkg-config libjpeg zlib
+brew install autogen autoconf automake libtool pkg-config cmake nasm
 
-mkdir -p ~/src
-cd ~/src
-git clone https://github.com/LibRaw/LibRaw.git --depth 3
+cd /tmp
+git clone https://github.com/LibRaw/LibRaw.git --depth 10
 cd LibRaw
-git clean -dfx
-git checkout --force 6fffd414bfda63dfef2276ae07f7ca36660b8888 
+git checkout 0.22.0
 
-export LDFLAGS="-L/opt/homebrew/lib"
+# First build libjpeg-turbo for x86_64
+export VER=3.1.2
+curl -L https://github.com/libjpeg-turbo/libjpeg-turbo/releases/download/${VER}/libjpeg-turbo-${VER}.tar.gz | tar xz
+cd libjpeg-turbo-${VER}
+cmake -DCMAKE_OSX_ARCHITECTURES=x86_64 .
+make -j8
+cd ..
+
+# Then build LibRaw for x86_64
+cd LibRaw
+export LDFLAGS="-arch x86_64 -L/opt/homebrew/lib"
 autoreconf -fiv
-./configure --enable-static --disable-lcms --disable-openmp
+./configure --enable-static --disable-lcms --disable-openmp --host=x86_64-apple-darwin CFLAGS="-arch x86_64" CXXFLAGS="-arch x86_64"
 
 make -j8
 
@@ -27,9 +35,9 @@ make -j8
 
 # This line is created by taking the line that libtool links dcraw_emu, and adding "-all-static" after "g++":
 
-/bin/bash ./libtool  --tag=CXX   --mode=link g++ -all-static -g -O2   -o bin/dcraw_emu samples/bin_dcraw_emu-dcraw_emu.o lib/libraw.la /opt/homebrew/opt/jpeg/lib/libjpeg.a -lz -lm
+/bin/bash ./libtool --tag=CXX --mode=link g++ -all-static -g -O2 -arch x86_64 -o bin/dcraw_emu samples/bin_dcraw_emu-dcraw_emu.o lib/libraw.la /tmp/libjpeg-turbo-${VER}/libjpeg.a -lz -lm
 
-/bin/bash ./libtool  --tag=CXX   --mode=link g++ -all-static -g -O2   -o bin/raw-identify samples/bin_raw_identify-raw-identify.o lib/libraw.la /opt/homebrew/opt/jpeg/lib/libjpeg.a -lz -lm
+/bin/bash ./libtool --tag=CXX --mode=link g++ -all-static -g -O2 -arch x86_64 -o bin/raw-identify samples/bin_raw_identify-raw-identify.o lib/libraw.la /tmp/libjpeg-turbo-${VER}/libjpeg.a -lz -lm
 
 otool -L bin/dcraw_emu
 

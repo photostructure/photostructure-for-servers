@@ -34,19 +34,26 @@
 # and relies on error reporting from the splash screen. This should make it
 # easier for all users to debug their installation setup.
 
-# Prior to v2.1, if PUID/PGID was set, we'd _reuse_ the existing `node` user
-# and group, and reassign the uid/gid. Unfortunately, the LTS node image (as
-# of 2023) installs files in /opt/yarn which are owned by node:node, so
+# Prior to v2.1, if PUID/PGID was set, we'd _reuse_ the existing `node` user and
+# group, and reassign the uid/gid. Unfortunately, the LTS node image (as of
+# 2023) installs some files in /opt/yarn which are owned by node:node, so
 # reassigning the userid can be problematic. We now create a new
 # `photostructure` user instead.
 
-# As of v23.8, the photostructure code and resources were moved from /ps/...
-# to /opt/photostructure to avoid being squashed by a typoed /ps user bind
-# mounts.
+# As of v2023.8:
+# - the photostructure code and resources were moved from /ps/... to
+#   /opt/photostructure to avoid being squashed by a typoed /ps user bind
+#   mounts.
+
+# As of v2024.7:
+# - $PUID and $PGID are respected when spawning a shell into a new container.
+# - $PS_LIBRARY_DIR and $PS_CONFIG_DIR overrides are respected for defaulting
+#   PUID and PGID.
 
 # Note that this same entrypoint is used for the Debian and Alpine docker
-# images, so this needs to run under busybox (for Alpine), and dash (for
-# debian). Note that
+# images, so this needs to run properly under both busybox (for Alpine), and
+# dash (for debian) (which is why the shebang is `#!/bin/sh` instead of
+# `#!/bin/bash`).
 
 # --- script starts here ---
 
@@ -67,21 +74,31 @@ trap 'exit 130' INT
 # this machine, whereas the library directory could be shared with other
 # machines with different UID/GIDs.
 
+PS_LIBRARY_DIR="${PS_LIBRARY_DIR:-${PS_LIBRARY:-/ps/library}}"
+
+if [ -z "$PS_CONFIG_DIR" ]; then
+  if [ -d "/ps/config" ]; then
+    PS_CONFIG_DIR="/ps/config"
+  else
+    PS_CONFIG_DIR="$PS_LIBRARY_DIR/.photostructure/docker-config"
+  fi
+fi
+
 DEFAULT_UID=$(
-  stat -c %u /ps/config/settings.toml 2>/dev/null ||
-    stat -c %u /ps/library/.photostructure/settings.toml 2>/dev/null ||
-    stat -c %u /ps/library/.photostructure 2>/dev/null ||
-    stat -c %u /ps/config 2>/dev/null ||
-    stat -c %u /ps/library 2>/dev/null ||
+  stat -c %u "$PS_CONFIG_DIR/settings.toml" 2>/dev/null ||
+    stat -c %u "$PS_LIBRARY_DIR/.photostructure/settings.toml" 2>/dev/null ||
+    stat -c %u "$PS_LIBRARY_DIR/.photostructure" 2>/dev/null ||
+    stat -c %u "$PS_CONFIG_DIR" 2>/dev/null ||
+    stat -c %u "$PS_LIBRARY_DIR" 2>/dev/null ||
     echo 0
 )
 
 DEFAULT_GID=$(
-  stat -c %g /ps/config/settings.toml 2>/dev/null ||
-    stat -c %g /ps/library/.photostructure/settings.toml 2>/dev/null ||
-    stat -c %g /ps/library/.photostructure 2>/dev/null ||
-    stat -c %g /ps/config 2>/dev/null ||
-    stat -c %g /ps/library 2>/dev/null ||
+  stat -c %g "$PS_CONFIG_DIR/settings.toml" 2>/dev/null ||
+    stat -c %g "$PS_LIBRARY_DIR/.photostructure/settings.toml" 2>/dev/null ||
+    stat -c %g "$PS_LIBRARY_DIR/.photostructure" 2>/dev/null ||
+    stat -c %g "$PS_CONFIG_DIR" 2>/dev/null ||
+    stat -c %g "$PS_LIBRARY_DIR" 2>/dev/null ||
     echo 0
 )
 
@@ -91,27 +108,17 @@ export PUID="${PUID:-${puid:-${DEFAULT_UID}}}"
 # Accept either $PGID or $pgid:
 export PGID="${PGID:-${pgid:-${DEFAULT_GID}}}"
 
-# Accept UMASK:
+# Accept UMASK, or default to 0022:
 umask "${UMASK:-0022}"
 
-if [ "$1" = "sh" ] || [ "$1" = "dash" ] || [ "$1" = "bash" ]; then
-  # Let the user shell into the container:
-  exec "$@"
-elif [ "$PUID" = "0" ] || [ "$(id --real --user)" != "0" ]; then
+# This handles the run-as-root or run-as-new-user-using-su call to `exec`:
 
-  # They either want to run as root, or started docker with --user, so we
-  # shouldn't do any usermod/groupmod/su shenanigans.
+EXEC="exec"
 
-  # Implementation notes:
+# Only try to make a new user if we're running as root, and PUID is set to
+# something not-zero:
 
-  # - we `exec` to replace the current shell so nothing is between tini and
-  #   node.
-
-  # - these don't need to be full pathnames to the binaries: $PATH should be
-  #   set up reasonably already. This simply to be explicit.
-
-  exec /opt/photostructure/bin/photostructure.js "$@"
-else
+if [ "$(id --real --user)" = "0" ] && [ "$PUID" != "0" ]; then
 
   # We want to run as userid $PUID and groupid $PGID. Unfortunately, those IDs
   # may already be in use by the container (probably by the "node" user and
@@ -148,9 +155,20 @@ else
     done
   fi
 
-  # Start photostructure as the user "photostructure" instead of root.
+  # Alpine's busybox-powered `su` doesn't support the long-arg variants of
+  # --preserve-environment (alias for `-p`), or --command (alias for `-c`), so
+  # we need to use the short args:
 
-  # Implementation notes:
+  EXEC="exec su -p photostructure -c"
+fi
+
+if [ "$1" = "sh" ] || [ "$1" = "dash" ] || [ "$1" = "bash" ]; then
+
+  # Let the user shell into the container:
+
+  $EXEC "$@"
+
+else
 
   # - we `exec` to replace the current shell so nothing is between tini and
   #   node.
@@ -158,7 +176,6 @@ else
   # - these don't need to be full pathnames to the binaries: $PATH should be
   #   set up reasonably already. This simply to be explicit.
 
-  # - Alpine's busybox-powered `su` doesn't support the long-arg variants of
-  #   --preserve-environment (alias for `-p`), or --command (alias for `-c`).
-  exec su -p photostructure -c /opt/photostructure/bin/photostructure.js "$@"
+  $EXEC /opt/photostructure/bin/photostructure.js "$@"
+
 fi
