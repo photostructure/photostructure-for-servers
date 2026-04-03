@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title><%= locals.title %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="/app/<%= locals.page %>.css<%= locals.cacheBuster ? '?_=' + locals.cacheBuster : '' %>"
+      nonce="<%= locals.nonce %>"
+    />
+    <% if (locals.page === "app") { %> <%# from https://realfavicongenerator.net
+    %>
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <%# PWA meta tags: both variants needed. - mobile-web-app-capable: standard
+    (Chrome); avoids Chrome deprecation warning - apple-mobile-web-app-capable:
+    required by iOS Safari for standalone mode, splash screens, and status bar
+    styling (iOS ignores the unprefixed variant) -
+    apple-mobile-web-app-status-bar-style: only effective when
+    apple-mobile-web-app-capable="yes" See:
+    https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/SafariHTMLRef/Articles/MetaTags.html
+    %>
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="PhotoStructure" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="application-name" content="PhotoStructure" />
+    <% if (locals.meta) { %> <% for (const ea of locals.meta) { %>
+    <meta property="<%= ea.property %>" content="<%= ea.content %>" />
+    <% } %> <% } %>
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link
+      rel="manifest"
+      href="/site.webmanifest"
+      crossorigin="use-credentials"
+    />
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5" />
+    <meta name="msapplication-TileColor" content="#2d89ef" />
+    <meta name="theme-color" content="#1a0a14" />
+    <% } %> <%- include('_fouc-prevention') %>
+  </head>
+  <body id="app" class="<%= locals.bodyClass ?? '' %>">
+    <div id="mount"></div>
+    <script
+      type="module"
+      src="/app/<%= locals.page %>.js<%= locals.cacheBuster ? '?_=' + locals.cacheBuster : '' %>"
+      nonce="<%= locals.nonce %>"
+    ></script>
+    <% if (locals.scripts) { for (const s of locals.scripts) { %>
+    <script src="<%= s %>" nonce="<%= locals.nonce %>"></script>
+    <% } } %>
+  </body>
+</html>

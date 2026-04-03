@@ -1,0 +1,3 @@
+-- JS migration: see Migrations.captured_at_src_detail in src/library/db/Migrations.ts
+-- Adds capturedAtSrcDetail and capturedAtZoneSrc columns to AssetFile.
+-- Uses JS to check column existence first (idempotent for partial prior runs).

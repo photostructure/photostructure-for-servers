@@ -10,7 +10,7 @@
       nonce="<%= locals.nonce %>"
     />
   </head>
-  <body class="animate">
+  <body class="animate <%= locals.bodyClass ?? '' %>">
     <main class="draggable reveal">
       <div id="bg-clip">
         <div id="bg"></div>

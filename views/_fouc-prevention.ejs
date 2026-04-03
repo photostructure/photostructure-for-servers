@@ -1,0 +1,13 @@
+<script nonce="<%= locals.nonce %>">
+  // FOUC prevention: apply theme class before first paint
+  (function () {
+    var t = localStorage.getItem("ps-theme") || "auto";
+    var r =
+      t === "auto"
+        ? window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light"
+        : t;
+    document.documentElement.classList.add(r);
+  })();
+</script>

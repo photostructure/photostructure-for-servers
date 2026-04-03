@@ -14,6 +14,13 @@ if [ "$OS" = "Msys" ] || [ "$OS" = "Cygwin" ]; then
   NODE="${NODE:-node.exe}"
 else
   NODE="${NODE:-node}"
+  # If NODE is an absolute path, add its directory to PATH so co-located
+  # tools (npm, npx) are also found. This is needed for nvm/fnm/volta
+  # installations where tools aren't in standard system directories.
+  NODE_DIR="$(dirname "$NODE")"
+  if [ "$NODE_DIR" != "." ]; then
+    PATH="$NODE_DIR:$PATH"
+  fi
   if [ "$OS" = "Darwin" ]; then
     PATH="$PATH:/opt/homebrew/bin:/opt/homebrew/sbin"
   fi

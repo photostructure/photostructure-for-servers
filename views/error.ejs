@@ -1,3 +1,5 @@
+<%# Error/404 page for non-AJAX browser requests. Rendered by sendErrorToast()
+in ServerToastHelpers.ts. AJAX requests get a JSON toast instead. %>
 <!doctype html>
 <html lang="en">
   <head>
@@ -47,6 +49,7 @@
         background: #2980b9;
       }
     </style>
+    <%- include('_fouc-prevention') %>
   </head>
   <body>
     <main class="error-container">

@@ -9,8 +9,10 @@
       href="/app/settings.css<%= locals.cacheBuster ? '?_=' + locals.cacheBuster : '' %>"
       nonce="<%= locals.nonce %>"
     />
+    <%- include('_fouc-prevention') %>
   </head>
   <body id="app" class="<%= locals.bodyClass ?? '' %>">
+    <div class="drag-bar"></div>
     <main>
       <% if (locals.err) { %>
       <div class="error sticky message">

@@ -29,11 +29,7 @@ FROM node:24-bookworm-slim
 # libglib2.0-0 is required by @photostructure/fs-metadata (GIO volume metadata)
 #
 # External tool runtime dependencies:
-# libheif-examples provides "heif-convert"
 # libjpeg-turbo-progs includes `jpegtran` for lossless rotation and JPEG file validation
-# libjpeg62-turbo is the JPEG runtime used by heif-convert
-# liblcms2-2 supports color management (used by heif-convert)
-# liborc-0.4-0 is used by heif-convert
 # libreadline8 is for the static sqlite3 CLI tool
 # passwd provides `usermod` and `groupmod` (used by docker-entrypoint.sh)
 # perl is required for exiftool
@@ -45,13 +41,8 @@ RUN apt-get update \
   && apt-get upgrade -y \
   && apt-get install -y --no-install-recommends \
   ca-certificates \
-  heif-thumbnailer \
   libglib2.0-0 \
-  libheif-examples \
   libjpeg-turbo-progs \
-  libjpeg62-turbo \
-  liblcms2-2 \
-  liborc-0.4-0 \
   libreadline8 \
   locales-all \
   passwd \
@@ -71,17 +62,6 @@ COPY --chown=node:node . ./
 
 # Overwrite source with builder results (/opt/photostructure/tools):
 COPY --from=builder --chown=node:node /opt/photostructure ./
-
-# FFmpeg 8.0.1 static binaries (Debian bookworm has 5.1.6)
-# https://github.com/wader/static-ffmpeg - pinned to digest for supply chain security
-
-COPY --from=mwader/static-ffmpeg@sha256:252705ff88532fa338e7065c21792756552f8fe7c212f84bc503d3c340689594 \
-  /ffmpeg /ffprobe /opt/photostructure/tools/
-
-
-# To update the digest in the future when a new version releases, visit
-# https://hub.docker.com/r/mwader/static-ffmpeg/tags, click the latest version
-# tag, and copy the "Index digest"
 
 # ---
 
