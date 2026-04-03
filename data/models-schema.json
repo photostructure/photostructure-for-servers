@@ -345,6 +345,18 @@
           "type": "INTEGER",
           "notnull": false,
           "pk": false
+        },
+        {
+          "name": "capturedAtSrcDetail",
+          "type": "TEXT",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "capturedAtZoneSrc",
+          "type": "TEXT",
+          "notnull": false,
+          "pk": false
         }
       ]
     },

@@ -1,0 +1,8 @@
+/**
+ * Copyright © 2026, PhotoStructure Inc. All rights reserved.
+ *
+ * BY USING THIS SOFTWARE, YOU ACCEPT ALL OF THE TERMS IN
+ * https://photostructure.com/eula
+ * IF YOU DO NOT ACCEPT THESE TERMS, DO NOT USE THIS SOFTWARE
+ */
+import{m as h}from"./BabyMarkdown.js";let i=null,o=null,s=null;function u(t){return t.replace(/\[([^\]]+)\]\([^)]+\)/g,"$1").replace(/\*\*([^*]+)\*\*/g,"$1").replace(/```([^`]+)```/g,"$1")}function g(){return i==null&&(i=document.createElement("div"),i.setAttribute("popover","auto"),i.className="tap-tip",document.body.appendChild(i),i.addEventListener("toggle",t=>{t.newState==="closed"&&o!=null&&s!=null&&(o.setAttribute("title",s),o=null,s=null)})),i}function x(t,n){const e=g();if(o===t&&e.matches(":popover-open")){e.hidePopover();return}const r=u(n);e.innerHTML=h(n),o=t,s=r,e.showPopover();const c=t.getBoundingClientRect(),m=document.documentElement.clientWidth,p=e.offsetWidth,f=c.left+c.width/2;e.style.position="fixed",e.style.inset="unset",e.style.margin="0",e.style.right="unset",e.style.top=`${c.bottom+6}px`;const a=8;e.style.left=`${Math.max(a,Math.min(m-p-a,f-p/2))}px`}function v(t){return t.dataset.tip??""}function d(t,n){t.dataset.tip=n}function l(t){const n=t.currentTarget,e=v(n);e!==""&&(t.stopPropagation(),n.removeAttribute("title"),x(n,e))}const E={mounted(t,n){const e=n.value??"";d(t,e),e!==""&&(t.setAttribute("title",u(e)),t.addEventListener("click",l))},updated(t,n){const e=v(t),r=n.value??"";d(t,r),r===""?(t.removeAttribute("title"),e!==""&&t.removeEventListener("click",l)):(t.setAttribute("title",u(r)),e===""&&t.addEventListener("click",l))},unmounted(t){t.removeEventListener("click",l),o===t&&(i?.hidePopover(),o=null)}};export{E as v};

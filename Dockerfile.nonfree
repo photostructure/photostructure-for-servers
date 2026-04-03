@@ -1,0 +1,27 @@
+# syntax=docker/dockerfile:1
+
+# This image adds patent-encumbered media codecs (FFmpeg, HEIF) to the base
+# PhotoStructure image. By building this image, you accept responsibility for
+# any applicable patent licensing requirements.
+#
+# Build:   docker build -f server/Dockerfile.nonfree -t photostructure-nonfree .
+# Run:     docker run ... photostructure-nonfree
+#
+# Or use the Docker Setup configurator to generate a compose.yaml:
+# https://photostructure.com/server/docker-setup/
+
+FROM photostructure/server:beta
+
+# FFmpeg static binaries (includes H.264, H.265/HEVC, AAC codecs)
+# https://github.com/wader/static-ffmpeg
+COPY --from=mwader/static-ffmpeg:8.0.1 /ffmpeg /ffprobe /opt/photostructure/tools/
+
+# HEIF/HEIC support (libheif with HEVC decoder)
+# Bookworm stable ships libheif 1.15.1 which can't parse iPhone 16 Pro HEIC files.
+# Backports provides 1.19.7 which handles the newer HEIF features correctly.
+RUN echo 'deb http://deb.debian.org/debian bookworm-backports main' \
+      > /etc/apt/sources.list.d/backports.list \
+  && apt-get update \
+  && apt-get install -y --no-install-recommends \
+    -t bookworm-backports heif-thumbnailer libheif-examples \
+  && rm -rf /var/lib/apt/lists/*

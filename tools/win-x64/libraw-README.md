@@ -1,6 +1,6 @@
-Extracted from https://www.libraw.org/data/LibRaw-0.21.1-Win64.zip
+Extracted from https://www.libraw.org/data/LibRaw-0.22.0-Win64.zip
 
 Verified:
-https://www.virustotal.com/gui/file/15c39e6228abfe326bb8d627080ded8d19e22c603756f7a1a6364249bfb83de4
-https://www.virustotal.com/gui/file/0756cb275ee25febe9ec7934ab785115baa49b72d818058ea9f565b7eb9b5e5a
-https://www.virustotal.com/gui/file/0f11b4f74e19c4942f2eeff11f1fbbfdb6f21152e5a988537e722c15fcee5166
+https://www.virustotal.com/gui/file/1b65ee99c70ba5dda40d17ce534eddc6977e09a9d8763af1e5a75df541fcf0d8
+https://www.virustotal.com/gui/file/5b04ada284bf07158def0299ee0f100ea0a97a96d2721bbc0dddf20667405ddd
+https://www.virustotal.com/gui/file/c0cb42d0f26be98ea2f5d42bbcf9ac1452909577c7f6392d3d62ab3676063590

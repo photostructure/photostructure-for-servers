@@ -60,7 +60,9 @@ CREATE TABLE "AssetFile" (
   createdAt INTEGER NOT NULL,
   updatedAt INTEGER NOT NULL,
   updateCount INTEGER NOT NULL DEFAULT 0,
-  lastVisitedGeneration INTEGER
+  lastVisitedGeneration INTEGER,
+  capturedAtSrcDetail TEXT,
+  capturedAtZoneSrc TEXT
 ) STRICT;
 
 CREATE TABLE "AssetRevision" (

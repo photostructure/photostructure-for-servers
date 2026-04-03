@@ -1,0 +1,13 @@
+.DS_Store
+.dockerignore
+.env
+.github/
+.history
+.npm
+*.js.map
+*.log*
+*.tgz
+Dockerfile*
+docker-entrypoint.sh
+node_modules/
+start.sh

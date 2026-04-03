@@ -10,6 +10,8 @@ PhotoStructure requires several external tools to get work done:
 
 - [LibRaw](https://www.libraw.org/) for RAW image conversions
 
+- [ripgrep](https://github.com/BurntSushi/ripgrep) for fast structured log querying with context
+
 [PhotoStructure for Desktops](https://photostructure.com/install/) includes the relevant subdirectory to ensure these tools are available for those users.
 
 For [PhotoStructure for Node](https://photostructure.com/server/photostructure-for-node/), we have a bit less control about what tools are available. Linux distributions, like Ubuntu, typically include stable versions from a year or more ago, which may not be recent enough for PhotoStructure.
