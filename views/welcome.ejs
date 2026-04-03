@@ -30,6 +30,9 @@
                 src="/images/logo-horizontal.svg"
                 alt="PhotoStructure"
               />
+              <% if (locals.version) { %>
+              <small class="version">v<%= locals.version %></small>
+              <% } %>
             </div>
 
             <div class="notes">
