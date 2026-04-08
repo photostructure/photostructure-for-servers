@@ -35,7 +35,7 @@
     "express": "5.2.1",
     "express-session": "1.18.2",
     "express-static-gzip": "^3.0.0",
-    "fast-xml-parser": "5.3.3",
+    "fast-xml-parser": "5.5.7",
     "file-type": "16.5.4",
     "he": "1.2.0",
     "helmet": "8.1.0",
