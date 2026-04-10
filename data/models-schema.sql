@@ -193,14 +193,6 @@ CREATE TABLE "migrations" (
   migration_time INTEGER NOT NULL
 ) STRICT;
 
-CREATE VIRTUAL TABLE tag_fts USING fts5 (
-  root,
-  path,
-  content = '',
-  contentless_delete = 1,
-  tokenize = 'unicode61'
-);
-
 -- Indices
 CREATE INDEX AssetFile_assetId_idx ON AssetFile (assetId, flags);
 

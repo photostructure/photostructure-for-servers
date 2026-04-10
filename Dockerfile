@@ -48,6 +48,7 @@ RUN apt-get update \
   passwd \
   perl \
   procps \
+  ripgrep \
   tini \
   tzdata \
   wget \
