@@ -5,4 +5,4 @@
  * https://photostructure.com/eula
  * IF YOU DO NOT ACCEPT THESE TERMS, DO NOT USE THIS SOFTWARE
  */
-import{s as r}from"./platform.js";import{a as m}from"./Array.js";const e=r("capturedAt","updatedAt");function u(t){return t=m(t).trim(),t.match(/\s/)!=null?`"${t}"`:t}export{e as A,u as m};
+import{c as r}from"./platform.js";import{b as m}from"./Array.js";const u=r("capturedAt");function a(t){return t=m(t).trim(),t.match(/\s/)!=null?`"${t}"`:t}export{u as A,a as m};

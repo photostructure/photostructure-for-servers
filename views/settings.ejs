@@ -18,7 +18,10 @@
           <img class="svg" src="/images/health.svg" />
         </a>
         <a class="vicon hide-on-s" href="/activity" title="System activity">
-          <img class="svg" src="/images/terminal.svg" />
+          <img class="svg" src="/images/speed.svg" />
+        </a>
+        <a class="vicon hide-on-s" href="/logs" title="Logs">
+          <img class="svg" src="/images/article.svg" />
         </a>
       </div>
       <div class="title middle">
@@ -48,8 +51,8 @@
               <p>
                 <% if (locals.videoToolDetails &&
                 locals.videoToolDetails.isSupportedVersion === false) { %> <%=
-                locals.videoToolDetails.path %> is not a supported version. <% }
-                %> Before continuing, please
+                locals.videoToolDetails.path ?? locals.videoToolDetails.desc %>
+                is not a supported version. <% } %> Before continuing, please
                 <a
                   href="https://photostructure.com/getting-started/video-support/"
                   >follow these steps</a
@@ -353,6 +356,11 @@
               <p>
                 Changing these settings won't remove photos already in your
                 library.
+              </p>
+              <p>
+                <a href="https://photostructure.com/guide/scan-paths/"
+                  >Learn more about scan paths.</a
+                >
               </p>
             </details>
 

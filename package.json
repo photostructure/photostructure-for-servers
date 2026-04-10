@@ -2,7 +2,7 @@
   "name": "photostructure",
   "productName": "PhotoStructure",
   "author": "PhotoStructure, Inc. <hello@photostructure.com>",
-  "version": "2026.4.4-beta",
+  "version": "2026.4.6-beta",
   "license": "SEE LICENSE IN LICENSE.md",
   "description": "PhotoStructure for Servers",
   "homepage": "https://photostructure.com/server/photostructure-for-node/",
@@ -15,6 +15,10 @@
   },
   "bin": {
     "photostructure": "./photostructure"
+  },
+  "overrides": {
+    "diff": ">=8.0.3",
+    "serialize-javascript": ">=7.0.5"
   },
   "dependencies": {
     "@iarna/toml": "2.2.5",
@@ -38,14 +42,13 @@
     "express-session": "1.19.0",
     "express-static-gzip": "3.0.0",
     "fast-xml-parser": "5.5.10",
-    "file-type": "16.5.4",
+    "file-type": "22.0.0",
     "he": "1.2.0",
     "helmet": "8.1.0",
     "knex": "3.1.0",
     "luxon": "3.7.2",
     "moo": "0.5.3",
     "nearley": "2.20.1",
-    "papaparse": "5.5.3",
     "paseto": "3.1.4",
     "picomatch": "4.0.4",
     "plist": "3.1.0",
