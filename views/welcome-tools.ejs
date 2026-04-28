@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title><%= locals.title %> - Tools</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="/app/settings.css<%= locals.cacheBuster ? '?_=' + locals.cacheBuster : '' %>"
+      nonce="<%= locals.nonce %>"
+    />
+    <%- include('_fouc-prevention') %>
+  </head>
+  <body id="app" class="welcome-tools <%= locals.bodyClass ?? '' %>">
+    <div class="drag-bar"></div>
+    <main>
+      <% if (locals.dev) { %>
+      <nav class="dev-strip">
+        <span class="label">dev variants:</span>
+        <a href="?dev=1&os=mac">mac (no brew)</a>
+        <a href="?dev=1&os=mac&brew=1">mac (brew)</a>
+        <a href="?dev=1&os=win">win (no msys2)</a>
+        <a href="?dev=1&os=win&msys2=1">win (msys2)</a>
+        <a href="?dev=1&os=docker">docker</a>
+        <a href="?dev=1&os=linux">linux (manual)</a>
+      </nav>
+      <% } %>
+      <div class="container mh100vh flex-center">
+        <div class="section reveal">
+          <form action="/welcome/tools" method="post" id="tools-form">
+            <div class="hero center mt4em">
+              <img
+                class="logo"
+                src="/images/logo-horizontal.svg"
+                alt="PhotoStructure"
+              />
+            </div>
+
+            <h2>
+              <i class="emj tools"></i>
+              <% if (locals.isMac) { %> Install video tools <% } else if
+              (locals.canAutoInstall) { %> Install photo and video tools? <% }
+              else { %> Photo and video tools <% } %>
+            </h2>
+
+            <p><%- locals.intro %></p>
+
+            <% if (locals.canAutoInstall) { %>
+            <div class="card card-choice" id="consent-radios">
+              <p>
+                <label>
+                  <input
+                    type="radio"
+                    name="consent"
+                    value="yes"
+                    id="consent-yes"
+                    <% if (locals.priorConsent === "yes") { %>checked<% } %>
+                  />
+                  <b>Yes,</b> install the tools for me
+                </label>
+              </p>
+              <p>
+                <label>
+                  <input
+                    type="radio"
+                    name="consent"
+                    value="no"
+                    id="consent-no"
+                    <% if (locals.priorConsent === "no") { %>checked<% } %>
+                  />
+                  <b>No thanks,</b> I'll take care of this myself
+                </label>
+              </p>
+            </div>
+
+            <div class="collapsed" id="no-thanks-note">
+              <p><%- locals.noThanksNote %></p>
+            </div>
+
+            <div class="collapsed" id="patent-notice">
+              <div class="card card-notice">
+                <i class="emj warning"></i>
+                <p>
+                  Installing this software may subject you to patent licensing
+                  requirements depending on your jurisdiction and use case. You
+                  are responsible for compliance with applicable licenses.
+                  PhotoStructure does not distribute, warrant, or support the
+                  installed third-party software.
+                </p>
+              </div>
+
+              <p>
+                <label>
+                  <input
+                    type="checkbox"
+                    id="ack-checkbox"
+                    <% if (locals.priorConsent === "yes") { %>checked<% } %>
+                  />
+                  I understand and accept responsibility for any applicable
+                  patent licenses
+                </label>
+              </p>
+
+              <% if (locals.whatNext) { %>
+              <div class="what-next collapsed" id="what-next">
+                <h3>What happens next</h3>
+                <%- locals.whatNext %>
+                <p>
+                  Click Continue and we'll take care of it while you finish
+                  setting up your library.
+                </p>
+              </div>
+              <% } %>
+            </div>
+
+            <% } else { %> <%# Manual-install platform (non-docker Linux): the
+            page is purely informational — nothing to consent to, nothing to
+            record. Continue posts with no `consent` field. %> <% } %>
+
+            <div class="buttons mt1em">
+              <input
+                class="btn"
+                type="submit"
+                value="Continue"
+                id="continue-btn"
+              />
+            </div>
+          </form>
+        </div>
+      </div>
+    </main>
+    <script nonce="<%= locals.nonce %>">
+      (function () {
+        var form = document.getElementById("tools-form");
+        var notice = document.getElementById("patent-notice");
+        var noThanks = document.getElementById("no-thanks-note");
+        var ackBox = document.getElementById("ack-checkbox");
+        var whatNext = document.getElementById("what-next");
+        var btn = document.getElementById("continue-btn");
+        if (!form || !btn) return;
+
+        // Manual-install branch (Linux Node): no radios, nothing to gate.
+        if (!document.getElementById("consent-radios")) return;
+
+        function update() {
+          var yes = document.getElementById("consent-yes");
+          var no = document.getElementById("consent-no");
+          var isYes = yes && yes.checked;
+          var isNo = no && no.checked;
+          if (notice) notice.classList.toggle("collapsed", !isYes);
+          if (noThanks) noThanks.classList.toggle("collapsed", !isNo);
+          if (!isYes && !isNo) {
+            btn.disabled = true;
+            btn.value = "Continue";
+          } else if (isYes) {
+            btn.disabled = ackBox ? !ackBox.checked : false;
+            btn.value = "Install the tools and continue";
+          } else {
+            btn.disabled = false;
+            if (ackBox) ackBox.checked = false;
+            btn.value = "Skip the tools and continue";
+          }
+          // What-next reveals only after user commits to Yes AND ticks the
+          // patent acknowledgment. User testing showed nobody expanded the
+          // <details> version, so we drive disclosure from the ack checkbox.
+          if (whatNext) {
+            var showNext = isYes && ackBox && ackBox.checked;
+            whatNext.classList.toggle("collapsed", !showNext);
+          }
+        }
+
+        function shake(el) {
+          if (!el) return;
+          el.classList.remove("shake");
+          void el.offsetWidth;
+          el.classList.add("shake");
+          el.addEventListener(
+            "animationend",
+            function () {
+              el.classList.remove("shake");
+            },
+            { once: true },
+          );
+        }
+
+        btn.addEventListener("pointerdown", function () {
+          if (!btn.disabled) return;
+          var anySelected = form.querySelector('input[name="consent"]:checked');
+          if (!anySelected) {
+            shake(document.getElementById("consent-radios"));
+          } else if (ackBox && !ackBox.checked) {
+            shake(ackBox.parentElement);
+          }
+        });
+
+        form.addEventListener("change", update);
+        update();
+      })();
+    </script>
+  </body>
+</html>

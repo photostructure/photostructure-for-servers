@@ -6,7 +6,7 @@
 #
 # This tag must match what Dockerfile.test and server/Dockerfile use.
 # https://github.com/photostructure/base-tools-debian
-FROM photostructure/base-tools-debian:sha-030fda9 AS base-tools
+FROM photostructure/base-tools-debian:sha-99c3fd8 AS base-tools
 
 FROM scratch AS export-stage
 COPY --from=base-tools /opt/photostructure/tools .
