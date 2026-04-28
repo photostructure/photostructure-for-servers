@@ -4,7 +4,7 @@
 # <https://photostructure.com/server/photostructure-for-docker/>
 
 # https://github.com/photostructure/base-tools/pkgs/container/base-tools-debian
-FROM photostructure/base-tools-debian:sha-030fda9 AS builder
+FROM photostructure/base-tools-debian:sha-99c3fd8 AS builder
 
 # https://docs.docker.com/develop/develop-images/multistage-build/
 
@@ -23,7 +23,7 @@ RUN npm ci --omit=dev
 # https://github.com/photostructure/base-tools-debian/blob/main/Dockerfile
 # We use node:24 (not node:24.x) because native modules use N-API which is
 # ABI-stable across Node versions. This allows automatic security patches.
-FROM node:24-bookworm-slim
+FROM node:24-trixie-slim
 
 # Native Node.js module runtime dependencies:
 # libglib2.0-0 is required by @photostructure/fs-metadata (GIO volume metadata)
@@ -41,20 +41,30 @@ RUN apt-get update \
   && apt-get upgrade -y \
   && apt-get install -y --no-install-recommends \
   ca-certificates \
-  libglib2.0-0 \
+  libglib2.0-0t64 \
   libjpeg-turbo-progs \
-  libreadline8 \
+  libreadline8t64 \
   locales-all \
   passwd \
   perl \
   procps \
   ripgrep \
+  sudo \
   tini \
   tzdata \
   wget \
   && rm -rf /var/lib/apt/lists/* \
   && npm install --force --location=global npm \
   && touch /.running-in-container
+
+# Codec-install helper + scoped sudoers. The helper runs apt-get as root on
+# behalf of the photostructure user when the user has consented via
+# /welcome/tools (see src/core/install/CodecInstallConsent.ts). No codec
+# bytes ship in this image — Rule 1 of docs/patent-licensing-policy.md.
+COPY --chown=root:root --chmod=0755 server/bin/install-codec-tools.sh \
+  /opt/photostructure/bin/install-codec-tools.sh
+COPY --chown=root:root --chmod=0440 server/sudoers.d/photostructure-codec-install \
+  /etc/sudoers.d/photostructure-codec-install
 
 # Sets the default path to be inside /opt/photostructure when running `docker exec -it`:
 WORKDIR /opt/photostructure
@@ -90,8 +100,9 @@ COPY --from=builder --chown=node:node /opt/photostructure ./
 # details about these tools.
 ENV PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/photostructure:/opt/photostructure/tools"
 
-# Your library is exposed by default to <http://localhost:1787>
-# This can be changed by setting the PS_HTTP_PORT environment variable.
+# Document the container port. Publishing is controlled by docker run
+# --publish or compose.yaml ports. Bind to 127.0.0.1 on the host if you want
+# host-only access.
 EXPOSE 1787
 
 # Healthcheck: ping the web server to verify it's responding.

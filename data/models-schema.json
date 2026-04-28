@@ -871,6 +871,12 @@
           "type": "INTEGER",
           "notnull": true,
           "pk": false
+        },
+        {
+          "name": "label",
+          "type": "TEXT",
+          "notnull": false,
+          "pk": false
         }
       ]
     },

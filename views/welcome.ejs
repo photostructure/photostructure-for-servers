@@ -22,7 +22,10 @@
 
       <div class="container mh100vh flex-center">
         <div class="section reveal">
-          <form action="/welcome" method="post">
+          <form
+            action="/welcome<%= locals.formQueryString ?? '' %>"
+            method="post"
+          >
             <div class="hero center mt4em">
               <h2>Welcome to</h2>
               <img

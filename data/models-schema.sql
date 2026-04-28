@@ -184,7 +184,8 @@ CREATE TABLE Volume (
   id INTEGER PRIMARY KEY,
   authority TEXT NOT NULL,
   mountPoint TEXT NOT NULL,
-  lastSeenAt INTEGER NOT NULL
+  lastSeenAt INTEGER NOT NULL,
+  label TEXT
 ) STRICT;
 
 CREATE TABLE "migrations" (

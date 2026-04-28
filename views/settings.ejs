@@ -20,7 +20,7 @@
         <a class="vicon hide-on-s" href="/activity" title="System activity">
           <img class="svg" src="/images/speed.svg" />
         </a>
-        <a class="vicon hide-on-s" href="/logs" title="Logs">
+        <a class="vicon hide-on-s" href="/logs" title="Log viewer">
           <img class="svg" src="/images/article.svg" />
         </a>
       </div>
@@ -40,31 +40,6 @@
 
       <div class="container reveal">
         <form class="mhauto" action="/settings" method="post">
-          <% if (locals.videoToolDetails == null ||
-          locals.videoToolDetails.isSupportedVersion !== true) { %>
-          <div class="section">
-            <div id="videoSupported" class="warn message">
-              <p>
-                <i class="emj movie-camera"></i>
-                <b class="fs22">Do you have videos?</b>
-              </p>
-              <p>
-                <% if (locals.videoToolDetails &&
-                locals.videoToolDetails.isSupportedVersion === false) { %> <%=
-                locals.videoToolDetails.path ?? locals.videoToolDetails.desc %>
-                is not a supported version. <% } %> Before continuing, please
-                <a
-                  href="https://photostructure.com/getting-started/video-support/"
-                  >follow these steps</a
-                >. It'll only take a minute.
-              </p>
-            </div>
-            <div class="buttons card-nav">
-              <a class="next btn-small" href="#section1" rel="next">Next</a>
-            </div>
-          </div>
-          <% } %>
-
           <div id="section1" class="section">
             <h2>
               <i class="emj med <%= locals.subTier %>"></i> Your PhotoStructure
@@ -153,8 +128,11 @@
             </p>
             <p>
               <a
+                class="external-link"
                 href="https://photostructure.com/server/photostructure-for-docker/"
-                >Read more about Docker setup here.</a
+                target="_blank"
+                rel="noopener"
+                >Learn more about Docker setup.</a
               >
             </p>
             <% } else { %>
@@ -162,7 +140,10 @@
               PS_LIBRARY_PATH must be set (probably to /ps/library), and exist.
               See
               <a
+                class="external-link"
                 href="https://photostructure.com/server/photostructure-for-docker/"
+                target="_blank"
+                rel="noopener"
                 >the support site for instructions.</a
               >
             </p>
@@ -177,7 +158,11 @@
               </summary>
               <p>
                 Your
-                <a href="https://photostructure.com/guide/library/"
+                <a
+                  class="external-link"
+                  href="https://photostructure.com/guide/library/"
+                  target="_blank"
+                  rel="noopener"
                   >PhotoStructure Library</a
                 >
                 holds
@@ -196,7 +181,10 @@
                 <li>
                   This folder must have
                   <a
+                    class="external-link"
                     href="https://photostructure.com/getting-started/how-much-disk-space-do-i-need-for-my-photostructure-library/"
+                    target="_blank"
+                    rel="noopener"
                     >lots of free space</a
                   >.
                 </li>
@@ -218,7 +206,11 @@
               </summary>
               <p>
                 Your
-                <a href="https://photostructure.com/guide/library/"
+                <a
+                  class="external-link"
+                  href="https://photostructure.com/guide/library/"
+                  target="_blank"
+                  rel="noopener"
                   >PhotoStructure Library</a
                 >
                 is currently
@@ -339,17 +331,15 @@
               <ol>
                 <li>Your library folder (always included)</li>
                 <li>Any paths you've added below</li>
-                <li>
-                  If enabled, all remaining
-                  <a href="https://photostructure.com/guide/what-is-a-volume/"
-                    >volumes</a
-                  >
-                </li>
+                <li>If enabled, all remaining volumes</li>
               </ol>
               <p>
                 PhotoStructure automatically ignores
                 <a
+                  class="external-link"
                   href="https://photostructure.com/guide/how-to-hide-directories/"
+                  target="_blank"
+                  rel="noopener"
                   >hidden, system, application, and NoMedia directories</a
                 >.
               </p>
@@ -358,7 +348,11 @@
                 library.
               </p>
               <p>
-                <a href="https://photostructure.com/guide/scan-paths/"
+                <a
+                  class="external-link"
+                  href="https://photostructure.com/guide/scan-paths/"
+                  target="_blank"
+                  rel="noopener"
                   >Learn more about scan paths.</a
                 >
               </p>
@@ -366,7 +360,11 @@
 
             <p class="scan-hint">
               Your library folder is always included. You can check all
-              <a href="https://photostructure.com/guide/what-is-a-volume/"
+              <a
+                class="external-link"
+                href="https://photostructure.com/guide/what-is-a-volume/"
+                target="_blank"
+                rel="noopener"
                 >volumes</a
               >, add specific paths, or both.
             </p>
@@ -481,7 +479,10 @@
               <p>
                 PhotoStructure can
                 <a
+                  class="external-link"
                   href="https://photostructure.com/getting-started/automatic-library-organization/"
+                  target="_blank"
+                  rel="noopener"
                   >copy the photos and videos it finds into your PhotoStructure
                   Library</a
                 >. This is ideal if your photos are scattered across several
@@ -499,10 +500,14 @@
                     tooltip="The same photo or video will not be copied more than once into your library."
                     >de-duplicate</dfn
                   >
-                  photos and videos automatically (<a
+                  photos and videos automatically.
+                  <a
+                    class="external-link"
                     href="https://photostructure.com/guide/what-do-you-mean-by-deduplicate/"
-                    >learn&nbsp;more</a
-                  >).
+                    target="_blank"
+                    rel="noopener"
+                    >Learn more</a
+                  >.
                 </li>
                 <li>
                   Photos and videos already found in your library will remain in
@@ -578,8 +583,11 @@
 
             <p>
               <a
+                class="external-link"
                 href="https://forum.photostructure.com/t/new-in-v2023-10-automated-photostructure-version-checking/1956"
-                >Read more about PhotoStructure updates here</a
+                target="_blank"
+                rel="noopener"
+                >Learn more about PhotoStructure updates</a
               >.
             </p>
 
@@ -683,8 +691,11 @@
               </p>
               <p>
                 <a
+                  class="external-link"
                   href="https://forum.photostructure.com/t/new-in-v2023-10-automated-photostructure-version-checking/1956"
-                  >Read more details about PhotoStructure updates here</a
+                  target="_blank"
+                  rel="noopener"
+                  >Learn more about PhotoStructure updates</a
                 >.
               </p>
             </details>
@@ -728,9 +739,14 @@
             <h2><i class="emj med emergency-light"></i> Error reporting</h2>
             <p>
               PhotoStructure's error reports help us detect, triage, and fix
-              issues (<a href="https://photostructure.com/guide/error-reports/"
-                >learn more</a
-              >).
+              issues.
+              <a
+                class="external-link"
+                href="https://photostructure.com/guide/error-reports/"
+                target="_blank"
+                rel="noopener"
+                >Learn more</a
+              >.
             </p>
 
             <p>
