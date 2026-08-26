@@ -5,7 +5,7 @@
 #
 # Usage:
 #   ./download-rg.sh          # auto-detect latest version
-#   ./download-rg.sh 15.1.0   # pin to specific version
+#   ./download-rg.sh 15.2.0   # pin to specific version
 
 REPO="BurntSushi/ripgrep"
 
@@ -16,7 +16,7 @@ else
   VERSION="$(curl -fsSL "https://api.github.com/repos/${REPO}/releases/latest" |
     grep '"tag_name"' | sed -E 's/.*"tag_name": *"([^"]+)".*/\1/')"
   if [ -z "$VERSION" ]; then
-    echo "ERROR: Could not determine latest version. Pass explicitly, e.g.: $0 15.1.0" >&2
+    echo "ERROR: Could not determine latest version. Pass explicitly, e.g.: $0 15.2.0" >&2
     exit 1
   fi
   echo "Latest version: ${VERSION}"

@@ -21,18 +21,19 @@
       <% } %>
 
       <div class="container mh100vh flex-center">
-        <div class="section reveal">
+        <div class="section onboarding-card reveal">
           <form
             action="/welcome<%= locals.formQueryString ?? '' %>"
             method="post"
           >
-            <div class="hero center mt4em">
-              <h2>Welcome to</h2>
-              <img
-                class="logo"
-                src="/images/logo-horizontal.svg"
-                alt="PhotoStructure"
-              />
+            <div class="hero center mt2em">
+              <h1 class="onboarding-logo-heading">
+                <img
+                  class="logo"
+                  src="/images/logo-horizontal.svg"
+                  alt="PhotoStructure"
+                />
+              </h1>
               <% if (locals.version) { %>
               <small class="version">v<%= locals.version %></small>
               <% } %>

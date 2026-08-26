@@ -4,9 +4,7 @@
 # <https://photostructure.com/server/photostructure-for-docker/>
 
 # https://github.com/photostructure/base-tools/pkgs/container/base-tools-debian
-FROM photostructure/base-tools-debian:sha-99c3fd8 AS builder
-
-# https://docs.docker.com/develop/develop-images/multistage-build/
+FROM photostructure/base-tools-debian:sha-fdafa0d AS builder
 
 # https://docs.docker.com/engine/reference/builder/#workdir
 WORKDIR /opt/photostructure
@@ -25,13 +23,10 @@ RUN npm ci --omit=dev
 # ABI-stable across Node versions. This allows automatic security patches.
 FROM node:24-trixie-slim
 
-# Native Node.js module runtime dependencies:
-# libglib2.0-0 is required by @photostructure/fs-metadata (GIO volume metadata)
-#
 # External tool runtime dependencies:
 # libjpeg-turbo-progs includes `jpegtran` for lossless rotation and JPEG file validation
 # libreadline8 is for the static sqlite3 CLI tool
-# passwd provides `usermod` and `groupmod` (used by docker-entrypoint.sh)
+# passwd provides `usermod` and `groupmod` (used below and by the entrypoint)
 # perl is required for exiftool
 # procps provides a working `ps -o lstart`
 # wget is used by the health check
@@ -41,7 +36,6 @@ RUN apt-get update \
   && apt-get upgrade -y \
   && apt-get install -y --no-install-recommends \
   ca-certificates \
-  libglib2.0-0t64 \
   libjpeg-turbo-progs \
   libreadline8t64 \
   locales-all \
@@ -49,30 +43,28 @@ RUN apt-get update \
   perl \
   procps \
   ripgrep \
-  sudo \
   tini \
   tzdata \
   wget \
   && rm -rf /var/lib/apt/lists/* \
   && npm install --force --location=global npm \
+  && groupmod --new-name photostructure node \
+  && usermod --login photostructure \
+  --home /home/photostructure --move-home node \
   && touch /.running-in-container
 
-# Codec-install helper + scoped sudoers. The helper runs apt-get as root on
-# behalf of the photostructure user when the user has consented via
-# /welcome/tools (see src/core/install/CodecInstallConsent.ts). No codec
-# bytes ship in this image — Rule 1 of docs/patent-licensing-policy.md.
-COPY --chown=root:root --chmod=0755 server/bin/install-codec-tools.sh \
-  /opt/photostructure/bin/install-codec-tools.sh
-COPY --chown=root:root --chmod=0440 server/sudoers.d/photostructure-codec-install \
-  /etc/sudoers.d/photostructure-codec-install
+# No `sudo`, no sudoers drop-in: optional external tools are installed on demand,
+# after the user opts in, as the unprivileged runtime user, into a per-user
+# prefix under the config dir. Adding sudo back won't help: setuid is inert under
+# `--security-opt no-new-privileges=true`, which TrueNAS SCALE sets on every app.
 
 # Sets the default path to be inside /opt/photostructure when running `docker exec -it`:
 WORKDIR /opt/photostructure
 
-COPY --chown=node:node . ./
+COPY --chown=root:root . ./
 
 # Overwrite source with builder results (/opt/photostructure/tools):
-COPY --from=builder --chown=node:node /opt/photostructure ./
+COPY --from=builder --chown=root:root /opt/photostructure ./
 
 # ---
 
@@ -114,6 +106,6 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
 
 # https://docs.docker.com/engine/reference/builder/#understand-how-cmd-and-entrypoint-interact
 
-# docker-entrypoint.sh handles dropping privileges down to the "node" user in order
-# to support custom PUID/PGID
+# docker-entrypoint.sh renumbers the dedicated "photostructure" account before
+# dropping privileges, so custom PUID/PGID values do not create a second user.
 ENTRYPOINT [ "/usr/bin/tini", "--", "/opt/photostructure/docker-entrypoint.sh" ]

@@ -61,7 +61,7 @@ target="_blank">settings</a>.
 
 The Product may send error reports that contain limited file metadata via a
 third party (such as Sentry). Error reports may be <a
-href="/guide/error-reports/#how-to-opt-out-of-sending-error-reports"
+href="/guide/error-reports/#how-to-change-your-mind"
 target="_blank">disabled by the user</a>.
 
 [//]: # "The URL above must be fully-qualified, as the EULA is included in the welcome page."

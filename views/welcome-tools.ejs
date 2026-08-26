@@ -19,10 +19,10 @@
         <span class="label">dev variants:</span>
         <a href="?dev=1&os=mac">mac (no brew)</a>
         <a href="?dev=1&os=mac&brew=1">mac (brew)</a>
-        <a href="?dev=1&os=win">win (no msys2)</a>
-        <a href="?dev=1&os=win&msys2=1">win (msys2)</a>
+        <a href="?dev=1&os=win">win (no pixi)</a>
+        <a href="?dev=1&os=win&pixi=1">win (pixi)</a>
         <a href="?dev=1&os=docker">docker</a>
-        <a href="?dev=1&os=linux">linux (manual)</a>
+        <a href="?dev=1&os=linux">linux</a>
       </nav>
       <% } %>
       <div class="container mh100vh flex-center">
@@ -45,7 +45,18 @@
 
             <p><%- locals.intro %></p>
 
-            <% if (locals.canAutoInstall) { %>
+            <% if (locals.canAutoInstall) { %> <% if (locals.ackRequired) { %>
+            <div class="message error" id="ack-required">
+              <p>
+                Please confirm you accept responsibility for any applicable
+                patent licenses before we install anything.
+              </p>
+            </div>
+            <% } %> <% if (locals.choiceRequired) { %>
+            <div class="message error" id="choice-required">
+              <p>Please choose whether to install the tools.</p>
+            </div>
+            <% } %>
             <div class="card card-choice" id="consent-radios">
               <p>
                 <label>
@@ -77,24 +88,51 @@
               <p><%- locals.noThanksNote %></p>
             </div>
 
-            <div class="collapsed" id="patent-notice">
+            <%# Rendered expanded, and collapsed by the script below on load.
+            This notice must be visible before an install can start, so it may
+            not depend on JavaScript running: with scripting off there is
+            nothing to un-collapse it, and the form still submits. %>
+            <div id="patent-notice">
               <div class="card card-notice">
                 <i class="emj warning"></i>
+                <%# The canonical notice, verbatim including the closing
+                sentence and its link. Every copy must stay in sync: the
+                docker-compose wizard and the media-codec-support page carry the
+                same text. %>
                 <p>
                   Installing this software may subject you to patent licensing
                   requirements depending on your jurisdiction and use case. You
                   are responsible for compliance with applicable licenses.
                   PhotoStructure does not distribute, warrant, or support the
-                  installed third-party software.
+                  installed third-party software. See
+                  <a
+                    href="https://photostructure.com/getting-started/media-codec-support/"
+                    target="_blank"
+                    rel="noopener"
+                    >video and HEIF/HEIC support</a
+                  >
+                  for details.
                 </p>
               </div>
 
               <p>
                 <label>
+                  <%# `name` is mandatory, not decorative: without it the
+                  browser never submits this field and `postTools()` cannot tell
+                  an acknowledged install from an unacknowledged one.
+                  Deliberately NOT pre-checked from `priorConsent`, unlike the
+                  radio above. The radio recalls a choice; this attests to an
+                  act. Pre-ticking it for returning users would auto-satisfy the
+                  acknowledgment for exactly the cohort the requirements epoch
+                  routes back through this page, and `codec-install-consent.env`
+                  records that the user "ticked a checkbox" — which would then
+                  be false in the durable record whose job is to attest to it.
+                  %>
                   <input
                     type="checkbox"
+                    name="ack"
+                    value="yes"
                     id="ack-checkbox"
-                    <% if (locals.priorConsent === "yes") { %>checked<% } %>
                   />
                   I understand and accept responsibility for any applicable
                   patent licenses
@@ -113,9 +151,15 @@
               <% } %>
             </div>
 
-            <% } else { %> <%# Manual-install platform (non-docker Linux): the
-            page is purely informational — nothing to consent to, nothing to
-            record. Continue posts with no `consent` field. %> <% } %>
+            <% } else { %> <%# `isAutoInstallSupported()` is false: the page is
+            purely informational — nothing to consent to, nothing to record, and
+            Continue posts with no `consent` field. Reached in production on
+            musl hosts (Alpine, and `linuxserver`-style rebuilds), where
+            conda-forge cannot solve an environment, and on any platform we
+            don't broker installs for. Continue is the only way such a user
+            records the requirements acknowledgment and escapes
+            `CodecConsentGate`'s redirect, so this branch is load-bearing —
+            preview it with `?dev=1&os=linux&glibc=0`. %> <% } %>
 
             <div class="buttons mt1em">
               <input

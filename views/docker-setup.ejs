@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title><%= locals.title %> - Setup</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="/app/settings.css<%= locals.cacheBuster ? '?_=' + locals.cacheBuster : '' %>"
+      nonce="<%= locals.nonce %>"
+    />
+    <%- include('_fouc-prevention') %>
+  </head>
+  <body id="app" class="docker-setup <%= locals.bodyClass ?? '' %>">
+    <div class="drag-bar"></div>
+    <main>
+      <div class="container docker-setup-container flex-center">
+        <section
+          class="section onboarding-card docker-setup-card reveal"
+          aria-labelledby="docker-setup-title"
+        >
+          <div class="hero center">
+            <p class="onboarding-welcome">Welcome to</p>
+            <img
+              class="logo"
+              src="/images/logo-horizontal.svg"
+              alt="PhotoStructure"
+            />
+            <% if (locals.version) { %>
+            <small class="version">v<%= locals.version %></small>
+            <% } %>
+          </div>
+
+          <h1 id="docker-setup-title">Give your library a permanent home</h1>
+          <p class="docker-setup-intro">
+            Bind-mount <code><%= locals.libraryDir %></code>, then recreate this
+            container.
+          </p>
+
+          <div class="docker-setup-actions">
+            <a
+              class="docker-setup-docs-link"
+              href="https://photostructure.com/server/photostructure-for-docker/#docker-bind-mount-setup"
+              target="_blank"
+              rel="noopener"
+              title="Read the fine manual"
+            >
+              Docker bind-mount instructions
+            </a>
+            <a
+              class="btn docker-setup-cta"
+              href="https://photostructure.com/server/docker-compose-wizard/"
+              target="_blank"
+              rel="noopener"
+            >
+              Open the compose wizard
+            </a>
+          </div>
+        </section>
+      </div>
+    </main>
+  </body>
+</html>

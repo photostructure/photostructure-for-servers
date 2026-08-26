@@ -40,7 +40,16 @@
     <meta name="theme-color" content="#1a0a14" />
     <% } %> <%- include('_fouc-prevention') %>
   </head>
-  <body id="app" class="<%= locals.bodyClass ?? '' %>">
+  <%# data-mtle / data-pwp: the thumbnail recipe, read by
+  installThumbnailRecipeFromDom() before mount so a direct /asset/:id load can
+  name a rung. Deliberately unguarded: the xs profile's pwp is literally 0, so a
+  truthiness guard would drop exactly the value most worth carrying. %>
+  <body
+    id="app"
+    class="<%= locals.bodyClass ?? '' %>"
+    data-mtle="<%= locals.mtle %>"
+    data-pwp="<%= locals.pwp %>"
+  >
     <div id="mount"></div>
     <script
       type="module"
