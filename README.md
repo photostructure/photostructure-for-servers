@@ -9,6 +9,10 @@ PhotoStructure for Servers requires:
 - a 64-bit Intel or AMD CPU
 - At least Ubuntu LTS 22.04, macOS Sequoia (15), or Windows 10
 
+PhotoStructure for Docker does not support Windows hosts, including Docker
+Desktop. On Windows, use PhotoStructure for Node.js or PhotoStructure for
+Desktops.
+
 ## Instructions
 
 1. Read and accept the [end-user license agreement](https://photostructure.com/eula), then

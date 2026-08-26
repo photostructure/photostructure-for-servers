@@ -82,6 +82,36 @@
           "type": "INTEGER",
           "notnull": true,
           "pk": false
+        },
+        {
+          "name": "previewFingerprint",
+          "type": "TEXT",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "renderWidth",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "renderHeight",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "previewSourceMtime",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "previewSourceSize",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
         }
       ]
     },

@@ -14,7 +14,12 @@ CREATE TABLE "Asset" (
   excludedAt INTEGER,
   createdAt INTEGER NOT NULL,
   updatedAt INTEGER NOT NULL,
-  updateCount INTEGER NOT NULL DEFAULT 0
+  updateCount INTEGER NOT NULL DEFAULT 0,
+  previewFingerprint TEXT,
+  renderWidth INTEGER,
+  renderHeight INTEGER,
+  previewSourceMtime INTEGER,
+  previewSourceSize INTEGER
 ) STRICT;
 
 CREATE TABLE "AssetFile" (
@@ -64,6 +69,14 @@ CREATE TABLE "AssetFile" (
   capturedAtSrcDetail TEXT,
   capturedAtZoneSrc TEXT
 ) STRICT;
+
+CREATE VIRTUAL TABLE AssetFileHash USING vec0 (
+  assetFileId INTEGER,
+  lHash bit [192],
+  capturedAtLocal INTEGER,
+  capturedAtFuzzy INTEGER,
+  bname TEXT
+);
 
 CREATE TABLE "AssetRevision" (
   id INTEGER NOT NULL PRIMARY KEY,

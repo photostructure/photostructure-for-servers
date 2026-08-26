@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title><%= locals.title %> - PhotoStructure</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="/app/settings.css<%= locals.cacheBuster ? '?_=' + locals.cacheBuster : '' %>"
+      nonce="<%= locals.nonce %>"
+    />
+    <%- include('_fouc-prevention') %>
+  </head>
+  <body id="app" class="<%= locals.bodyClass ?? '' %>">
+    <main>
+      <div class="container mh100vh flex-center">
+        <section class="section onboarding-card reveal center" role="alert">
+          <div class="hero center mt4em">
+            <img
+              class="logo"
+              src="/images/logo-horizontal.svg"
+              alt="PhotoStructure"
+            />
+            <h1><%= locals.title %></h1>
+          </div>
+          <p><%= locals.message %></p>
+          <div class="buttons mt1em">
+            <% if (locals.retryUrl) { %>
+            <a class="btn" href="<%= locals.retryUrl %>">
+              <%= locals.retryLabel ?? "Try activation again" %>
+            </a>
+            <% } %>
+            <a class="btn cancel" href="<%= locals.continueUrl %>">
+              Continue
+            </a>
+          </div>
+        </section>
+      </div>
+    </main>
+  </body>
+</html>
