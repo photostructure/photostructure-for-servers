@@ -287,12 +287,6 @@
           "pk": false
         },
         {
-          "name": "geohash",
-          "type": "INTEGER",
-          "notnull": false,
-          "pk": false
-        },
-        {
           "name": "iso",
           "type": "INTEGER",
           "notnull": false,
@@ -385,6 +379,18 @@
         {
           "name": "capturedAtZoneSrc",
           "type": "TEXT",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "latitude",
+          "type": "REAL",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "longitude",
+          "type": "REAL",
           "notnull": false,
           "pk": false
         }

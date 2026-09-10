@@ -2,7 +2,7 @@
 <%
 const planSection = {
   id: "section1",
-  icon: locals.subTier,
+  icon: "logo-gradient-gloss",
   title: "Plan and billing",
 }
 const librarySection = {
@@ -56,6 +56,12 @@ const settingsSections = [
   loggingSection,
   licenseSection,
 ]
+const originalsDirCopyLead =
+  "If enabled, PhotoStructure will copy your original photos and videos into"
+const originalsDirCopyAfterValue =
+  locals.settingOverrides.originalsDir?.relativeToUnselectedLibrary === true
+    ? " relative to the PhotoStructure Library selected above. This location is set"
+    : ". This location is set"
 %>
 <!doctype html>
 <html lang="en">
@@ -102,6 +108,16 @@ const settingsSections = [
 
       <div class="container reveal">
         <form class="settings-form mhauto" action="/settings" method="post">
+          <input
+            type="hidden"
+            name="systemSettingsSha"
+            value="<%= locals.systemSettingsSha %>"
+          />
+          <input
+            type="hidden"
+            name="librarySettingsSha"
+            value="<%= locals.librarySettingsSha %>"
+          />
           <div class="settings-sections">
             <div id="<%= planSection.id %>" class="section">
               <h2>
@@ -174,7 +190,7 @@ const settingsSections = [
                   <a href="/plans/activate?then=/settings"
                     >Activate this installation</a
                   >
-                  so your <span class="tier plus">plus</span> license can renew
+                  so your <span class="plus">plus</span> license can renew
                   automatically.
                 </p>
               </div>
@@ -186,13 +202,13 @@ const settingsSections = [
               </p>
               <% if (locals.subRenewalStatus) { %>
               <p>
-                Your <span class="tier plus">plus</span> license isn&rsquo;t
+                Your <span class="plus">plus</span> license isn&rsquo;t
                 currently active.
               </p>
               <% } else if (!locals.subNetworkAccessDisabled) { %>
               <p>
                 PhotoStructure
-                <span class="tier plus">plus</span> keeps your photos safe by
+                <span class="plus">plus</span> keeps your photos safe by
                 validating and organizing them automatically, and helps fund
                 future development.
               </p>
@@ -200,7 +216,7 @@ const settingsSections = [
                 <b
                   ><a href="/plans/pick?then=/settings"
                     >Start your 15 day free trial of
-                    <span class="tier plus">plus</span> today</a
+                    <span class="plus">plus</span> today</a
                   ></b
                 >
               </p>
@@ -213,21 +229,20 @@ const settingsSections = [
               </p>
               <% } %> <% } else if (locals.subLifetime) { %>
               <p>
-                Your PhotoStructure <span class="tier plus">Lifetime</span> plan
-                keeps this installation on <span class="tier plus">plus</span>.
+                Your PhotoStructure <span class="plus">Lifetime</span> plan
+                keeps this installation on <span class="plus">plus</span>.
               </p>
               <% } else if (locals.subTrial) { %>
               <p>
-                <span class="tier plus">plus</span> trial<% if
-                (locals.subExpiresAt) { %> &mdash; expires <%=
-                locals.subExpiresAt %><% } %>.
+                <span class="plus">plus</span> trial<% if (locals.subExpiresAt)
+                { %> &mdash; expires <%= locals.subExpiresAt %><% } %>.
               </p>
               <p>
                 <a href="/plans/billing?then=/settings">Manage subscription</a>
               </p>
               <% } else { %>
               <p>
-                Your <span class="tier plus">plus</span>
+                Your <span class="plus">plus</span>
                 subscription keeps PhotoStructure going!
               </p>
               <% if (locals.subExpiresAt) { %>
@@ -367,16 +382,11 @@ const settingsSections = [
                   import your prior library folder.
                 </p>
               </details>
-              <% } %> <% if (!locals.isDocker && locals.libraryDirEnvOverride) {
-              %>
-              <p class="warn message">
-                <i class="emj warning"></i>
-                <tt><%= locals.libraryDirEnvOverrideSource %></tt> is set in the
-                environment and takes precedence over this setting. Unset it to
-                choose your library here.
-              </p>
-              <% } %> <% if (!locals.isDocker && !locals.libraryDirEnvOverride)
-              { %> <% if (locals.suggestedLibraryDirs) { %> <%
+              <% } %> <% if (!locals.isDocker) { %> <%-
+              include('_setting-override', { settingName: 'libraryDir',
+              override: locals.settingOverrides.libraryDir }) %> <% } %> <% if
+              (!locals.isDocker && locals.settingOverrides.libraryDir == null) {
+              %> <% if (locals.suggestedLibraryDirs) { %> <%
               locals.suggestedLibraryDirs.forEach((ea, index) => { %>
               <p></p>
               <label for="libraryDir<%= index %>">
@@ -518,14 +528,22 @@ const settingsSections = [
                 >, add specific paths, or both.
               </p>
 
+              <%- include('_setting-override', { settingName: 'scanAllDrives',
+              override: locals.settingOverrides.scanAllDrives }) %>
+
               <label for="scanAllDrives" class="scan-all-drives">
                 <input
                   id="scanAllDrives"
                   name="scanAllDrives"
                   type="checkbox"
                   value="true"
-                  <%= locals.scanAllDrives !== false && !(locals.welcome &&
-                  locals.isElectron && locals.isMac) ? 'checked' : '' %>
+                  <%= locals.scanAllDrives !== false &&
+                  (locals.settingOverrides.scanAllDrives != null ||
+                  !(locals.welcome && locals.isElectron && locals.isMac)) ?
+                  'checked' : '' %>
+                  <%=
+                  locals.settingOverrides.scanAllDrives != null ? 'disabled' :
+                  '' %>
                 />
                 Look in all volumes for photos and videos <% if
                 (locals.isDocker) { %> (<b>recommended</b> &mdash;
@@ -539,84 +557,95 @@ const settingsSections = [
                 requests. If you enable all volumes, PhotoStructure will request
                 access before synchronization starts.
               </p>
-              <% } %>
+              <% } %> <%- include('_setting-override', { settingName:
+              'scanPaths', override: locals.settingOverrides.scanPaths }) %>
 
-              <label class="path-component" for="scanPath">
-                <span class="scan-paths-heading"
-                  >Additional places to look:</span
+              <fieldset
+                id="scanPathsFieldset"
+                class="settings-control-fieldset"
+                <%= locals.settingOverrides.scanPaths != null ? 'disabled' : '' %>
+              >
+                <label
+                  class="path-component"
+                  for="scanPath"
+                  data-setting-name="scanPaths"
                 >
-                <div
-                  id="scanPaths"
-                  class="input-container"
-                  data-placeholder="Path to a folder with photos or videos"
-                  data-paths="<%= locals.jsonScanPaths %>"
-                ></div>
+                  <span class="scan-paths-heading"
+                    >Additional places to look:</span
+                  >
+                  <div
+                    id="scanPaths"
+                    class="input-container"
+                    data-placeholder="Path to a folder with photos or videos"
+                    data-paths="<%= locals.jsonScanPaths %>"
+                  ></div>
 
-                <div class="scan-path-buttons">
-                  <% if (!locals.isDocker) { %> <% if (!(locals.isElectron &&
-                  locals.isMac)) { %>
-                  <button
-                    id="scanMyPictures"
-                    class="btn-small"
-                    type="button"
-                    title="Click to add <%= locals.picturesPath %>"
-                    data-path="<%= locals.picturesPath %>"
-                  >
-                    <svg
-                      fill="#e3e3e3"
-                      version="1.1"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
+                  <div class="scan-path-buttons">
+                    <% if (!locals.isDocker) { %> <% if (!(locals.isElectron &&
+                    locals.isMac)) { %>
+                    <button
+                      id="scanMyPictures"
+                      class="btn-small"
+                      type="button"
+                      title="Click to add <%= locals.picturesPath %>"
+                      data-path="<%= locals.picturesPath %>"
                     >
-                      <path d="M0 0h24v24H0V0z" fill="none" />
-                      <path
-                        d="m5 17h14l-3.5-4.5-2.5 3.01-3.5-4.51zm15-11h-8l-2-2h-6c-1.1 0-1.99 0.9-1.99 2l-0.01 12c0 1.1 0.9 2 2 2h16c1.1 0 2-0.9 2-2v-10c0-1.1-0.9-2-2-2zm0 12h-16v-12h5.17l2 2h8.83z"
-                      />
-                    </svg>
-                    Add My Pictures folder
-                  </button>
-                  <% } %>
-                  <button
-                    class="btn-small select-directory hidden only-electron"
-                    type="button"
-                    title="Browse for a folder with photos or videos"
-                    data-properties="openDirectory,createDirectory"
-                    data-default-path="<%= locals.picturesPath %>"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      width="18"
-                      height="18"
+                      <svg
+                        fill="#e3e3e3"
+                        version="1.1"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path d="M0 0h24v24H0V0z" fill="none" />
+                        <path
+                          d="m5 17h14l-3.5-4.5-2.5 3.01-3.5-4.51zm15-11h-8l-2-2h-6c-1.1 0-1.99 0.9-1.99 2l-0.01 12c0 1.1 0.9 2 2 2h16c1.1 0 2-0.9 2-2v-10c0-1.1-0.9-2-2-2zm0 12h-16v-12h5.17l2 2h8.83z"
+                        />
+                      </svg>
+                      Add My Pictures folder
+                    </button>
+                    <% } %>
+                    <button
+                      class="btn-small select-directory hidden only-electron"
+                      type="button"
+                      title="Browse for a folder with photos or videos"
+                      data-properties="openDirectory,createDirectory"
+                      data-default-path="<%= locals.picturesPath %>"
                     >
-                      <path d="M0 0h24v24H0V0z" fill="none" />
-                      <path
-                        d="m14 16h2v-2h2v-2h-2v-2h-2v2h-2v2h2zm-10 4q-0.825 0-1.41-0.588t-0.588-1.41v-12q0-0.825 0.588-1.41t1.41-0.588h6l2 2h8q0.825 0 1.41 0.588t0.588 1.41v10q0 0.825-0.588 1.41t-1.41 0.588zm0-2h16v-10h-8.82l-2-2h-5.18zm0 0v-12z"
-                      />
-                    </svg>
-                    Add folder
-                  </button>
-                  <% } %>
-                  <button
-                    id="addScanPath"
-                    class="btn-small not-electron"
-                    type="button"
-                    title="Add a folder path"
-                  >
-                    <svg
-                      fill="#e3e3e3"
-                      version="1.1"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        width="18"
+                        height="18"
+                      >
+                        <path d="M0 0h24v24H0V0z" fill="none" />
+                        <path
+                          d="m14 16h2v-2h2v-2h-2v-2h-2v2h-2v2h2zm-10 4q-0.825 0-1.41-0.588t-0.588-1.41v-12q0-0.825 0.588-1.41t1.41-0.588h6l2 2h8q0.825 0 1.41 0.588t0.588 1.41v10q0 0.825-0.588 1.41t-1.41 0.588zm0-2h16v-10h-8.82l-2-2h-5.18zm0 0v-12z"
+                        />
+                      </svg>
+                      Add folder
+                    </button>
+                    <% } %>
+                    <button
+                      id="addScanPath"
+                      class="btn-small not-electron"
+                      type="button"
+                      title="Add a folder path"
                     >
-                      <path
-                        d="m14 16h2v-2h2v-2h-2v-2h-2v2h-2v2h2zm-10 4q-0.825 0-1.41-0.588t-0.588-1.41v-12q0-0.825 0.588-1.41t1.41-0.588h6l2 2h8q0.825 0 1.41 0.588t0.588 1.41v10q0 0.825-0.588 1.41t-1.41 0.588zm0-2h16v-10h-8.82l-2-2h-5.18zm0 0v-12z"
-                      />
-                    </svg>
-                    Add folder
-                  </button>
-                </div>
-              </label>
+                      <svg
+                        fill="#e3e3e3"
+                        version="1.1"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="m14 16h2v-2h2v-2h-2v-2h-2v2h-2v2h2zm-10 4q-0.825 0-1.41-0.588t-0.588-1.41v-12q0-0.825 0.588-1.41t1.41-0.588h6l2 2h8q0.825 0 1.41 0.588t0.588 1.41v10q0 0.825-0.588 1.41t-1.41 0.588zm0-2h16v-10h-8.82l-2-2h-5.18zm0 0v-12z"
+                        />
+                      </svg>
+                      Add folder
+                    </button>
+                  </div>
+                </label>
+              </fieldset>
 
               <div class="buttons card-nav">
                 <a class="back btn-small" href="#section2" rel="prev">Back</a>
@@ -682,7 +711,7 @@ const settingsSections = [
                 </ul>
                 <p>
                   If you don't have an active PhotoStructure
-                  <span class="tier plus">plus</span> subscription:
+                  <span class="plus">plus</span> subscription:
                 </p>
                 <ul>
                   <li>
@@ -698,8 +727,15 @@ const settingsSections = [
               <p>
                 Copy my photos and videos into my PhotoStructure library when I
                 have an active
-                <span class="tier plus">plus</span> subscription.
+                <span class="plus">plus</span> subscription.
               </p>
+
+              <%- include('_setting-override', { settingName: 'originalsDir',
+              override: locals.settingOverrides.originalsDir, beforeValue:
+              originalsDirCopyLead, afterValue: originalsDirCopyAfterValue,
+              afterSource: '.' }) %> <%- include('_setting-override', {
+              settingName: 'copyAssetsToLibrary', override:
+              locals.settingOverrides.copyAssetsToLibrary }) %>
 
               <p>
                 <label for="copyEnabled">
@@ -708,7 +744,11 @@ const settingsSections = [
                     name="copyAssets"
                     type="radio"
                     value="copyEnabled"
-                    <%= (locals.copyAssets || locals.welcome) ? 'checked' : '' %>
+                    data-setting-name="copyAssetsToLibrary"
+                    <%= locals.copyAssets ? 'checked' : '' %>
+                    <%=
+                    locals.settingOverrides.copyAssetsToLibrary != null ?
+                    'disabled' : '' %>
                   />
                   <i class="emj thumbs-up"></i>
                   <b>Yes,</b> please
@@ -722,11 +762,15 @@ const settingsSections = [
                     name="copyAssets"
                     type="radio"
                     value="copyDisabled"
-                    <%= (!locals.copyAssets && !locals.welcome) ? 'checked' : '' %>
+                    data-setting-name="copyAssetsToLibrary"
+                    <%= !locals.copyAssets ? 'checked' : '' %>
+                    <%=
+                    locals.settingOverrides.copyAssetsToLibrary != null ?
+                    'disabled' : '' %>
                   />
                   <i class="emj thumbs-down"></i>
                   <b>No thanks,</b> I like my photos and videos where they
-                  already are.<br />
+                  already are.
                 </label>
               </p>
 
@@ -826,14 +870,9 @@ const settingsSections = [
                   Set this to the highest-resolution display you’ll use to
                   browse your library.
                 </p>
-                <% if (locals.photoPreviewFitInsideOverride) { %>
-                <p class="warn message">
-                  <i class="emj warning"></i>
-                  <%= locals.photoPreviewFitInsideOverrideSource %> currently
-                  sets this to <%= locals.photoPreviewFitInside %> and takes
-                  precedence over settings.toml.
-                </p>
-                <% } %>
+                <%- include('_setting-override', { settingName:
+                'photoPreviewFitInside', override:
+                locals.settingOverrides.photoPreviewFitInside }) %>
                 <input
                   type="hidden"
                   name="photoPreviewFitInside"
@@ -851,7 +890,8 @@ const settingsSections = [
                     data-preview-resolution
                     data-setting-name="photoPreviewFitInside"
                     data-effective-value="<%= locals.photoPreviewFitInside %>"
-                    <%= locals.photoPreviewFitInsideOverride ? 'disabled' : '' %>
+                    <%= locals.settingOverrides.photoPreviewFitInside != null ?
+                    'disabled' : '' %>
                   />
                   <div
                     class="preview-resolution-stops stops-<%= locals.photoPreviewResolutionOptions.length %>"
@@ -910,14 +950,9 @@ const settingsSections = [
                   the video PhotoStructure prepares for playback. Videos your
                   browser can play directly stream at their original size.
                 </p>
-                <% if (locals.videoPreviewFitInsideOverride) { %>
-                <p class="warn message">
-                  <i class="emj warning"></i>
-                  <%= locals.videoPreviewFitInsideOverrideSource %> currently
-                  sets this to <%= locals.videoPreviewFitInside %> and takes
-                  precedence over settings.toml.
-                </p>
-                <% } %>
+                <%- include('_setting-override', { settingName:
+                'videoPreviewFitInside', override:
+                locals.settingOverrides.videoPreviewFitInside }) %>
                 <input
                   type="hidden"
                   name="videoPreviewFitInside"
@@ -935,7 +970,8 @@ const settingsSections = [
                     data-preview-resolution
                     data-setting-name="videoPreviewFitInside"
                     data-effective-value="<%= locals.videoPreviewFitInside %>"
-                    <%= locals.videoPreviewFitInsideOverride ? 'disabled' : '' %>
+                    <%= locals.settingOverrides.videoPreviewFitInside != null ?
+                    'disabled' : '' %>
                   />
                   <div
                     class="preview-resolution-stops stops-<%= locals.videoPreviewResolutionOptions.length %>"
@@ -995,15 +1031,10 @@ const settingsSections = [
                   Choose how much preview disk space PhotoStructure uses to keep
                   gallery thumbnails sharp and browsing responsive.
                 </p>
-                <% if (locals.previewCacheProfileOverride) { %>
-                <p class="warn message">
-                  <i class="emj warning"></i>
-                  <%= locals.previewCacheProfileOverrideSource %> currently
-                  selects <%=
-                  locals.previewCacheProfileOptions[locals.previewCacheProfileIndex].label
-                  %> and takes precedence over settings.toml.
-                </p>
-                <% } %> <% if (locals.previewPixelWastePctOverrideSource) { %>
+                <%- include('_setting-override', { settingName:
+                'previewCacheProfile', override:
+                locals.settingOverrides.previewCacheProfile }) %> <% if
+                (locals.previewPixelWastePctOverrideSource) { %>
                 <p class="warn message advanced-preview-override">
                   <i class="emj warning"></i>
                   <%= locals.previewPixelWastePctOverrideSource %> sets the
@@ -1034,7 +1065,9 @@ const settingsSections = [
                     step="1"
                     value="<%= locals.previewCacheProfileIndex %>"
                     data-preview-cache-profile
-                    <%= locals.previewCacheProfileOverride ? 'disabled' : '' %>
+                    data-setting-name="previewCacheProfile"
+                    <%= locals.settingOverrides.previewCacheProfile != null ?
+                    'disabled' : '' %>
                   />
                   <div
                     class="preview-resolution-stops preview-cache-profile-stops stops-<%= locals.previewCacheProfileOptions.length %>"
@@ -1094,6 +1127,9 @@ const settingsSections = [
                 <%= updatesSection.title %>
               </h2>
 
+              <%- include('_setting-override', { settingName: 'autoUpdateCheck',
+              override: locals.settingOverrides.autoUpdateCheck }) %>
+
               <p>
                 <a
                   class="external-link"
@@ -1112,6 +1148,9 @@ const settingsSections = [
                     type="radio"
                     value="true"
                     <%= locals.autoUpdateCheck === true ? 'checked' : '' %>
+                    <%= locals.settingOverrides.autoUpdateCheck != null ||
+                    locals.externalRequestsDisabledSource != null ? 'disabled'
+                    : '' %>
                   />
                   <i class="emj thumbs-up"></i>
                   <b>Yes,</b> PhotoStructure may check for updates automatically
@@ -1126,6 +1165,9 @@ const settingsSections = [
                     type="radio"
                     value="false"
                     <%= locals.autoUpdateCheck === false ? 'checked' : '' %>
+                    <%= locals.settingOverrides.autoUpdateCheck != null ||
+                    locals.externalRequestsDisabledSource != null ? 'disabled'
+                    : '' %>
                   />
                   <i class="emj thumbs-down"></i>
                   <b>No thanks,</b> do not check for updates automatically
@@ -1133,13 +1175,8 @@ const settingsSections = [
               </p>
 
               <h3>Update channel</h3>
-              <% if (locals.updateChannelEnvOverride) { %>
-              <p class="warn message">
-                <i class="emj warning"></i>
-                <tt>PS_UPDATE_CHANNEL</tt> is set in the environment and takes
-                precedence over this setting.
-              </p>
-              <% } %>
+              <%- include('_setting-override', { settingName: 'updateChannel',
+              override: locals.settingOverrides.updateChannel }) %>
               <p>
                 <label>
                   <input
@@ -1147,6 +1184,8 @@ const settingsSections = [
                     name="updateChannel"
                     value="beta"
                     <%= locals.updateChannel === 'beta' ? 'checked' : '' %>
+                    <%= locals.settingOverrides.updateChannel != null ?
+                    'disabled' : '' %>
                   />
                   <b>beta</b> — newer features, may have bugs
                 </label>
@@ -1158,6 +1197,8 @@ const settingsSections = [
                     name="updateChannel"
                     value="stable"
                     <%= locals.updateChannel === 'stable' ? 'checked' : '' %>
+                    <%= locals.settingOverrides.updateChannel != null ?
+                    'disabled' : '' %>
                   />
                   <b>stable</b> — may have <em>fewer</em> bugs
                 </label>
@@ -1214,6 +1255,9 @@ const settingsSections = [
                 </p>
               </details>
 
+              <%- include('_setting-override', { settingName: 'allowUserAgent',
+              override: locals.settingOverrides.allowUserAgent }) %>
+
               <p>
                 <label>
                   <input
@@ -1222,6 +1266,9 @@ const settingsSections = [
                     type="radio"
                     value="true"
                     <%= locals.allowUserAgent === true ? 'checked' : '' %>
+                    <%= locals.settingOverrides.allowUserAgent != null ||
+                    locals.externalRequestsDisabledSource != null ? 'disabled'
+                    : '' %>
                   />
                   <i class="emj thumbs-up"></i>
                   <b>Yes,</b> PhotoStructure may share installation information
@@ -1237,6 +1284,9 @@ const settingsSections = [
                     type="radio"
                     value="false"
                     <%= locals.allowUserAgent === false ? 'checked' : '' %>
+                    <%= locals.settingOverrides.allowUserAgent != null ||
+                    locals.externalRequestsDisabledSource != null ? 'disabled'
+                    : '' %>
                   />
                   <i class="emj thumbs-down"></i>
                   <b>No thanks,</b> do not share any installation information.
@@ -1256,6 +1306,9 @@ const settingsSections = [
                 >.
               </p>
 
+              <%- include('_setting-override', { settingName: 'reportErrors',
+              override: locals.settingOverrides.reportErrors }) %>
+
               <p>
                 <label>
                   <input
@@ -1264,6 +1317,9 @@ const settingsSections = [
                     type="radio"
                     value="true"
                     <%= locals.reportErrors ? 'checked' : '' %>
+                    <%= locals.settingOverrides.reportErrors != null ||
+                    locals.externalRequestsDisabledSource != null ? 'disabled'
+                    : '' %>
                   />
                   <i class="emj thumbs-up"></i>
                   <b>Yes,</b> PhotoStructure may report unexpected errors.
@@ -1278,6 +1334,9 @@ const settingsSections = [
                     type="radio"
                     value="false"
                     <%= !locals.reportErrors ? 'checked' : '' %>
+                    <%= locals.settingOverrides.reportErrors != null ||
+                    locals.externalRequestsDisabledSource != null ? 'disabled'
+                    : '' %>
                   />
                   <i class="emj thumbs-down"></i>
                   <b>No thanks,</b> do not send any error reports.
@@ -1297,13 +1356,8 @@ const settingsSections = [
               </h2>
 
               <h3>Log detail level</h3>
-              <% if (locals.logLevelEnvOverride) { %>
-              <p class="warn message">
-                <i class="emj warning"></i>
-                <tt>PS_LOG_LEVEL</tt> is set in the environment and takes
-                precedence over this setting.
-              </p>
-              <% } %>
+              <%- include('_setting-override', { settingName: 'logLevel',
+              override: locals.settingOverrides.logLevel }) %>
               <p>
                 <label>
                   <input
@@ -1311,6 +1365,8 @@ const settingsSections = [
                     name="logLevel"
                     value="fatal"
                     <%= locals.logLevel === 'fatal' ? 'checked' : '' %>
+                    <%= locals.settingOverrides.logLevel != null ? 'disabled' :
+                    '' %>
                   />
                   <b>fatal</b> — critical failures only
                 </label>
@@ -1322,6 +1378,8 @@ const settingsSections = [
                     name="logLevel"
                     value="error"
                     <%= locals.logLevel === 'error' ? 'checked' : '' %>
+                    <%= locals.settingOverrides.logLevel != null ? 'disabled' :
+                    '' %>
                   />
                   <b>error</b> — errors only
                 </label>
@@ -1333,6 +1391,8 @@ const settingsSections = [
                     name="logLevel"
                     value="warn"
                     <%= locals.logLevel === 'warn' ? 'checked' : '' %>
+                    <%= locals.settingOverrides.logLevel != null ? 'disabled' :
+                    '' %>
                   />
                   <b>warn</b> — recommended
                 </label>
@@ -1344,6 +1404,8 @@ const settingsSections = [
                     name="logLevel"
                     value="info"
                     <%= locals.logLevel === 'info' ? 'checked' : '' %>
+                    <%= locals.settingOverrides.logLevel != null ? 'disabled' :
+                    '' %>
                   />
                   <b>info</b> — more detail
                 </label>
@@ -1355,6 +1417,8 @@ const settingsSections = [
                     name="logLevel"
                     value="debug"
                     <%= locals.logLevel === 'debug' ? 'checked' : '' %>
+                    <%= locals.settingOverrides.logLevel != null ? 'disabled' :
+                    '' %>
                   />
                   <b>debug</b> — very verbose, impacts performance
                 </label>
