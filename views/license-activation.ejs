@@ -14,7 +14,10 @@
   <body id="app" class="<%= locals.bodyClass ?? '' %>">
     <main>
       <div class="container mh100vh flex-center">
-        <section class="section onboarding-card reveal center" role="alert">
+        <section
+          class="section onboarding-card license-activation-card reveal center"
+          role="alert"
+        >
           <div class="hero center mt4em">
             <img
               class="logo"
@@ -24,13 +27,18 @@
             <h1><%= locals.title %></h1>
           </div>
           <p><%= locals.message %></p>
-          <div class="buttons mt1em">
+          <%# Continue is the primary action when it is the only action, and the
+          secondary one when retrying is the better next step. %>
+          <div class="buttons license-activation-actions">
             <% if (locals.retryUrl) { %>
             <a class="btn" href="<%= locals.retryUrl %>">
               <%= locals.retryLabel ?? "Try activation again" %>
             </a>
             <% } %>
-            <a class="btn cancel" href="<%= locals.continueUrl %>">
+            <a
+              class="btn<%= locals.retryUrl ? ' grey' : '' %>"
+              href="<%= locals.continueUrl %>"
+            >
               Continue
             </a>
           </div>

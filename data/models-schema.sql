@@ -51,7 +51,6 @@ CREATE TABLE "AssetFile" (
   aperture REAL,
   focalLength TEXT,
   fps REAL,
-  geohash INTEGER,
   iso INTEGER,
   shutterSpeed TEXT,
   monochrome INTEGER,
@@ -67,7 +66,9 @@ CREATE TABLE "AssetFile" (
   updateCount INTEGER NOT NULL DEFAULT 0,
   lastVisitedGeneration INTEGER,
   capturedAtSrcDetail TEXT,
-  capturedAtZoneSrc TEXT
+  capturedAtZoneSrc TEXT,
+  latitude REAL,
+  longitude REAL
 ) STRICT;
 
 CREATE VIRTUAL TABLE AssetFileHash USING vec0 (
@@ -222,6 +223,8 @@ WHERE
   AND isPrimary = 1;
 
 CREATE INDEX AssetFile_sha_idx ON AssetFile (sha);
+
+CREATE INDEX AssetFile_updatedAt_idx ON AssetFile (updatedAt, assetId);
 
 CREATE UNIQUE INDEX AssetFile_uri_udx ON AssetFile (dirUriId, basename);
 

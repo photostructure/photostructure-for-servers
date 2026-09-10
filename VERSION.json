@@ -1,12 +1,12 @@
 {
-  "version": "2026.8.0-beta",
+  "version": "2026.9.1-beta",
   "versionMajor": 2026,
-  "versionMinor": 8,
-  "versionPatch": 0,
+  "versionMinor": 9,
+  "versionPatch": 1,
   "versionPrerelease": [
     "beta"
   ],
-  "release": "2026.8.0-beta+20260826090210",
-  "gitSha": "a96a77870abbe2f2d61dfcc6198781fb1e59a9d6",
-  "gitDate": "2026-08-26T16:02:10.000Z"
+  "release": "2026.9.1-beta+20260910095434",
+  "gitSha": "280615315d6d1cb9a765bf39b9abc7fd3e4396a9",
+  "gitDate": "2026-09-10T16:54:34.000Z"
 }

@@ -1,0 +1,17 @@
+-- Rebuild the derived AssetFileHash index with deterministic row ids.
+--
+-- Older writers let vec0 assign row ids. Those rows can occupy ids now owned
+-- by a different AssetFile, so the first deterministic-row-id writer must not
+-- publish the database with the old index still present.
+--
+-- ModelDbLifecycle runs migrations before ensureAssetFileHashTable(), which
+-- recreates the table empty. The normal sync-startup coverage check then
+-- rebuilds every row from AssetFile with its deterministic row id.
+--
+-- This DROP needs the vec0 module loaded: SQLite instantiates the vtab to call
+-- xDestroy, so without the module the statement fails with "no such module:
+-- vec0", and a failed migration is fatal. mkdb_() loads sqlite-vec whenever
+-- dbHasVec0VirtualTable() finds an existing vec0 table, independent of
+-- enableSimilaritySearch. Narrowing that branch would break every upgrade that
+-- still holds an index. Dropping when the table is absent needs no module.
+DROP TABLE IF EXISTS AssetFileHash;

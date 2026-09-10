@@ -15,8 +15,8 @@ contact_links:
     url: https://forum.photostructure.com/c/bug/8/l/latest
     about: Bugs are tracked on the PhotoStructure forum. Please search first — yours may already be reported.
   - name: Request a feature
-    url: https://forum.photostructure.com/c/feature-requests/7/l/latest?order=votes
-    about: Suggest and vote on new features. Votes help prioritize what gets built next.
+    url: https://forum.photostructure.com/c/feature-requests/7/l/latest
+    about: Feature requests are tracked on the PhotoStructure forum. Please search first — yours may already be requested.
   - name: Chat on Discord
     url: https://photostructure.com/go/discord
     about: Quick questions and community chat.
