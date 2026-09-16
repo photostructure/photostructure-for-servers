@@ -11,3 +11,4 @@ Dockerfile*
 docker-entrypoint.sh
 node_modules/
 start.sh
+stop.sh

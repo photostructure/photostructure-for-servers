@@ -1,0 +1,3 @@
+-- JS migration: see Migrations.asset_file_hash0_columns in src/library/db/Migrations.ts.
+-- Libraries that applied schema_v3 before its hash0 columns were added need
+-- a forward migration. Add only missing columns and preserve existing hashes.

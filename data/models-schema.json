@@ -474,6 +474,12 @@
           "type": "TEXT",
           "notnull": true,
           "pk": false
+        },
+        {
+          "name": "nativePath",
+          "type": "TEXT",
+          "notnull": false,
+          "pk": false
         }
       ]
     },
@@ -853,6 +859,12 @@
         {
           "name": "releasedAt",
           "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "_displayPath",
+          "type": "TEXT",
           "notnull": false,
           "pk": false
         }
