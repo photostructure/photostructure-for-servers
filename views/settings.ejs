@@ -81,7 +81,24 @@ const originalsDirCopyAfterValue =
     class="settings <%= locals.welcome ? 'onboarding' : '' %> <%= locals.bodyClass ?? '' %>"
   >
     <header class="reveal bg-color-gradient left-middle-right">
-      <div class="left">
+      <%# no-drag, as every other header's .left has: under macOS Electron
+      `_electron.scss` makes the whole header a window-drag surface, and without
+      this carve-out clicking any icon below drags the window instead of
+      navigating. %>
+      <div class="left no-drag">
+        <%# Deliberately not hide-on-s: this is the only way off this page, and
+        the three icons below already disappear on small screens. Omitted while
+        this page is the first-run welcome step, because no library exists yet
+        to return to. The glyph is Material's "home", matching the entry
+        AdminPageHeader.vue gives this destination on /health, /activity, and
+        /logs; the gradient header fills it, so it needs no `fill`. %> <% if
+        (!locals.welcome) { %>
+        <a class="vicon" href="/" title="Return to library">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+          </svg>
+        </a>
+        <% } %>
         <a class="vicon hide-on-s" href="/health" title="Health checks">
           <img class="svg" src="/images/health.svg" />
         </a>
@@ -279,7 +296,6 @@ const originalsDirCopyAfterValue =
               </p>
               <p>
                 <a
-                  class="external-link"
                   href="https://photostructure.com/guide/how-do-i-change-my-library/"
                   target="_blank"
                   rel="noopener"
@@ -296,7 +312,6 @@ const originalsDirCopyAfterValue =
               </p>
               <p>
                 <a
-                  class="external-link"
                   href="https://photostructure.com/guide/how-do-i-change-my-library/"
                   target="_blank"
                   rel="noopener"
@@ -313,7 +328,6 @@ const originalsDirCopyAfterValue =
                 <p>
                   Your
                   <a
-                    class="external-link"
                     href="https://photostructure.com/guide/library/"
                     target="_blank"
                     rel="noopener"
@@ -335,7 +349,6 @@ const originalsDirCopyAfterValue =
                   <li>
                     This folder must have
                     <a
-                      class="external-link"
                       href="https://photostructure.com/getting-started/how-much-disk-space-do-i-need-for-my-photostructure-library/"
                       target="_blank"
                       rel="noopener"
@@ -362,7 +375,6 @@ const originalsDirCopyAfterValue =
                 <p>
                   Your
                   <a
-                    class="external-link"
                     href="https://photostructure.com/guide/library/"
                     target="_blank"
                     rel="noopener"
@@ -413,7 +425,8 @@ const originalsDirCopyAfterValue =
               </label>
               <% }) %> <% } else { %>
               <p class="warning">
-                No volumes were found on your computer with at least <%=
+                No library folders were suggested automatically. Enter a
+                writable custom library directory on a volume with at least <%=
                 locals.minFreeAvailable %> free disk space.
               </p>
               <% } %>
@@ -495,7 +508,6 @@ const originalsDirCopyAfterValue =
                 <p>
                   PhotoStructure automatically ignores
                   <a
-                    class="external-link"
                     href="https://photostructure.com/guide/how-to-hide-directories/"
                     target="_blank"
                     rel="noopener"
@@ -508,7 +520,6 @@ const originalsDirCopyAfterValue =
                 </p>
                 <p>
                   <a
-                    class="external-link"
                     href="https://photostructure.com/guide/scan-paths/"
                     target="_blank"
                     rel="noopener"
@@ -520,7 +531,6 @@ const originalsDirCopyAfterValue =
               <p class="scan-hint">
                 Your library folder is always included. You can check all
                 <a
-                  class="external-link"
                   href="https://photostructure.com/guide/what-is-a-volume/"
                   target="_blank"
                   rel="noopener"
@@ -667,7 +677,6 @@ const originalsDirCopyAfterValue =
                 <p>
                   PhotoStructure can
                   <a
-                    class="external-link"
                     href="https://photostructure.com/getting-started/automatic-library-organization/"
                     target="_blank"
                     rel="noopener"
@@ -690,7 +699,6 @@ const originalsDirCopyAfterValue =
                     >
                     photos and videos automatically.
                     <a
-                      class="external-link"
                       href="https://photostructure.com/guide/what-do-you-mean-by-deduplicate/"
                       target="_blank"
                       rel="noopener"
@@ -833,7 +841,6 @@ const originalsDirCopyAfterValue =
                 <p>
                   For real-world numbers, see
                   <a
-                    class="external-link"
                     href="https://photostructure.com/getting-started/how-much-disk-space-do-i-need-for-my-photostructure-library/"
                     target="_blank"
                     rel="noopener"
@@ -1132,7 +1139,6 @@ const originalsDirCopyAfterValue =
 
               <p>
                 <a
-                  class="external-link"
                   href="https://forum.photostructure.com/t/new-in-v2023-10-automated-photostructure-version-checking/1956"
                   target="_blank"
                   rel="noopener"
@@ -1246,7 +1252,6 @@ const originalsDirCopyAfterValue =
                 </p>
                 <p>
                   <a
-                    class="external-link"
                     href="https://forum.photostructure.com/t/new-in-v2023-10-automated-photostructure-version-checking/1956"
                     target="_blank"
                     rel="noopener"
@@ -1298,7 +1303,6 @@ const originalsDirCopyAfterValue =
                 PhotoStructure's error reports help us detect, triage, and fix
                 issues.
                 <a
-                  class="external-link"
                   href="https://photostructure.com/guide/error-reports/"
                   target="_blank"
                   rel="noopener"

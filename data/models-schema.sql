@@ -99,7 +99,8 @@ CREATE TABLE "AssetTag" (
 
 CREATE TABLE DirUri (
   id INTEGER NOT NULL PRIMARY KEY,
-  uri TEXT NOT NULL
+  uri TEXT NOT NULL,
+  nativePath TEXT
 ) STRICT;
 
 CREATE TABLE "Example" (
@@ -182,6 +183,7 @@ CREATE TABLE "Tag" (
   _displayName TEXT,
   description TEXT,
   releasedAt INTEGER,
+  _displayPath TEXT,
   FOREIGN KEY (parentId) REFERENCES Tag (id)
 ) STRICT;
 
@@ -210,6 +212,8 @@ CREATE TABLE "migrations" (
 
 -- Indices
 CREATE INDEX AssetFile_assetId_idx ON AssetFile (assetId, flags);
+
+CREATE INDEX AssetFile_basename_idx ON AssetFile (basename, assetId);
 
 CREATE INDEX AssetFile_dirUriId_generation_idx ON AssetFile (dirUriId, lastVisitedGeneration);
 

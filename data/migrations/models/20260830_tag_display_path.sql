@@ -1,0 +1,9 @@
+-- JS migration: see Migrations.tag_display_path in src/library/db/Migrations.ts
+--
+-- Adds Tag._displayPath -- the tag's path with each segment replaced by that
+-- ancestor's _displayName -- so search can match one LIKE pattern against the
+-- displayed name and the stored path alike. See src/library/tag/TagDisplayPath.ts.
+--
+-- JS because the backfill needs a recursive CTE with a bound separator, and
+-- because the column has to be added conditionally for libraries that already
+-- ran a partial migration.

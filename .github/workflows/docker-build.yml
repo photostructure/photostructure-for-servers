@@ -10,6 +10,11 @@ on:
     tags:
       - v*
 
+# Images are built here, in the public distribution repo, from the tag that
+# publication pushed -- so their provenance and attestations name this repo and
+# this ref rather than a maintainer's workstation. Docker is a pull surface, so
+# it is allowed to lag the rest of the release by the length of this build.
+
 jobs:
   build:
     name: Build Docker Images
@@ -20,6 +25,41 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      # A tag's alias list spans several channels: a beta build moves :beta and
+      # :alpha, and a stable build also moves :stable and :latest. Authority over
+      # each of those lives on its own branch, and publication pushes the channel
+      # branches and the tag together, so a branch that has moved on means this
+      # release is stale.
+      #
+      # Stale means stale for the whole release, not just Docker: RELEASE.md
+      # retires re-running a superseded build in favour of a new patch version.
+      # So refuse the build outright rather than publish some subset of aliases
+      # -- checking only the tag's own channel would let a stable re-run sail
+      # past an unchanged main and roll :beta and :alpha backward.
+      #
+      # This runs before the build, so two releases overlapping inside one build
+      # window can still race. Releases are sequential and human-paced, and the
+      # stale-means-new-version rule keeps re-runs out, so that is accepted.
+      - name: Refuse to publish a superseded release
+        run: |
+          set -euo pipefail
+          TAG_VERSION=${GITHUB_REF_NAME#v}
+          case "$GITHUB_REF_NAME" in
+            *prealpha*) CHANNELS="" ;;
+            *alpha*)    CHANNELS="alpha" ;;
+            *beta*)     CHANNELS="alpha beta" ;;
+            *)          CHANNELS="alpha beta main" ;;
+          esac
+          for branch in $CHANNELS; do
+            git fetch --no-tags --depth=1 origin "$branch"
+            CURRENT=$(git show FETCH_HEAD:package.json | jq -er .version)
+            if [[ "$CURRENT" != "$TAG_VERSION" ]]; then
+              echo "::error::$GITHUB_REF_NAME is superseded -- origin/$branch is at $CURRENT. Release a new version instead of re-running this build."
+              exit 1
+            fi
+            echo "origin/$branch is at $TAG_VERSION"
+          done
 
       # https://docs.docker.com/build/ci/github-actions/manage-tags-labels/
       # https://github.com/docker/metadata-action#tags-input
@@ -90,3 +130,5 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          provenance: mode=max
+          sbom: true

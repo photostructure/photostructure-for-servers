@@ -10,7 +10,7 @@ FROM photostructure/base-tools-debian@sha256:69e6b13a45454d6188f04dfcc2c90d1270e
 # https://docs.docker.com/engine/reference/builder/#workdir
 WORKDIR /opt/photostructure
 
-COPY package.json package-lock.json ./
+COPY package.json package-lock.json .npmrc ./
 
 # base-tools-debian will install build-essential and libraries that native
 # node packages require to be compiled. We don't need the compilation
@@ -48,7 +48,7 @@ RUN apt-get update \
   tzdata \
   wget \
   && rm -rf /var/lib/apt/lists/* \
-  && npm install --force --location=global npm \
+  && npm install --force --location=global --min-release-age=3 npm \
   && groupmod --new-name photostructure node \
   && usermod --login photostructure \
   --home /home/photostructure --move-home node \
