@@ -1,0 +1,17 @@
+-- The sync progress panel's "recent activity" strip asks for the AssetFiles
+-- touched in the last minute (AssetFileDao.recentAssetsByUriRoot), once per
+-- poll, from the web process. Nothing indexed AssetFile.updatedAt, so SQLite
+-- drove the query from Asset and scanned the whole table: 193ms on a
+-- 100k-asset library.
+--
+-- assetId is part of the index, not a nicety: it makes the lookup covering.
+-- Measured on a 100k-asset library, comparing index shapes --
+--
+--   window       (updatedAt)              (updatedAt, assetId)
+--   179 assets   0.38ms, index used       0.31ms, covering
+--   10.8k        37.7ms, SCAN Asset       9.3ms, covering
+--
+-- With only updatedAt indexed, a wide window (a fast import touching thousands
+-- of files a minute) costs more in table lookups than a scan, so the planner
+-- drops the index and the fix evaporates exactly when the strip is busiest.
+CREATE INDEX IF NOT EXISTS AssetFile_updatedAt_idx ON AssetFile (updatedAt, assetId);

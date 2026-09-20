@@ -1,50 +1,34 @@
 #!/bin/sh
-# Copyright © 2024, PhotoStructure Inc.
+# Copyright © 2026, PhotoStructure Inc.
 
 # BY RUNNING THIS SOFTWARE YOU AGREE TO ALL THE TERMS OF THIS LICENSE:
 # https://photostructure.com/eula
 
 trap 'exit 130' INT
 
-die() {
-  echo
-  printf "%s\n" "$1"
-  echo
-  echo "Installation instructions are at https://photostructure.com/node/"
-  echo
-  echo "Please visit https://forum.photostructure.com/"
-  echo "or https://photostructure.com/go/discord for support"
-  echo
-  exit 1
-}
-
 DIR="$(dirname "$(realpath "$0")")"/
 
-setup_node() {
-  OS="$(uname -o 2>/dev/null || uname -s)"
+OS="$(uname -o 2>/dev/null || uname -s)"
 
-  if [ "$OS" = "Msys" ] || [ "$OS" = "Cygwin" ]; then
-    NODE="${NODE:-node.exe}"
-  else
-    NODE="${NODE:-node}"
-    if [ "$OS" = "Darwin" ]; then
-      PATH="$PATH:/opt/homebrew/bin:/opt/homebrew/sbin"
-    fi
-    export PATH="$PATH:/usr/local/bin:/usr/local/sbin:/opt/local/bin:/opt/local/sbin:/usr/lib/libraw:/usr/sbin:/usr/bin:/sbin:/bin"
+if [ "$OS" = "Msys" ] || [ "$OS" = "Cygwin" ]; then
+  NODE="${NODE:-node.exe}"
+else
+  NODE="${NODE:-node}"
+  # If NODE is an absolute path, add its directory to PATH so co-located
+  # tools (npm, npx) are also found. This is needed for nvm/fnm/volta
+  # installations where tools aren't in standard system directories.
+  NODE_DIR="$(dirname "$NODE")"
+  if [ "$NODE_DIR" != "." ]; then
+    PATH="$NODE_DIR:$PATH"
   fi
-
-  required_version="v18.16.0"
-  node_version=$("$NODE" -v) || die "Node.js is not installed.\nPlease install Node.js $required_version or higher."
-
-  if ! printf '%s\n%s\n' "$required_version" "$node_version" | sort -C -V; then
-    die "Node.js $required_version or higher is required. Current: $node_version"
+  if [ "$OS" = "Darwin" ]; then
+    PATH="$PATH:/opt/homebrew/bin:/opt/homebrew/sbin"
   fi
-}
+  export PATH="$PATH:/usr/local/bin:/usr/local/sbin:/opt/local/bin:/opt/local/sbin:/usr/lib/libraw:/usr/sbin:/usr/bin:/sbin:/bin"
+fi
 
 export NODE_ENV=production
 
-setup_node
-
-"$NODE" "$DIR/bin/bootstrap.js" "$@" || die "PhotoStructure setup failed."
+"$NODE" "$DIR/bin/bootstrap.js" "$@" || exit 1
 
 exec "$NODE" "$DIR/bin/photostructure.js" "$@"

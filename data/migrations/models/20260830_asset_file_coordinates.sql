@@ -1,0 +1,1 @@
+-- JS migration: see Migrations.asset_file_coordinates in src/library/db/Migrations.ts

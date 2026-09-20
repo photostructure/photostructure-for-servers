@@ -82,6 +82,36 @@
           "type": "INTEGER",
           "notnull": true,
           "pk": false
+        },
+        {
+          "name": "previewFingerprint",
+          "type": "TEXT",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "renderWidth",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "renderHeight",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "previewSourceMtime",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "previewSourceSize",
+          "type": "INTEGER",
+          "notnull": false,
+          "pk": false
         }
       ]
     },
@@ -257,12 +287,6 @@
           "pk": false
         },
         {
-          "name": "geohash",
-          "type": "INTEGER",
-          "notnull": false,
-          "pk": false
-        },
-        {
           "name": "iso",
           "type": "INTEGER",
           "notnull": false,
@@ -345,6 +369,30 @@
           "type": "INTEGER",
           "notnull": false,
           "pk": false
+        },
+        {
+          "name": "capturedAtSrcDetail",
+          "type": "TEXT",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "capturedAtZoneSrc",
+          "type": "TEXT",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "latitude",
+          "type": "REAL",
+          "notnull": false,
+          "pk": false
+        },
+        {
+          "name": "longitude",
+          "type": "REAL",
+          "notnull": false,
+          "pk": false
         }
       ]
     },
@@ -425,6 +473,12 @@
           "name": "uri",
           "type": "TEXT",
           "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "nativePath",
+          "type": "TEXT",
+          "notnull": false,
           "pk": false
         }
       ]
@@ -807,6 +861,12 @@
           "type": "INTEGER",
           "notnull": false,
           "pk": false
+        },
+        {
+          "name": "_displayPath",
+          "type": "TEXT",
+          "notnull": false,
+          "pk": false
         }
       ]
     },
@@ -858,6 +918,12 @@
           "name": "lastSeenAt",
           "type": "INTEGER",
           "notnull": true,
+          "pk": false
+        },
+        {
+          "name": "label",
+          "type": "TEXT",
+          "notnull": false,
           "pk": false
         }
       ]

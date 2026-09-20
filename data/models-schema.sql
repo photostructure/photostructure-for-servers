@@ -14,7 +14,12 @@ CREATE TABLE "Asset" (
   excludedAt INTEGER,
   createdAt INTEGER NOT NULL,
   updatedAt INTEGER NOT NULL,
-  updateCount INTEGER NOT NULL DEFAULT 0
+  updateCount INTEGER NOT NULL DEFAULT 0,
+  previewFingerprint TEXT,
+  renderWidth INTEGER,
+  renderHeight INTEGER,
+  previewSourceMtime INTEGER,
+  previewSourceSize INTEGER
 ) STRICT;
 
 CREATE TABLE "AssetFile" (
@@ -46,7 +51,6 @@ CREATE TABLE "AssetFile" (
   aperture REAL,
   focalLength TEXT,
   fps REAL,
-  geohash INTEGER,
   iso INTEGER,
   shutterSpeed TEXT,
   monochrome INTEGER,
@@ -60,8 +64,20 @@ CREATE TABLE "AssetFile" (
   createdAt INTEGER NOT NULL,
   updatedAt INTEGER NOT NULL,
   updateCount INTEGER NOT NULL DEFAULT 0,
-  lastVisitedGeneration INTEGER
+  lastVisitedGeneration INTEGER,
+  capturedAtSrcDetail TEXT,
+  capturedAtZoneSrc TEXT,
+  latitude REAL,
+  longitude REAL
 ) STRICT;
+
+CREATE VIRTUAL TABLE AssetFileHash USING vec0 (
+  assetFileId INTEGER,
+  lHash bit [192],
+  capturedAtLocal INTEGER,
+  capturedAtFuzzy INTEGER,
+  bname TEXT
+);
 
 CREATE TABLE "AssetRevision" (
   id INTEGER NOT NULL PRIMARY KEY,
@@ -83,7 +99,8 @@ CREATE TABLE "AssetTag" (
 
 CREATE TABLE DirUri (
   id INTEGER NOT NULL PRIMARY KEY,
-  uri TEXT NOT NULL
+  uri TEXT NOT NULL,
+  nativePath TEXT
 ) STRICT;
 
 CREATE TABLE "Example" (
@@ -166,6 +183,7 @@ CREATE TABLE "Tag" (
   _displayName TEXT,
   description TEXT,
   releasedAt INTEGER,
+  _displayPath TEXT,
   FOREIGN KEY (parentId) REFERENCES Tag (id)
 ) STRICT;
 
@@ -182,7 +200,8 @@ CREATE TABLE Volume (
   id INTEGER PRIMARY KEY,
   authority TEXT NOT NULL,
   mountPoint TEXT NOT NULL,
-  lastSeenAt INTEGER NOT NULL
+  lastSeenAt INTEGER NOT NULL,
+  label TEXT
 ) STRICT;
 
 CREATE TABLE "migrations" (
@@ -191,16 +210,12 @@ CREATE TABLE "migrations" (
   migration_time INTEGER NOT NULL
 ) STRICT;
 
-CREATE VIRTUAL TABLE tag_fts USING fts5 (
-  root,
-  path,
-  content = '',
-  contentless_delete = 1,
-  tokenize = 'unicode61'
-);
-
 -- Indices
 CREATE INDEX AssetFile_assetId_idx ON AssetFile (assetId, flags);
+
+CREATE INDEX AssetFile_basename_idx ON AssetFile (basename, assetId);
+
+CREATE INDEX AssetFile_dirUriId_generation_idx ON AssetFile (dirUriId, lastVisitedGeneration);
 
 CREATE INDEX AssetFile_imageDataHash_idx ON AssetFile (imageDataHash)
 WHERE
@@ -212,6 +227,8 @@ WHERE
   AND isPrimary = 1;
 
 CREATE INDEX AssetFile_sha_idx ON AssetFile (sha);
+
+CREATE INDEX AssetFile_updatedAt_idx ON AssetFile (updatedAt, assetId);
 
 CREATE UNIQUE INDEX AssetFile_uri_udx ON AssetFile (dirUriId, basename);
 
@@ -267,7 +284,5 @@ CREATE UNIQUE INDEX Volume_authority_mountpoint_udx ON Volume (authority, mountP
 CREATE UNIQUE INDEX example_name_udx ON Example (name);
 
 CREATE UNIQUE INDEX heartbeat_name_udx ON Heartbeat (name);
-
-CREATE INDEX idx_assetfile_generation ON AssetFile (lastVisitedGeneration);
 
 CREATE UNIQUE INDEX progressmeta_fk_name_udx ON ProgressMeta (progressId, name);

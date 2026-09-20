@@ -1,0 +1,120 @@
+[
+  {
+    "file": "legacy-10.12.6.sql",
+    "source": "tests/Test-10.12.6.photoslibrary/database/photos.db",
+    "sourceCommit": "b99f58636f83d0a4012217731d98fc98d4b7ed9f",
+    "sourceSHA256": {
+      "photos.db-wal": "d25edd46593b1c518d038b6a45af808f6123c163b5f9a2b77409cc8d8771d1e3",
+      "photos.db": "fabbfc64e89f0af93bfc8c1bdaf10be87219d6b7b60424b5bafff0b9de9ae651",
+      "photos.db-shm": "d8019d878c2d5412f67a398823f99e7cf22b93b5d4aef792e674e7c132f44162"
+    },
+    "fixtureSHA256": "c284c89d8396d3ac757b9d7a16654fc63bd9438424725a9f1f9caeaa06bd38cc",
+    "rowCounts": {
+      "LiGlobals": 1,
+      "RKMaster": 10,
+      "RKVersion": 10,
+      "RKKeyword": 29,
+      "RKKeywordForVersion": 15,
+      "RKAlbum": 23,
+      "RKAlbumVersion": 5,
+      "RKPerson": 12,
+      "RKFace": 7,
+      "RKPlace": 5,
+      "RKPlaceForVersion": 5
+    }
+  },
+  {
+    "file": "legacy-10.13.6.sql",
+    "source": "tests/Test-10.13.6.photoslibrary/database/photos.db",
+    "sourceCommit": "b99f58636f83d0a4012217731d98fc98d4b7ed9f",
+    "sourceSHA256": {
+      "photos.db-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "photos.db": "9df9e0a95cc01709c39626caada70876a412ac2943467b600b5ff724fbb4c62d",
+      "photos.db-shm": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb"
+    },
+    "fixtureSHA256": "aedaeaf8dc8aaf543de26c8936680f0a85456271d40edd6f3da5569fb7ee825f",
+    "rowCounts": {
+      "LiGlobals": 1,
+      "RKMaster": 7,
+      "RKVersion": 7,
+      "RKKeyword": 32,
+      "RKKeywordForVersion": 13,
+      "RKAlbum": 30,
+      "RKAlbumVersion": 5,
+      "RKPerson": 12,
+      "RKFace": 7,
+      "RKPlace": 9,
+      "RKPlaceForVersion": 5
+    }
+  },
+  {
+    "file": "legacy-10.14.6.sql",
+    "source": "tests/Test-10.14.6.photoslibrary/database/photos.db",
+    "sourceCommit": "b99f58636f83d0a4012217731d98fc98d4b7ed9f",
+    "sourceSHA256": {
+      "photos.db-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "photos.db": "d98a0fc209a105a6c7d57dad741eaaa48377618d7859cedce352c8ecc43b5d53",
+      "photos.db-shm": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb"
+    },
+    "fixtureSHA256": "266cc89ce9ce423e96e25c5b9eb38e45b7064fe5e86ea32c8c81352f58e7e46d",
+    "rowCounts": {
+      "LiGlobals": 1,
+      "RKMaster": 15,
+      "RKVersion": 13,
+      "RKKeyword": 30,
+      "RKKeywordForVersion": 13,
+      "RKAlbum": 30,
+      "RKAlbumVersion": 6,
+      "RKPerson": 11,
+      "RKFace": 10,
+      "RKPlace": 9,
+      "RKPlaceForVersion": 5
+    }
+  },
+  {
+    "file": "modern-10.15.1.sql",
+    "source": "tests/Test-10.15.1.photoslibrary/database/Photos.sqlite",
+    "sourceCommit": "b99f58636f83d0a4012217731d98fc98d4b7ed9f",
+    "sourceSHA256": {
+      "Photos.sqlite-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Photos.sqlite": "272d8c11af0f75714255894814cd814d408105e65d546eba9a4c2eedf67a68e8",
+      "Photos.sqlite-shm": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb"
+    },
+    "fixtureSHA256": "c89ab214a48e92d0c7e1386cdab72067b214267843d5072be1f11b70432d3e37",
+    "rowCounts": {
+      "Z_METADATA": 1,
+      "ZADDITIONALASSETATTRIBUTES": 7,
+      "ZASSETDESCRIPTION": 5,
+      "ZKEYWORD": 30,
+      "ZGENERICALBUM": 44,
+      "ZPERSON": 12,
+      "ZDETECTEDFACE": 7,
+      "ZGENERICASSET": 7,
+      "Z_1KEYWORDS": 13,
+      "Z_26ASSETS": 7
+    }
+  },
+  {
+    "file": "modern-12.0.0.dev-beta.sql",
+    "source": "tests/Test-12.0.0.dev-beta.photoslibrary/database/Photos.sqlite",
+    "sourceCommit": "b99f58636f83d0a4012217731d98fc98d4b7ed9f",
+    "sourceSHA256": {
+      "Photos.sqlite-wal": "45847d45e76b8b01eb04e7e81c292a77ac2caad9a5230def8203586d52eef432",
+      "Photos.sqlite": "9d622dfb55e96a5be66a8ab7b2536701c209c05953a0027e6318df5f28218621",
+      "Photos.sqlite-shm": "0e58b8918eb8e71952903f9d6cccf9c7da45d385a80c3f350f56414b22252fee"
+    },
+    "fixtureSHA256": "7a6a88e88061d0bb2d31d099c4babfcf4b67288ac385f368871eb5793975e977",
+    "rowCounts": {
+      "Z_METADATA": 1,
+      "ZASSET": 21,
+      "ZADDITIONALASSETATTRIBUTES": 21,
+      "ZASSETDESCRIPTION": 15,
+      "ZKEYWORD": 38,
+      "ZGENERICALBUM": 70,
+      "ZPERSON": 13,
+      "ZDETECTEDFACE": 12,
+      "Z_27ASSETS": 16,
+      "Z_1KEYWORDS": 26
+    }
+  }
+]

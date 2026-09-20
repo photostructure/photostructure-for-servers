@@ -9,8 +9,10 @@
       href="/app/settings.css<%= locals.cacheBuster ? '?_=' + locals.cacheBuster : '' %>"
       nonce="<%= locals.nonce %>"
     />
+    <%- include('_fouc-prevention') %>
   </head>
   <body id="app" class="<%= locals.bodyClass ?? '' %>">
+    <div class="drag-bar"></div>
     <main>
       <% if (locals.err) { %>
       <div class="error sticky message">
@@ -19,15 +21,22 @@
       <% } %>
 
       <div class="container mh100vh flex-center">
-        <div class="section reveal">
-          <form action="/welcome" method="post">
-            <div class="hero center mt4em">
-              <h2>Welcome to</h2>
-              <img
-                class="logo"
-                src="/images/logo-horizontal.svg"
-                alt="PhotoStructure"
-              />
+        <div class="section onboarding-card reveal">
+          <form
+            action="/welcome<%= locals.formQueryString ?? '' %>"
+            method="post"
+          >
+            <div class="hero center mt2em">
+              <h1 class="onboarding-logo-heading">
+                <img
+                  class="logo"
+                  src="/images/logo-horizontal.svg"
+                  alt="PhotoStructure"
+                />
+              </h1>
+              <% if (locals.version) { %>
+              <small class="version">v<%= locals.version %></small>
+              <% } %>
             </div>
 
             <div class="notes">
@@ -59,21 +68,17 @@
                   class="emj starry-night"
                   title="Let PhotoStructure work while you're sleeping"
                 ></i>
-                You may want to leave your computer running
-                <dfn tooltip="If this is a laptop, make sure it's plugged in!"
-                  >overnight</dfn
-                >
-                during your initial import.
+                You may want to leave your computer plugged in and running
+                overnight during your initial import.
               </div>
             </div>
 
             <div class="buttons mt1em">
-              <input
-                class="btn"
-                type="submit"
-                title="Choose a PhotoStructure plan"
-                value="Continue"
-              />
+              <%# No `title`: this button's destination depends on state (the
+              tools page, plan selection, or settings), so no tooltip can
+              describe it, and a tooltip that only repeats "Continue" is noise.
+              %>
+              <input class="btn" type="submit" value="Continue" autofocus />
             </div>
           </form>
         </div>

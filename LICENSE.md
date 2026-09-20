@@ -1,80 +1,130 @@
+**Version: September 17, 2026.** Effective when you accept it. See "Changes and
+other terms" below for later revisions.
 
-### PLEASE READ CAREFULLY BEFORE USING THIS PRODUCT
+This agreement is between you and PhotoStructure, Inc. ("we" or "us") for the
+PhotoStructure application and documentation (the "Software"). You agree by
+accepting during setup, or installing or using the Software after receiving
+notice that doing so means acceptance. If you disagree, do not use it;
+[uninstall it](https://photostructure.com/guide/uninstall/).
 
-This End-User License Agreement ("EULA") is a legal agreement between (a) You
-(either an individual or a single entity) and (b) PhotoStructure, Inc. (the
-authors and copyright holders) that governs your use of the Product (any
-software or hardware installed or made available by PhotoStructure, Inc.).
+## Your license and content
 
-**If you do not agree to the following terms of this license, please <a
-href="https://photostructure.com/faq/uninstall/" target="_blank">uninstall</a>
-the Product.**
+We grant you a non-exclusive license (we may license the Software to others) to
+install and run the Software on computers you own or control and keep backup
+copies. This license covers your household's use and your own individual
+business work, but not shared use by an organization's staff. Your household
+includes people living with you and family away temporarily, such as at school.
 
-### Copyright
+PhotoStructure Lite is free. Plus adds features and requires an active
+subscription, a Lifetime Plus license (no recurring payments), or a trial. One
+Plus license covers one household and multiple computers. Keep your Plus license
+and other credentials that activate or renew Plus within that household. When a
+subscription or trial ends, you can still open your library with Lite; Plus-only
+features may become unavailable. The
+[subscription terms](https://photostructure.com/legal/subscription-terms/)
+control billing, renewal, cancellation, and refunds; this agreement controls
+software use.
 
-The Product is protected by copyright and other intellectual property laws and
-treaties. PhotoStructure, Inc. retains the title, copyright, and all
-intellectual property rights in the Product.
+The Software is licensed, not sold. We retain our rights to it; you retain your
+rights to your photos, videos, tags, and other library content. You may not
+sell, rent, lend, sublicense, or distribute the Software or license credentials,
+or distribute modified versions, except for household sharing, our written
+permission, or rights under law or separate licenses.
 
-### License
+## Third-party software
 
-You may not separately publish, sell, market, distribute, lend, lease, rent, or
-sublicense the Product, software code, or license keys. The Product is licensed,
-not sold.
+Other authors' components and tools retain their separate licenses, which take
+precedence for that software. You may modify the Software for your own use and
+reverse engineer it to debug those modifications to the extent required by
+applicable law or included components' licenses. See the
+[third-party notices](https://photostructure.com/legal/3rd-party-licenses.txt)
+and notices with your installation for copying, modification, and redistribution
+rights.
 
-### Limitation of liability
+## Privacy and updates
 
-In no event and under no legal theory, whether in tort (including negligence),
-contract, or otherwise, unless required by applicable law (such as deliberate
-and grossly negligent acts) or agreed to in writing, shall any authors or
-copyright holders be liable to you for damages, including any direct, indirect,
-special, incidental, or consequential damages of any character arising as a
-result of this license or out of the use or inability to use the Product
-(including but not limited to damages for loss of goodwill, work stoppage,
-computer failure or malfunction, or any and all other commercial damages or
-losses).
+**PhotoStructure does not send your photos or videos to us.** Application error
+reporting is optional and controlled in Settings. Reports go to our
+error-tracking provider (currently Sentry) and may include system information,
+file paths, logs, error details, and your library-settings or Plus-account email
+address, but no photos or videos. See
+[report contents and controls](https://photostructure.com/guide/error-reports/)
+and our [privacy policy](https://photostructure.com/legal/privacy/).
 
-### Disclaimer of warranty
+Depending on your installation and settings, PhotoStructure may check for
+updates. The macOS and Windows desktop apps may download and install them; the
+Node edition may update and restart at startup. Use Settings for in-app checks
+and the
+[Node startup controls](https://photostructure.com/server/photostructure-for-node/#advanced-settings-in-startsh--bootstrapjs)
+for Node startup updates.
 
-The Product is provided "as is," without warranty of any kind, express or
-implied, including but not limited to the warranties of merchantability, fitness
-for a particular purpose and noninfringement. In no event shall the authors or
-copyright holders be liable for any claim, damages or other liability, whether
-in an action of contract, tort or otherwise, arising from, out of or in
-connection with the Product or the use or other dealings in the Product.
+We may update the Software at no extra charge to fix bugs, maintain security or
+compatibility, or improve features. Where required by law, we will give advance
+notice by email or another format you can keep, explaining the change, timing,
+and your options, and provide the required remedies. These terms cover updates
+unless you accept a replacement agreement.
 
-### Limitation on derivative works
+## Warranties and liability
 
-Except to the extent that such restriction is not permitted under applicable
-law, you are not permitted (and you agree not to) create or redistribute
-derivative works of the Product.
+**Nothing here limits consumer rights or remedies that cannot legally be
+waived,** including applicable repair, replacement, and refund rights.
 
-### Privacy and consent to use data
+Keep
+[separate, restorable backups](https://photostructure.com/guide/raid-is-not-a-backup/).
+Software and storage can fail.
 
-**The Product does not send your photos or videos to PhotoStructure, Inc.**
+**Residents of Québec: the following warranty disclaimers and liability limits
+do not apply to you to the extent prohibited by Québec's Consumer Protection
+Act.**
 
-The Product may periodically download and install updates. These updates may
-include bug fixes, security updates, and new features. Automatic updates may be
-disabled by the user via <a
-href="https://photostructure.com/getting-started/advanced-settings/"
-target="_blank">settings</a>.
+Subject to these rights, we provide the Software "as is" and disclaim express
+and implied warranties, including merchantability, fitness for a particular
+purpose, and noninfringement. We do not promise error-free operation or
+compatibility with every system.
 
-The Product may send error reports that contain limited file metadata via a
-third party (such as Sentry). Error reports may be <a
-href="https://photostructure.com/faq/error-reports/#how-to-opt-out-of-sending-error-reports"
-target="_blank">disabled by the user</a>.
+Subject to these rights, we are not liable for indirect or consequential losses
+or lost profits. Our total liability for all claims arising from the Software or
+this agreement is limited as follows:
 
-[//]: # "The URL above must be fully-qualified, as the EULA is included in the welcome page."
+- **Subscriptions:** capped at the fees you paid for PhotoStructure in the 12
+  months before the event giving rise to the claim.
+- **Lifetime Plus:** capped at what you paid for that license.
+- **Free use, including Lite and trials:** we exclude liability for damages.
 
-### Amendments to this Agreement
+For these calculations, include payments for PhotoStructure to us, Stripe, or
+another seller we authorize. If more than one cap applies, the highest applies.
+These exclusions and limits apply to contract, negligence, and other claims, but
+not fraud, intentional misconduct, gross negligence, death or personal injury
+caused by our or our employees' or agents' negligence, or other liability the
+law prohibits us from limiting.
 
-PhotoStructure, Inc. reserves the right, at its sole discretion, to modify or
-replace this Agreement at any time. If a revision is material we will provide at
-least 30 days' notice prior to any new terms taking effect. What constitutes a
-material change will be determined at our sole discretion.
+## Ending the agreement
 
-### Termination of use
+You may end this agreement by stopping use and removing your copies.
+**Uninstalling does not cancel renewal:** cancel through your
+[account](https://account.photostructure.com/) or by emailing us.
 
-Your rights under this EULA will terminate automatically if you fail to comply
-with any of its terms, in which case you must destroy all copies of the Product
-and return any component parts.
+We may end this agreement for a material breach, with notice explaining it and
+30 days to correct a correctable breach. Deliberate unauthorized distribution of
+the Software or license credentials may result in immediate termination.
+
+If we terminate, stop using and remove the Software; we will stop future
+subscription renewals. You keep your content, separate third-party license
+rights, and refund rights. An expired subscription does not, by itself, end this
+agreement or your right to use Lite. Ownership, warranty, and liability
+provisions survive for prior use.
+
+## Changes and other terms
+
+If part of this agreement cannot be enforced, the rest still applies.
+
+Before asking existing users to accept material changes, we will give at least
+30 days' notice on our website and, if we have your email address, by email. The
+notice will explain what changes and when. Revised terms apply going forward
+upon acceptance, with any consent required by law. Posting alone does not change
+your agreement. If you decline, you may keep using your existing version under
+the terms you accepted, subject to your license status, or stop using it and
+cancel renewal.
+
+For questions about this agreement, email
+[hello@photostructure.com](mailto:hello@photostructure.com).

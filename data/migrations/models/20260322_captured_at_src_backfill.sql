@@ -1,0 +1,2 @@
+-- JS migration: see Migrations.captured_at_src_backfill in src/library/db/Migrations.ts
+-- Decomposes legacy capturedAtSrc compound strings into atomic fields.

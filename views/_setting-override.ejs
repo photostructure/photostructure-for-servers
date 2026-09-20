@@ -1,0 +1,15 @@
+<% if (locals.override != null) { %>
+<span
+  class="setting-override-source"
+  data-setting-override="<%= locals.settingName %>"
+>
+  <%= locals.beforeValue ?? "Currently set to" %>
+  <code class="setting-override-value"
+    ><%= locals.override.effectiveValue %></code
+  ><%= locals.afterValue ?? "" %> <% if (locals.override.kind === "environment")
+  { %> by the <code><%= locals.override.source %></code> environment variable<%
+  } else if (locals.override.kind === "setting") { %> by the
+  <code><%= locals.override.source %></code> setting<% } else { %> by a
+  command-line option<% } %><%= locals.afterSource ?? "" %>
+</span>
+<% } %>

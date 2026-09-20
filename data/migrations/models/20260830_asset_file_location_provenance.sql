@@ -1,0 +1,1 @@
+-- JS migration: see Migrations.asset_file_location_provenance in src/library/db/Migrations.ts

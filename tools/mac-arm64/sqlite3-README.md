@@ -1,58 +1,36 @@
-# sqlite3
+# `sqlite3`
 
-This SQLite binary was created from
-<https://sqlite.org/> and compiled on macOS
-10.15 (Catalina)
+SQLite.org publishes only an x86_64 macOS binary, so this arm64 executable was
+built locally from the [SQLite 3.53.4](https://sqlite.org/releaselog/3_53_4.html)
+autoconf source archive.
 
-Unfortunately, the binaries published on sqlite.org are 32-bit, and macOS 10.13
-and later complain about 32-bit binaries, so we can't use the precompiled
-binaries from SQLite. See <https://support.apple.com/en-us/HT208436>.
+Source archive:
 
-Compiled using all defaults:
+- URL: <https://sqlite.org/2026/sqlite-autoconf-3530400.tar.gz>
+- SHA-256: `0e9483900e92cd5de8fd48d16bf9200145a61f7fd5be542a5ac81d8a9516eb9c`
+- Official SHA3-256: `454e45f61c6bd75b7420e7190732dea03ce6639c63ada47bbc592f67fc340338`
 
-(if curl fails due to curl: (60) SSL certificate problem: certificate has expired, `brew install curl`.)
+This executable was compiled locally, not downloaded as a binary.
 
-```sh
-bash # to avoid zsh
-
-brew install curl
-
-export YEAR="2025"
-export VERSION="3490100"
-
-source <(egrep "^(YEAR|VERSION)=" ~/src/photostructure/src/library/node_modules/better-sqlite3/deps/download.sh)
-
-export DEST=/tmp/sqlite-$VERSION
-
-mkdir -p $DEST \
-  && cd $DEST \
-  && curl https://sqlite.org/$YEAR/sqlite-autoconf-$VERSION.tar.gz | tar -xz --strip 1 \
-  && ./configure --enable-static-shell --enable-static --disable-readline --disable-shared \
-  && make clean \
-  && make -j `sysctl -n hw.physicalcpu` \
-  && strip sqlite3 \
-  && cp sqlite3 ~/src/photostructure/tools/mac-arm64/sqlite3
-  && make clean \
-  && arch -x86_64 make -j `sysctl -n hw.physicalcpu` \
-  && strip sqlite3 \
-  && cp sqlite3 ~/src/photostructure/tools/mac-x64/sqlite3
-```
-
-Validated that required dynamic libraries seem reasonable:
+## Reproduce
 
 ```sh
-$ otool -L sqlite3
-
-sqlite3:
-	/usr/lib/libedit.3.dylib (compatibility version 2.0.0, current version 3.0.0)
-	/usr/lib/libncurses.5.4.dylib (compatibility version 5.4.0, current version 5.4.0)
-	/usr/lib/libz.1.dylib (compatibility version 1.0.0, current version 1.2.5)
-	/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1226.10.1)
+SCRATCH="$(mktemp -d /tmp/phstr-sqlite-arm64-XXXXXX)"
+VERSION="3530400"
+curl -fsSL -o "$SCRATCH/sqlite.tar.gz" \
+  "https://sqlite.org/2026/sqlite-autoconf-$VERSION.tar.gz"
+mkdir -p "$SCRATCH/source"
+tar -xzf "$SCRATCH/sqlite.tar.gz" -C "$SCRATCH/source" --strip-components=1
+cd "$SCRATCH/source"
+./configure --enable-static --disable-shared --disable-readline
+make -j8
+strip sqlite3
 ```
 
-And that it compiled a 64-bit binary:
+## Verification
 
-```sh
-$ file sqlite3
-sqlite3: Mach-O 64-bit executable x86_64
-```
+- SHA-256: `0a9e943cf63b480cf42309b6c34c3e3617786a80725fab9a85e837e1826db6db`
+- `sqlite3 --version` reports `3.53.4`.
+- arm64 Mach-O executable whose dynamic dependencies are only
+  `/usr/lib/libz.1.dylib` and `/usr/lib/libSystem.B.dylib`.
+- An in-memory create/insert/select transaction returned `mac-tools-ok`.
