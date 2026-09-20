@@ -2,7 +2,7 @@
   "name": "photostructure",
   "productName": "PhotoStructure",
   "author": "PhotoStructure, Inc. <hello@photostructure.com>",
-  "version": "2026.9.4-beta",
+  "version": "2026.9.5",
   "license": "SEE LICENSE IN LICENSE.md",
   "description": "PhotoStructure for Servers",
   "homepage": "https://photostructure.com/server/photostructure-for-node/",
@@ -14,7 +14,7 @@
     "url": "https://forum.photostructure.com/c/bug/8"
   },
   "bin": {
-    "photostructure": "photostructure"
+    "photostructure": "photostructure.js"
   },
   "overrides": {
     "diff": "9.0.0",
@@ -23,9 +23,9 @@
   "dependencies": {
     "@iarna/toml": "2.2.5",
     "@parcel/watcher": "2.6.0",
-    "@photostructure/fs-metadata": "2.5.0",
+    "@photostructure/fs-metadata": "2.6.0",
     "@photostructure/knex-sqlite": "1.0.0",
-    "@photostructure/sqlite": "2.5.0",
+    "@photostructure/sqlite": "2.6.0",
     "@photostructure/sqlite-seeded-random": "1.0.2",
     "@photostructure/sqlite-vec": "2.0.1",
     "@photostructure/tz-lookup": "11.6.1",

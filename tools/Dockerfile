@@ -5,8 +5,8 @@
 # editions.
 #
 # https://github.com/photostructure/base-tools-debian
-# base-tools-debian 3d3b057. Digest, not tag: bump per PREFLIGHT-DEPS.md.
-FROM photostructure/base-tools-debian@sha256:69e6b13a45454d6188f04dfcc2c90d1270ee22d2564460d092a487e36e4693c2 AS base-tools
+# base-tools-debian c2c003c. Digest, not tag: bump per PREFLIGHT-DEPS.md.
+FROM photostructure/base-tools-debian@sha256:35dc01cb08e76bb563d81c2f67ae5403d5fe0179789870cf7093edfb4111076b AS base-tools
 
 FROM scratch AS export-stage
 COPY --from=base-tools /opt/photostructure/tools .

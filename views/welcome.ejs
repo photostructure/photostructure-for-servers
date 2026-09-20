@@ -74,13 +74,11 @@
             </div>
 
             <div class="buttons mt1em">
-              <input
-                class="btn"
-                type="submit"
-                title="Choose a PhotoStructure plan"
-                value="Continue"
-                autofocus
-              />
+              <%# No `title`: this button's destination depends on state (the
+              tools page, plan selection, or settings), so no tooltip can
+              describe it, and a tooltip that only repeats "Continue" is noise.
+              %>
+              <input class="btn" type="submit" value="Continue" autofocus />
             </div>
           </form>
         </div>

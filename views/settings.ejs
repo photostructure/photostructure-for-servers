@@ -20,15 +20,23 @@ const organizationSection = {
   icon: "file-cabinet",
   title: "Automatic organization",
 }
+const aggregationSection = {
+  id: "section-aggregation",
+  icon: "sheep",
+  title: "Deduplication",
+  advanced: true,
+}
 const previewSection = {
   id: "section5",
   icon: "camera",
   title: "Preview sizes",
+  advanced: true,
 }
 const updatesSection = {
   id: "section6",
   icon: "gift",
   title: "Updates",
+  advanced: true,
 }
 const privacySection = {
   id: "section7",
@@ -39,23 +47,39 @@ const loggingSection = {
   id: "section9",
   icon: "microscope",
   title: "Logging",
+  advanced: true,
 }
 const licenseSection = {
   id: "section10",
   icon: "scales",
   title: "License agreement",
 }
+// Sections flagged `advanced` load hidden behind a "Show advanced settings"
+// button, so a first visit sees only the cards everyone needs. They sit
+// together so one button (and one section-index entry) stands in for all of
+// them; Privacy stays visible above them because it is a consent choice.
+// Revealing is remembered by the browser. The hidden cards stay in the form,
+// so Save still posts every value. See revealAdvancedSettings in
+// src/fe/settings.ts.
 const settingsSections = [
   planSection,
   librarySection,
   scanSection,
   organizationSection,
+  privacySection,
+  aggregationSection,
   previewSection,
   updatesSection,
-  privacySection,
   loggingSection,
   licenseSection,
 ]
+const advancedSections = settingsSections.filter(section => section.advanced)
+// "Deduplication, preview sizes, updates, and logging"
+const advancedTitles = advancedSections.map((section, i) =>
+  i === 0 ? section.title : section.title.toLowerCase()
+)
+const advancedSummary =
+  advancedTitles.slice(0, -1).join(", ") + ", and " + advancedTitles.at(-1)
 const originalsDirCopyLead =
   "If enabled, PhotoStructure will copy your original photos and videos into"
 const originalsDirCopyAfterValue =
@@ -284,7 +308,11 @@ const originalsDirCopyAfterValue =
               <% if (locals.isDocker) { %> <% if (locals.currentLibraryDir) { %>
               <p>
                 Your library is
-                <tt id="currentLibraryDir"><%= locals.currentLibraryDir %></tt>.
+                <tt id="currentLibraryDir"><%= locals.currentLibraryDir %></tt
+                >.<% if (locals.currentLibraryLastOpened) { %>
+                <span id="currentLibraryLastOpened"
+                  ><%= locals.currentLibraryLastOpened %></span
+                ><% } %>
               </p>
               <p>
                 On Docker, your library's location is part of your container's
@@ -381,9 +409,11 @@ const originalsDirCopyAfterValue =
                     >PhotoStructure Library</a
                   >
                   is currently
-                  <tt id="currentLibraryDir"
-                    ><%= locals.currentLibraryDir %></tt
-                  >
+                  <tt id="currentLibraryDir"><%= locals.currentLibraryDir %></tt
+                  ><% if (locals.currentLibraryLastOpened) { %>.
+                  <span id="currentLibraryLastOpened"
+                    ><%= locals.currentLibraryLastOpened %></span
+                  ><% } %>
                 </p>
                 <p>
                   Changing your library location closes your current library and
@@ -416,6 +446,8 @@ const originalsDirCopyAfterValue =
                 </div>
                 <% } else if (ea.isLibrary) { %>
                 <div class="details">This is a PhotoStructure library.</div>
+                <% } %> <% if (ea.lastOpenedLabel) { %>
+                <div class="details"><%= ea.lastOpenedLabel %></div>
                 <% } %>
                 <div class="details">
                   (<%= ea.free %> available<% if (ea.label) { %>&nbsp;on <%=
@@ -784,434 +816,6 @@ const originalsDirCopyAfterValue =
 
               <div class="buttons card-nav">
                 <a class="back btn-small" href="#section3" rel="prev">Back</a>
-                <a class="next btn-small" href="#section5" rel="next">Next</a>
-              </div>
-            </div>
-
-            <div id="<%= previewSection.id %>" class="section">
-              <h2 id="preview-resolution-section">
-                <i class="emj med <%= previewSection.icon %>"></i>
-                <%= previewSection.title %>
-              </h2>
-
-              <p>
-                🚀 PhotoStructure uses previews (smaller copies) of your photos
-                and videos so your library loads quickly.
-              </p>
-
-              <%# This range is measured, not estimated. Watch the denominator:
-              one video notch on examples/ is +56% of total preview disk, but 2x
-              the MP4 bytes alone (135.6 vs 67.5 MB) -- see
-              _done/20260710-preview-resolution-settings.md. Re-measured across
-              all three sliders 2026-08-12. Re-measure before narrowing it. %>
-              <p>
-                📦 Moving any slider one notch to the right uses more preview
-                disk space — 10% more in some libraries, twice as much in
-                others.
-              </p>
-
-              <p class="preview-rebuild-note">
-                ⏳ Changing any of these values rebuilds your preview cache the
-                next time sync runs. Current previews keep working until their
-                replacements are ready, but large libraries may take several
-                days.
-              </p>
-
-              <details>
-                <summary class="more-details" title="Click to toggle details">
-                  <span class="visually-hidden"
-                    >Toggle preview size information</span
-                  >
-                </summary>
-                <p>
-                  Your original photos and videos are never changed. Each
-                  preview fits inside the size you pick, and a small photo is
-                  never blown up to fill a larger one.
-                </p>
-                <p>
-                  PhotoStructure keeps a few sizes of each photo and video:
-                  small ones for the gallery, larger ones for when you open
-                  something. <b>Browsing previews</b> sets how many in-between
-                  sizes are kept, and how sharp the gallery thumbnails look.
-                </p>
-                <p>
-                  Sizes up to 1440p are kept for both tall and wide screens. 4K
-                  and larger are kept for wide screens only.
-                </p>
-                <p>
-                  For real-world numbers, see
-                  <a
-                    href="https://photostructure.com/getting-started/how-much-disk-space-do-i-need-for-my-photostructure-library/"
-                    target="_blank"
-                    rel="noopener"
-                    >how much disk space PhotoStructure needs</a
-                  >.
-                </p>
-
-                <% if (locals.previewSavedValues.length > 0) { %>
-                <div
-                  class="preview-saved-values"
-                  aria-label="Currently saved preview settings in settings.toml"
-                >
-                  <p class="preview-saved-values-heading">
-                    <b>Currently saved</b>
-                    <span>settings.toml</span>
-                  </p>
-                  <dl>
-                    <% for (const saved of locals.previewSavedValues) { %>
-                    <div data-preview-saved-value>
-                      <dt><%= saved.label %></dt>
-                      <dd><code><%= saved.value %></code></dd>
-                    </div>
-                    <% } %>
-                  </dl>
-                </div>
-                <% } %>
-              </details>
-
-              <div class="preview-resolution-control">
-                <label for="photoPreviewFitInsideSlider">
-                  <b>📷 Photo size</b>
-                </label>
-                <p class="preview-resolution-note">
-                  Set this to the highest-resolution display you’ll use to
-                  browse your library.
-                </p>
-                <%- include('_setting-override', { settingName:
-                'photoPreviewFitInside', override:
-                locals.settingOverrides.photoPreviewFitInside }) %>
-                <input
-                  type="hidden"
-                  name="photoPreviewFitInside"
-                  value="<%= locals.photoPreviewFitInsideFileValue ?? '' %>"
-                />
-                <div class="preview-resolution-slider-shell">
-                  <input
-                    id="photoPreviewFitInsideSlider"
-                    type="range"
-                    min="0"
-                    max="<%= locals.photoPreviewResolutionOptions.length - 1 %>"
-                    step="1"
-                    value="<%= locals.photoPreviewFitInsideIndex %>"
-                    list="photoPreviewResolutionStops"
-                    data-preview-resolution
-                    data-setting-name="photoPreviewFitInside"
-                    data-effective-value="<%= locals.photoPreviewFitInside %>"
-                    <%= locals.settingOverrides.photoPreviewFitInside != null ?
-                    'disabled' : '' %>
-                  />
-                  <div
-                    class="preview-resolution-stops stops-<%= locals.photoPreviewResolutionOptions.length %>"
-                  >
-                    <% for (const [index, option] of
-                    locals.photoPreviewResolutionOptions.entries()) { %>
-                    <button
-                      type="button"
-                      data-resolution-stop="<%= index %>"
-                      data-resolution-value="<%= option.normalizedFitInside %>"
-                      data-resolution-label="<%= option.label %>"
-                      data-resolution-description="<%= option.description %>"
-                      <% if (option.saved) { %>
-                      title="<%= option.title %>"
-                      <% } else { %>
-                      title="Set photo previews to <%= option.label %> (fit inside <%= option.fitInside %>)"
-                      <% } %>
-                      aria-pressed="false"
-                    >
-                      <span class="preview-resolution-stop-label"
-                        ><%= option.label %></span
-                      >
-                      <span class="preview-resolution-stop-marks">
-                        <% if (option.normalizedFitInside ===
-                        locals.photoPreviewFitInsideDefault) { %>
-                        <span class="preview-resolution-stop-mark default"
-                          >default</span
-                        >
-                        <% } %> <% if (!option.saved &&
-                        locals.photoPreviewFitInsideFileValue != null &&
-                        locals.photoPreviewFitInsideFileValue !==
-                        locals.photoPreviewFitInsideDefault &&
-                        option.normalizedFitInside ===
-                        locals.photoPreviewFitInsideFileValue) { %>
-                        <span class="preview-resolution-stop-mark saved"
-                          >saved</span
-                        >
-                        <% } %>
-                      </span>
-                    </button>
-                    <% } %>
-                  </div>
-                  <output
-                    for="photoPreviewFitInsideSlider"
-                    data-resolution-output
-                  ></output>
-                </div>
-              </div>
-
-              <div class="preview-resolution-control">
-                <label for="videoPreviewFitInsideSlider">
-                  <b>🎬 Video size</b>
-                </label>
-                <p class="preview-resolution-note">
-                  This sets both the still frame shown before a video starts and
-                  the video PhotoStructure prepares for playback. Videos your
-                  browser can play directly stream at their original size.
-                </p>
-                <%- include('_setting-override', { settingName:
-                'videoPreviewFitInside', override:
-                locals.settingOverrides.videoPreviewFitInside }) %>
-                <input
-                  type="hidden"
-                  name="videoPreviewFitInside"
-                  value="<%= locals.videoPreviewFitInsideFileValue ?? '' %>"
-                />
-                <div class="preview-resolution-slider-shell">
-                  <input
-                    id="videoPreviewFitInsideSlider"
-                    type="range"
-                    min="0"
-                    max="<%= locals.videoPreviewResolutionOptions.length - 1 %>"
-                    step="1"
-                    value="<%= locals.videoPreviewFitInsideIndex %>"
-                    list="videoPreviewResolutionStops"
-                    data-preview-resolution
-                    data-setting-name="videoPreviewFitInside"
-                    data-effective-value="<%= locals.videoPreviewFitInside %>"
-                    <%= locals.settingOverrides.videoPreviewFitInside != null ?
-                    'disabled' : '' %>
-                  />
-                  <div
-                    class="preview-resolution-stops stops-<%= locals.videoPreviewResolutionOptions.length %>"
-                  >
-                    <% for (const [index, option] of
-                    locals.videoPreviewResolutionOptions.entries()) { %>
-                    <button
-                      type="button"
-                      data-resolution-stop="<%= index %>"
-                      data-resolution-value="<%= option.normalizedFitInside %>"
-                      data-resolution-label="<%= option.label %>"
-                      data-resolution-description="<%= option.description %>"
-                      <% if (option.saved) { %>
-                      title="<%= option.title %>"
-                      <% } else { %>
-                      title="Set video previews to <%= option.label %> (fit inside <%= option.fitInside %>)"
-                      <% } %>
-                      aria-pressed="false"
-                    >
-                      <span class="preview-resolution-stop-label"
-                        ><%= option.label %></span
-                      >
-                      <span class="preview-resolution-stop-marks">
-                        <% if (option.normalizedFitInside ===
-                        locals.videoPreviewFitInsideDefault) { %>
-                        <span class="preview-resolution-stop-mark default"
-                          >default</span
-                        >
-                        <% } %> <% if (!option.saved &&
-                        locals.videoPreviewFitInsideFileValue != null &&
-                        locals.videoPreviewFitInsideFileValue !==
-                        locals.videoPreviewFitInsideDefault &&
-                        option.normalizedFitInside ===
-                        locals.videoPreviewFitInsideFileValue) { %>
-                        <span class="preview-resolution-stop-mark saved"
-                          >saved</span
-                        >
-                        <% } %>
-                      </span>
-                    </button>
-                    <% } %>
-                  </div>
-                  <output
-                    for="videoPreviewFitInsideSlider"
-                    data-resolution-output
-                  ></output>
-                </div>
-              </div>
-
-              <div
-                class="preview-resolution-control preview-cache-profile-control"
-              >
-                <label for="previewCacheProfileSlider">
-                  <b>🏄 Browsing previews</b>
-                </label>
-                <p>
-                  Choose how much preview disk space PhotoStructure uses to keep
-                  gallery thumbnails sharp and browsing responsive.
-                </p>
-                <%- include('_setting-override', { settingName:
-                'previewCacheProfile', override:
-                locals.settingOverrides.previewCacheProfile }) %> <% if
-                (locals.previewPixelWastePctOverrideSource) { %>
-                <p class="warn message advanced-preview-override">
-                  <i class="emj warning"></i>
-                  <%= locals.previewPixelWastePctOverrideSource %> sets the
-                  advanced previewPixelWastePct setting to <%=
-                  locals.previewPixelWastePct %>%, which overrides part of this
-                  profile.
-                </p>
-                <% } %> <% if (locals.maxThumbnailLongEdgeOverrideSource) { %>
-                <p class="warn message advanced-preview-override">
-                  <i class="emj warning"></i>
-                  <%= locals.maxThumbnailLongEdgeOverrideSource %> sets the
-                  advanced maxThumbnailLongEdge setting to <%=
-                  locals.maxThumbnailLongEdge %> px, which overrides part of
-                  this profile.
-                </p>
-                <% } %>
-                <input
-                  type="hidden"
-                  name="previewCacheProfile"
-                  value="<%= locals.previewCacheProfileFileValue ?? '' %>"
-                />
-                <div class="preview-cache-profile-slider-shell">
-                  <input
-                    id="previewCacheProfileSlider"
-                    type="range"
-                    min="0"
-                    max="<%= locals.previewCacheProfileOptions.length - 1 %>"
-                    step="1"
-                    value="<%= locals.previewCacheProfileIndex %>"
-                    data-preview-cache-profile
-                    data-setting-name="previewCacheProfile"
-                    <%= locals.settingOverrides.previewCacheProfile != null ?
-                    'disabled' : '' %>
-                  />
-                  <div
-                    class="preview-resolution-stops preview-cache-profile-stops stops-<%= locals.previewCacheProfileOptions.length %>"
-                  >
-                    <% for (const [index, option] of
-                    locals.previewCacheProfileOptions.entries()) { %>
-                    <button
-                      type="button"
-                      data-preview-cache-profile-stop="<%= index %>"
-                      data-preview-cache-profile-value="<%= option.value %>"
-                      data-preview-cache-profile-label="<%= option.label %>"
-                      data-preview-cache-profile-description="<%= option.description %>"
-                      title="<%= option.title %>"
-                      aria-pressed="false"
-                    >
-                      <span class="preview-resolution-stop-label"
-                        ><%= option.label %></span
-                      >
-                    </button>
-                    <% } %>
-                  </div>
-                  <div class="preview-cache-profile-axis" aria-hidden="true">
-                    <span>Use less disk</span>
-                    <span>Sharper thumbnails, faster browsing</span>
-                  </div>
-                </div>
-              </div>
-
-              <datalist id="photoPreviewResolutionStops">
-                <% for (const [index, option] of
-                locals.photoPreviewResolutionOptions.entries()) { %>
-                <option
-                  value="<%= index %>"
-                  label="<%= option.label %>"
-                ></option>
-                <% } %>
-              </datalist>
-              <datalist id="videoPreviewResolutionStops">
-                <% for (const [index, option] of
-                locals.videoPreviewResolutionOptions.entries()) { %>
-                <option
-                  value="<%= index %>"
-                  label="<%= option.label %>"
-                ></option>
-                <% } %>
-              </datalist>
-
-              <div class="buttons card-nav">
-                <a class="back btn-small" href="#section4" rel="prev">Back</a>
-                <a class="next btn-small" href="#section6" rel="next">Next</a>
-              </div>
-            </div>
-
-            <div id="<%= updatesSection.id %>" class="section">
-              <h2 id="update-check-section">
-                <i class="emj med <%= updatesSection.icon %>"></i>
-                <%= updatesSection.title %>
-              </h2>
-
-              <%- include('_setting-override', { settingName: 'autoUpdateCheck',
-              override: locals.settingOverrides.autoUpdateCheck }) %>
-
-              <p>
-                <a
-                  href="https://forum.photostructure.com/t/new-in-v2023-10-automated-photostructure-version-checking/1956"
-                  target="_blank"
-                  rel="noopener"
-                  >Learn more about PhotoStructure updates</a
-                >.
-              </p>
-
-              <p>
-                <label>
-                  <input
-                    id="updateCheckDaily"
-                    name="autoUpdateCheck"
-                    type="radio"
-                    value="true"
-                    <%= locals.autoUpdateCheck === true ? 'checked' : '' %>
-                    <%= locals.settingOverrides.autoUpdateCheck != null ||
-                    locals.externalRequestsDisabledSource != null ? 'disabled'
-                    : '' %>
-                  />
-                  <i class="emj thumbs-up"></i>
-                  <b>Yes,</b> PhotoStructure may check for updates automatically
-                </label>
-              </p>
-
-              <p>
-                <label>
-                  <input
-                    id="updateCheckNone"
-                    name="autoUpdateCheck"
-                    type="radio"
-                    value="false"
-                    <%= locals.autoUpdateCheck === false ? 'checked' : '' %>
-                    <%= locals.settingOverrides.autoUpdateCheck != null ||
-                    locals.externalRequestsDisabledSource != null ? 'disabled'
-                    : '' %>
-                  />
-                  <i class="emj thumbs-down"></i>
-                  <b>No thanks,</b> do not check for updates automatically
-                </label>
-              </p>
-
-              <h3>Update channel</h3>
-              <%- include('_setting-override', { settingName: 'updateChannel',
-              override: locals.settingOverrides.updateChannel }) %>
-              <p>
-                <label>
-                  <input
-                    type="radio"
-                    name="updateChannel"
-                    value="beta"
-                    <%= locals.updateChannel === 'beta' ? 'checked' : '' %>
-                    <%= locals.settingOverrides.updateChannel != null ?
-                    'disabled' : '' %>
-                  />
-                  <b>beta</b> — newer features, may have bugs
-                </label>
-              </p>
-              <p>
-                <label>
-                  <input
-                    type="radio"
-                    name="updateChannel"
-                    value="stable"
-                    <%= locals.updateChannel === 'stable' ? 'checked' : '' %>
-                    <%= locals.settingOverrides.updateChannel != null ?
-                    'disabled' : '' %>
-                  />
-                  <b>stable</b> — may have <em>fewer</em> bugs
-                </label>
-              </p>
-
-              <div class="buttons card-nav">
-                <a class="back btn-small" href="#section5" rel="prev">Back</a>
                 <a class="next btn-small" href="#section7" rel="next">Next</a>
               </div>
             </div>
@@ -1348,12 +952,583 @@ const originalsDirCopyAfterValue =
               </p>
 
               <div class="buttons card-nav">
-                <a class="back btn-small" href="#section6" rel="prev">Back</a>
+                <a class="back btn-small" href="#section4" rel="prev">Back</a>
+                <a
+                  class="next btn-small"
+                  href="#section10"
+                  data-revealed-href="#<%= aggregationSection.id %>"
+                  rel="next"
+                  >Next</a
+                >
+              </div>
+            </div>
+
+            <div class="section advanced-reveal">
+              <button type="button" class="btn-small" data-reveal-advanced>
+                <i class="emj smol toolbox" aria-hidden="true"></i>
+                Show advanced settings
+              </button>
+              <p><%= advancedSummary %></p>
+            </div>
+
+            <div
+              id="<%= aggregationSection.id %>"
+              class="section advanced hidden"
+            >
+              <h2>
+                <i
+                  class="emj med <%= aggregationSection.icon %>"
+                  title="Dolly, the cloned sheep"
+                  aria-hidden="true"
+                ></i>
+                <%= aggregationSection.title %>
+              </h2>
+
+              <details>
+                <summary class="more-details" title="Click to toggle details">
+                  <span class="visually-hidden"
+                    >How Strict, Default, and Lenient group your photos</span
+                  >
+                </summary>
+                <p>
+                  When PhotoStructure decides that two or more files represent
+                  the same photo or video, it groups them together in the user
+                  interface to make your browsing easier. This decision is made
+                  after examining both image content as well as metadata like
+                  the captured-at time and exposure information.
+                </p>
+                <ul>
+                  <li>
+                    <b>Strict:</b> Group only very close matches. More copies of
+                    the same photo may appear separately.
+                  </li>
+                  <li>
+                    <b>Default:</b> Group typical copies and resized versions.
+                    Dates and other photo details help keep different shots
+                    apart.
+                  </li>
+                  <li>
+                    <b>Lenient:</b> Allow larger differences, such as color
+                    edits or changed dates. This can also group different photos
+                    that look alike. If you have backups from Google Photos and
+                    other cloud services that modified your originals, pick this
+                    option.
+                  </li>
+                </ul>
+                <% if (locals.aggregationModeOptions.some(option => option.value
+                === 'manual')) { %>
+                <p>
+                  <b>Manual</b> uses the custom matching rules saved for this
+                  library. Leave it selected to keep your current rules.
+                </p>
+                <% } %>
+                <p>
+                  Changing this setting checks your existing photos and videos
+                  again. Larger libraries take longer to finish.
+                </p>
+                <p>
+                  Read more about
+                  <a
+                    href="https://photostructure.com/guide/what-do-you-mean-by-deduplicate/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >deduplication</a
+                  >.
+                </p>
+              </details>
+
+              <div class="preview-resolution-control aggregation-mode-control">
+                <label for="aggregationModeSlider"
+                  >How should PhotoStructure deduplicate your media?</label
+                >
+                <%- include('_setting-override', { settingName:
+                'aggregationMode', override:
+                locals.settingOverrides.aggregationMode }) %> <% if
+                (locals.aggregationHasAdvancedOverrides) { %>
+                <p class="hint">
+                  Your advanced aggregation settings override parts of this
+                  mode.
+                </p>
+                <% } %>
+                <input
+                  type="hidden"
+                  name="aggregationMode"
+                  value="<%= locals.aggregationModeFileValue ?? '' %>"
+                />
+                <div class="preview-cache-profile-slider-shell">
+                  <input
+                    id="aggregationModeSlider"
+                    type="range"
+                    min="0"
+                    max="<%= locals.aggregationModeOptions.length - 1 %>"
+                    step="1"
+                    value="<%= locals.aggregationModeIndex %>"
+                    data-enum-setting
+                    data-setting-name="aggregationMode"
+                    <%= locals.settingOverrides.aggregationMode != null ? 'disabled' : '' %>
+                  />
+                  <div
+                    class="preview-resolution-stops stops-<%= locals.aggregationModeOptions.length %>"
+                  >
+                    <% for (const [index, option] of
+                    locals.aggregationModeOptions.entries()) { %>
+                    <button
+                      type="button"
+                      data-enum-stop="<%= index %>"
+                      data-enum-value="<%= option.value %>"
+                      data-enum-label="<%= option.label %>"
+                      data-enum-description="<%= option.description %>"
+                      title="<%= option.description %>"
+                      aria-pressed="false"
+                    >
+                      <span class="preview-resolution-stop-label"
+                        ><%= option.label %></span
+                      >
+                    </button>
+                    <% } %>
+                  </div>
+                </div>
+              </div>
+
+              <div class="buttons card-nav">
+                <a class="back btn-small" href="#section7" rel="prev">Back</a>
+                <a class="next btn-small" href="#section5" rel="next">Next</a>
+              </div>
+            </div>
+
+            <div id="<%= previewSection.id %>" class="section advanced hidden">
+              <h2 id="preview-resolution-section">
+                <i class="emj med <%= previewSection.icon %>"></i>
+                <%= previewSection.title %>
+              </h2>
+
+              <p>
+                PhotoStructure uses previews (smaller copies) of your photos and
+                videos so your library loads quickly.
+              </p>
+
+              <%# This range is measured, not estimated. Watch the denominator:
+              one video notch on examples/ is +56% of total preview disk, but 2x
+              the MP4 bytes alone (135.6 vs 67.5 MB) -- see
+              _done/20260710-preview-resolution-settings.md. Re-measured across
+              all three sliders 2026-08-12. Re-measure before narrowing it. %>
+              <p>
+                Moving any slider one notch to the right uses more preview disk
+                space — 10% more in some libraries, twice as much in others.
+              </p>
+
+              <p class="preview-rebuild-note">
+                Changing any of these values rebuilds your preview cache the
+                next time sync runs. Current previews keep working until their
+                replacements are ready, but large libraries may take several
+                days.
+              </p>
+
+              <details>
+                <summary class="more-details" title="Click to toggle details">
+                  <span class="visually-hidden"
+                    >Toggle preview size information</span
+                  >
+                </summary>
+                <p>
+                  Your original photos and videos are never changed. Each
+                  preview fits inside the size you pick, and a small photo is
+                  never blown up to fill a larger one.
+                </p>
+                <p>
+                  PhotoStructure keeps a few sizes of each photo and video:
+                  small ones for the gallery, larger ones for when you open
+                  something. <b>Browsing previews</b> sets how many in-between
+                  sizes are kept, and how sharp the gallery thumbnails look.
+                </p>
+                <p>
+                  Sizes up to 1440p are kept for both tall and wide screens. 4K
+                  and larger are kept for wide screens only.
+                </p>
+                <p>
+                  For real-world numbers, see
+                  <a
+                    href="https://photostructure.com/getting-started/how-much-disk-space-do-i-need-for-my-photostructure-library/"
+                    target="_blank"
+                    rel="noopener"
+                    >how much disk space PhotoStructure needs</a
+                  >.
+                </p>
+
+                <% if (locals.previewSavedValues.length > 0) { %>
+                <div
+                  class="preview-saved-values"
+                  aria-label="Currently saved preview settings in settings.toml"
+                >
+                  <p class="preview-saved-values-heading">
+                    <b>Currently saved</b>
+                    <span>settings.toml</span>
+                  </p>
+                  <dl>
+                    <% for (const saved of locals.previewSavedValues) { %>
+                    <div data-preview-saved-value>
+                      <dt><%= saved.label %></dt>
+                      <dd><code><%= saved.value %></code></dd>
+                    </div>
+                    <% } %>
+                  </dl>
+                </div>
+                <% } %>
+              </details>
+
+              <div class="preview-resolution-control">
+                <label for="photoPreviewFitInsideSlider">
+                  <b>📷 &nbsp; Photo size</b>
+                </label>
+                <p class="preview-resolution-note">
+                  Set this to the highest-resolution display you’ll use to
+                  browse your library.
+                </p>
+                <%- include('_setting-override', { settingName:
+                'photoPreviewFitInside', override:
+                locals.settingOverrides.photoPreviewFitInside }) %>
+                <input
+                  type="hidden"
+                  name="photoPreviewFitInside"
+                  value="<%= locals.photoPreviewFitInsideFileValue ?? '' %>"
+                />
+                <div class="preview-resolution-slider-shell">
+                  <input
+                    id="photoPreviewFitInsideSlider"
+                    type="range"
+                    min="0"
+                    max="<%= locals.photoPreviewResolutionOptions.length - 1 %>"
+                    step="1"
+                    value="<%= locals.photoPreviewFitInsideIndex %>"
+                    list="photoPreviewResolutionStops"
+                    data-preview-resolution
+                    data-setting-name="photoPreviewFitInside"
+                    data-effective-value="<%= locals.photoPreviewFitInside %>"
+                    <%= locals.settingOverrides.photoPreviewFitInside != null ?
+                    'disabled' : '' %>
+                  />
+                  <div
+                    class="preview-resolution-stops stops-<%= locals.photoPreviewResolutionOptions.length %>"
+                  >
+                    <% for (const [index, option] of
+                    locals.photoPreviewResolutionOptions.entries()) { %>
+                    <button
+                      type="button"
+                      data-resolution-stop="<%= index %>"
+                      data-resolution-value="<%= option.normalizedFitInside %>"
+                      data-resolution-label="<%= option.label %>"
+                      data-resolution-description="<%= option.description %>"
+                      <% if (option.saved) { %>
+                      title="<%= option.title %>"
+                      <% } else { %>
+                      title="Set photo previews to <%= option.label %> (fit inside <%= option.fitInside %>)"
+                      <% } %>
+                      aria-pressed="false"
+                    >
+                      <span class="preview-resolution-stop-label"
+                        ><%= option.label %></span
+                      >
+                      <span class="preview-resolution-stop-marks">
+                        <% if (option.normalizedFitInside ===
+                        locals.photoPreviewFitInsideDefault) { %>
+                        <span class="preview-resolution-stop-mark default"
+                          >default</span
+                        >
+                        <% } %> <% if (!option.saved &&
+                        locals.photoPreviewFitInsideFileValue != null &&
+                        locals.photoPreviewFitInsideFileValue !==
+                        locals.photoPreviewFitInsideDefault &&
+                        option.normalizedFitInside ===
+                        locals.photoPreviewFitInsideFileValue) { %>
+                        <span class="preview-resolution-stop-mark saved"
+                          >saved</span
+                        >
+                        <% } %>
+                      </span>
+                    </button>
+                    <% } %>
+                  </div>
+                  <output
+                    for="photoPreviewFitInsideSlider"
+                    data-resolution-output
+                  ></output>
+                </div>
+              </div>
+
+              <div class="preview-resolution-control">
+                <label for="videoPreviewFitInsideSlider">
+                  <b>🎬 &nbsp; Video size</b>
+                </label>
+                <p class="preview-resolution-note">
+                  This sets both the still frame shown before a video starts and
+                  the video PhotoStructure prepares for playback. Videos your
+                  browser can play directly stream at their original size.
+                </p>
+                <%- include('_setting-override', { settingName:
+                'videoPreviewFitInside', override:
+                locals.settingOverrides.videoPreviewFitInside }) %>
+                <input
+                  type="hidden"
+                  name="videoPreviewFitInside"
+                  value="<%= locals.videoPreviewFitInsideFileValue ?? '' %>"
+                />
+                <div class="preview-resolution-slider-shell">
+                  <input
+                    id="videoPreviewFitInsideSlider"
+                    type="range"
+                    min="0"
+                    max="<%= locals.videoPreviewResolutionOptions.length - 1 %>"
+                    step="1"
+                    value="<%= locals.videoPreviewFitInsideIndex %>"
+                    list="videoPreviewResolutionStops"
+                    data-preview-resolution
+                    data-setting-name="videoPreviewFitInside"
+                    data-effective-value="<%= locals.videoPreviewFitInside %>"
+                    <%= locals.settingOverrides.videoPreviewFitInside != null ?
+                    'disabled' : '' %>
+                  />
+                  <div
+                    class="preview-resolution-stops stops-<%= locals.videoPreviewResolutionOptions.length %>"
+                  >
+                    <% for (const [index, option] of
+                    locals.videoPreviewResolutionOptions.entries()) { %>
+                    <button
+                      type="button"
+                      data-resolution-stop="<%= index %>"
+                      data-resolution-value="<%= option.normalizedFitInside %>"
+                      data-resolution-label="<%= option.label %>"
+                      data-resolution-description="<%= option.description %>"
+                      <% if (option.saved) { %>
+                      title="<%= option.title %>"
+                      <% } else { %>
+                      title="Set video previews to <%= option.label %> (fit inside <%= option.fitInside %>)"
+                      <% } %>
+                      aria-pressed="false"
+                    >
+                      <span class="preview-resolution-stop-label"
+                        ><%= option.label %></span
+                      >
+                      <span class="preview-resolution-stop-marks">
+                        <% if (option.normalizedFitInside ===
+                        locals.videoPreviewFitInsideDefault) { %>
+                        <span class="preview-resolution-stop-mark default"
+                          >default</span
+                        >
+                        <% } %> <% if (!option.saved &&
+                        locals.videoPreviewFitInsideFileValue != null &&
+                        locals.videoPreviewFitInsideFileValue !==
+                        locals.videoPreviewFitInsideDefault &&
+                        option.normalizedFitInside ===
+                        locals.videoPreviewFitInsideFileValue) { %>
+                        <span class="preview-resolution-stop-mark saved"
+                          >saved</span
+                        >
+                        <% } %>
+                      </span>
+                    </button>
+                    <% } %>
+                  </div>
+                  <output
+                    for="videoPreviewFitInsideSlider"
+                    data-resolution-output
+                  ></output>
+                </div>
+              </div>
+
+              <div
+                class="preview-resolution-control preview-cache-profile-control"
+              >
+                <label for="previewCacheProfileSlider">
+                  <b>🏄 &nbsp; Browsing previews</b>
+                </label>
+                <p>
+                  Choose how much preview disk space PhotoStructure uses to keep
+                  gallery thumbnails sharp and browsing responsive.
+                </p>
+                <%- include('_setting-override', { settingName:
+                'previewCacheProfile', override:
+                locals.settingOverrides.previewCacheProfile }) %> <% if
+                (locals.previewPixelWastePctOverrideSource) { %>
+                <p class="warn message advanced-preview-override">
+                  <i class="emj warning"></i>
+                  <%= locals.previewPixelWastePctOverrideSource %> sets the
+                  advanced previewPixelWastePct setting to <%=
+                  locals.previewPixelWastePct %>%, which overrides part of this
+                  profile.
+                </p>
+                <% } %> <% if (locals.maxThumbnailLongEdgeOverrideSource) { %>
+                <p class="warn message advanced-preview-override">
+                  <i class="emj warning"></i>
+                  <%= locals.maxThumbnailLongEdgeOverrideSource %> sets the
+                  advanced maxThumbnailLongEdge setting to <%=
+                  locals.maxThumbnailLongEdge %> px, which overrides part of
+                  this profile.
+                </p>
+                <% } %>
+                <input
+                  type="hidden"
+                  name="previewCacheProfile"
+                  value="<%= locals.previewCacheProfileFileValue ?? '' %>"
+                />
+                <div class="preview-cache-profile-slider-shell">
+                  <input
+                    id="previewCacheProfileSlider"
+                    type="range"
+                    min="0"
+                    max="<%= locals.previewCacheProfileOptions.length - 1 %>"
+                    step="1"
+                    value="<%= locals.previewCacheProfileIndex %>"
+                    data-enum-setting
+                    data-setting-name="previewCacheProfile"
+                    <%= locals.settingOverrides.previewCacheProfile != null ?
+                    'disabled' : '' %>
+                  />
+                  <div
+                    class="preview-resolution-stops preview-cache-profile-stops stops-<%= locals.previewCacheProfileOptions.length %>"
+                  >
+                    <% for (const [index, option] of
+                    locals.previewCacheProfileOptions.entries()) { %>
+                    <button
+                      type="button"
+                      data-enum-stop="<%= index %>"
+                      data-enum-value="<%= option.value %>"
+                      data-enum-label="<%= option.label %>"
+                      data-enum-description="<%= option.description %>"
+                      title="<%= option.title %>"
+                      aria-pressed="false"
+                    >
+                      <span class="preview-resolution-stop-label"
+                        ><%= option.label %></span
+                      >
+                    </button>
+                    <% } %>
+                  </div>
+                  <div class="preview-cache-profile-axis" aria-hidden="true">
+                    <span>Use less disk</span>
+                    <span>Sharper thumbnails, faster browsing</span>
+                  </div>
+                </div>
+              </div>
+
+              <datalist id="photoPreviewResolutionStops">
+                <% for (const [index, option] of
+                locals.photoPreviewResolutionOptions.entries()) { %>
+                <option
+                  value="<%= index %>"
+                  label="<%= option.label %>"
+                ></option>
+                <% } %>
+              </datalist>
+              <datalist id="videoPreviewResolutionStops">
+                <% for (const [index, option] of
+                locals.videoPreviewResolutionOptions.entries()) { %>
+                <option
+                  value="<%= index %>"
+                  label="<%= option.label %>"
+                ></option>
+                <% } %>
+              </datalist>
+
+              <div class="buttons card-nav">
+                <a
+                  class="back btn-small"
+                  href="#<%= aggregationSection.id %>"
+                  rel="prev"
+                  >Back</a
+                >
+                <a class="next btn-small" href="#section6" rel="next">Next</a>
+              </div>
+            </div>
+
+            <div id="<%= updatesSection.id %>" class="section advanced hidden">
+              <h2 id="update-check-section">
+                <i class="emj med <%= updatesSection.icon %>"></i>
+                <%= updatesSection.title %>
+              </h2>
+
+              <%- include('_setting-override', { settingName: 'autoUpdateCheck',
+              override: locals.settingOverrides.autoUpdateCheck }) %>
+
+              <p>
+                <a
+                  href="https://forum.photostructure.com/t/new-in-v2023-10-automated-photostructure-version-checking/1956"
+                  target="_blank"
+                  rel="noopener"
+                  >Learn more about PhotoStructure updates</a
+                >.
+              </p>
+
+              <p>
+                <label>
+                  <input
+                    id="updateCheckDaily"
+                    name="autoUpdateCheck"
+                    type="radio"
+                    value="true"
+                    <%= locals.autoUpdateCheck === true ? 'checked' : '' %>
+                    <%= locals.settingOverrides.autoUpdateCheck != null ||
+                    locals.externalRequestsDisabledSource != null ? 'disabled'
+                    : '' %>
+                  />
+                  <i class="emj thumbs-up"></i>
+                  <b>Yes,</b> PhotoStructure may check for updates automatically
+                </label>
+              </p>
+
+              <p>
+                <label>
+                  <input
+                    id="updateCheckNone"
+                    name="autoUpdateCheck"
+                    type="radio"
+                    value="false"
+                    <%= locals.autoUpdateCheck === false ? 'checked' : '' %>
+                    <%= locals.settingOverrides.autoUpdateCheck != null ||
+                    locals.externalRequestsDisabledSource != null ? 'disabled'
+                    : '' %>
+                  />
+                  <i class="emj thumbs-down"></i>
+                  <b>No thanks,</b> do not check for updates automatically
+                </label>
+              </p>
+
+              <h3>Update channel</h3>
+              <%- include('_setting-override', { settingName: 'updateChannel',
+              override: locals.settingOverrides.updateChannel }) %>
+              <p>
+                <label>
+                  <input
+                    type="radio"
+                    name="updateChannel"
+                    value="beta"
+                    <%= locals.updateChannel === 'beta' ? 'checked' : '' %>
+                    <%= locals.settingOverrides.updateChannel != null ?
+                    'disabled' : '' %>
+                  />
+                  <b>beta</b> — newer features, may have bugs
+                </label>
+              </p>
+              <p>
+                <label>
+                  <input
+                    type="radio"
+                    name="updateChannel"
+                    value="stable"
+                    <%= locals.updateChannel === 'stable' ? 'checked' : '' %>
+                    <%= locals.settingOverrides.updateChannel != null ?
+                    'disabled' : '' %>
+                  />
+                  <b>stable</b> — may have <em>fewer</em> bugs
+                </label>
+              </p>
+
+              <div class="buttons card-nav">
+                <a class="back btn-small" href="#section5" rel="prev">Back</a>
                 <a class="next btn-small" href="#section9" rel="next">Next</a>
               </div>
             </div>
 
-            <div id="<%= loggingSection.id %>" class="section">
+            <div id="<%= loggingSection.id %>" class="section advanced hidden">
               <h2>
                 <i class="emj med <%= loggingSection.icon %>"></i>
                 <%= loggingSection.title %>
@@ -1429,7 +1604,7 @@ const originalsDirCopyAfterValue =
               </p>
 
               <div class="buttons card-nav">
-                <a class="back btn-small" href="#section7" rel="prev">Back</a>
+                <a class="back btn-small" href="#section6" rel="prev">Back</a>
                 <a class="next btn-small" href="#section10" rel="next">Next</a>
               </div>
             </div>
@@ -1460,7 +1635,13 @@ const originalsDirCopyAfterValue =
               </p>
               <% } %>
               <div class="buttons card-nav">
-                <a class="back btn-small" href="#section9" rel="prev">Back</a>
+                <a
+                  class="back btn-small"
+                  href="#section7"
+                  data-revealed-href="#section9"
+                  rel="prev"
+                  >Back</a
+                >
               </div>
             </div>
 
@@ -1521,8 +1702,16 @@ const originalsDirCopyAfterValue =
 
           <nav class="settings-toc section" aria-label="Settings sections">
             <ul>
-              <% for (const section of settingsSections) { %>
-              <li>
+              <% for (const section of settingsSections) { %> <% if (section ===
+              advancedSections[0]) { %>
+              <li class="advanced-reveal">
+                <button type="button" data-reveal-advanced>
+                  <i class="emj smol toolbox" aria-hidden="true"></i>
+                  Advanced settings&hellip;
+                </button>
+              </li>
+              <% } %>
+              <li class="<%= section.advanced ? 'advanced hidden' : '' %>">
                 <a href="#<%= section.id %>">
                   <i
                     class="emj smol <%= section.icon %>"

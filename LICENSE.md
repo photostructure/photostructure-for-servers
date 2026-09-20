@@ -1,4 +1,4 @@
-**Version: September 16, 2026.** Effective when you accept it. See "Changes and
+**Version: September 17, 2026.** Effective when you accept it. See "Changes and
 other terms" below for later revisions.
 
 This agreement is between you and PhotoStructure, Inc. ("we" or "us") for the
@@ -84,19 +84,19 @@ compatibility with every system.
 
 Subject to these rights, we are not liable for indirect or consequential losses
 or lost profits. Our total liability for all claims arising from the Software or
-this agreement is capped at:
+this agreement is limited as follows:
 
-- **Subscriptions:** the greater of US $50 or the fees you paid for
-  PhotoStructure in the 12 months before the event giving rise to the claim.
-- **Lifetime Plus:** the greater of US $50 or what you paid for that license.
-- **Free Lite or trials:** US $50.
+- **Subscriptions:** capped at the fees you paid for PhotoStructure in the 12
+  months before the event giving rise to the claim.
+- **Lifetime Plus:** capped at what you paid for that license.
+- **Free use, including Lite and trials:** we exclude liability for damages.
 
 For these calculations, include payments for PhotoStructure to us, Stripe, or
 another seller we authorize. If more than one cap applies, the highest applies.
-The limits apply to contract, negligence, and other claims, but not fraud,
-intentional misconduct, gross negligence, death or personal injury caused by our
-or our employees' or agents' negligence, or other liability the law prohibits us
-from limiting.
+These exclusions and limits apply to contract, negligence, and other claims, but
+not fraud, intentional misconduct, gross negligence, death or personal injury
+caused by our or our employees' or agents' negligence, or other liability the
+law prohibits us from limiting.
 
 ## Ending the agreement
 
@@ -116,8 +116,8 @@ provisions survive for prior use.
 
 ## Changes and other terms
 
-We keep dated versions, including the
-[previous agreement](https://photostructure.com/legal/eula-before-2026-09-16.txt).
+If part of this agreement cannot be enforced, the rest still applies.
+
 Before asking existing users to accept material changes, we will give at least
 30 days' notice on our website and, if we have your email address, by email. The
 notice will explain what changes and when. Revised terms apply going forward
@@ -126,6 +126,5 @@ your agreement. If you decline, you may keep using your existing version under
 the terms you accepted, subject to your license status, or stop using it and
 cancel renewal.
 
-If part of this agreement cannot be enforced, the rest still applies.
-
-Contact [hello@photostructure.com](mailto:hello@photostructure.com).
+For questions about this agreement, email
+[hello@photostructure.com](mailto:hello@photostructure.com).

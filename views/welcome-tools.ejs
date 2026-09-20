@@ -38,14 +38,21 @@
 
             <h2>
               <i class="emj tools"></i>
-              <% if (locals.isMac) { %> Install video tools <% } else if
+              <%# An imperative heading only when something is actually missing:
+              over "your tools are current" it contradicts the copy right below
+              it. %> <% if (locals.toolsCurrent) { %> Photo and video tools <% }
+              else if (locals.isMac) { %> Install video tools <% } else if
               (locals.canAutoInstall) { %> Install photo and video tools? <% }
               else { %> Photo and video tools <% } %>
             </h2>
 
             <p><%- locals.intro %></p>
-
-            <% if (locals.canAutoInstall) { %> <% if (locals.ackRequired) { %>
+            <% if (locals.installUnavailable && !locals.toolsCurrent) { %>
+            <div class="message warn">
+              <p><%= locals.installUnavailable %></p>
+            </div>
+            <% } %> <% if (locals.canAutoInstall) { %> <% if
+            (locals.ackRequired) { %>
             <div class="message error" id="ack-required">
               <p>
                 Please confirm you accept responsibility for any applicable
@@ -151,15 +158,16 @@
               <% } %>
             </div>
 
-            <% } else { %> <%# `isAutoInstallSupported()` is false: the page is
-            purely informational — nothing to consent to, nothing to record, and
-            Continue posts with no `consent` field. Reached in production on
+            <% } else { %> <%# Automatic installation is unavailable: the page
+            is purely informational — nothing to consent to, nothing to record,
+            and Continue posts with no `consent` field. Reached in production on
             musl hosts (Alpine, and `linuxserver`-style rebuilds), where
             conda-forge cannot solve an environment, and on any platform we
-            don't broker installs for. Continue is the only way such a user
-            records the requirements acknowledgment and escapes
-            `CodecConsentGate`'s redirect, so this branch is load-bearing —
-            preview it with `?dev=1&os=linux&glibc=0`. %> <% } %>
+            don't broker installs for, or when the tools directory is blocked.
+            Continue is the only way such a user records the requirements
+            acknowledgment and escapes `CodecConsentGate`'s redirect, so this
+            branch is load-bearing — preview it with `?dev=1&os=linux&glibc=0`.
+            %> <% } %>
 
             <div class="buttons mt1em">
               <input
