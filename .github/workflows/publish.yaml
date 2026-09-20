@@ -100,10 +100,12 @@ jobs:
           ARTIFACT_DIR="$RUNNER_TEMP/npm-package"
           mkdir "$ARTIFACT_DIR"
           npm pack --json --ignore-scripts --pack-destination "$ARTIFACT_DIR" > "$ARTIFACT_DIR/pack.json"
+          # npm 11 writes an array of manifests, npm 12 an object keyed by
+          # package name; `length` and `[.[]]` read both shapes.
           PACK_COUNT="$(jq 'length' "$ARTIFACT_DIR/pack.json")"
-          PACK_NAME="$(jq -r '.[0].name' "$ARTIFACT_DIR/pack.json")"
-          PACK_VERSION="$(jq -r '.[0].version' "$ARTIFACT_DIR/pack.json")"
-          PACK_FILENAME="$(jq -r '.[0].filename' "$ARTIFACT_DIR/pack.json")"
+          PACK_NAME="$(jq -r '[.[]][0].name' "$ARTIFACT_DIR/pack.json")"
+          PACK_VERSION="$(jq -r '[.[]][0].version' "$ARTIFACT_DIR/pack.json")"
+          PACK_FILENAME="$(jq -r '[.[]][0].filename' "$ARTIFACT_DIR/pack.json")"
           if [[ "$PACK_COUNT" != 1 || "$PACK_NAME" != photostructure || "$PACK_VERSION" != "$EXPECTED_VERSION" ]]; then
             echo "::error::Packed package identity does not match the signed release tag"
             exit 1
