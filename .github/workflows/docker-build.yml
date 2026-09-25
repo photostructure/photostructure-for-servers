@@ -27,21 +27,26 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       # A tag's alias list spans several channels: a beta build moves :beta and
-      # :alpha, and a stable build also moves :stable and :latest. Authority over
+      # :alpha, and a stable build moves :stable and :latest. Authority over
       # each of those lives on its own branch, and publication pushes the channel
       # branches and the tag together, so a branch that has moved on means this
       # release is stale.
       #
       # Stale means stale for the whole release, not just Docker: RELEASE.md
       # retires re-running a superseded build in favour of a new patch version.
-      # So refuse the build outright rather than publish some subset of aliases
-      # -- checking only the tag's own channel would let a stable re-run sail
-      # past an unchanged main and roll :beta and :alpha backward.
+      # So refuse the build outright rather than publish some subset of aliases.
       #
       # This runs before the build, so two releases overlapping inside one build
       # window can still race. Releases are sequential and human-paced, and the
       # stale-means-new-version rule keeps re-runs out, so that is accepted.
+      #
+      # A stable release also moves :beta and :alpha only when prepare-server.sh
+      # advanced those branches to it, which it skips while a beta line is in
+      # progress. So a stable tag is stale only when main has moved on, and each
+      # of :beta and :alpha moves only if its branch holds this exact version --
+      # a stable re-run cannot roll those users back.
       - name: Refuse to publish a superseded release
+        id: channels
         run: |
           set -euo pipefail
           TAG_VERSION=${GITHUB_REF_NAME#v}
@@ -51,14 +56,26 @@ jobs:
             *beta*)     CHANNELS="alpha beta" ;;
             *)          CHANNELS="alpha beta main" ;;
           esac
+          ALIASES=""
           for branch in $CHANNELS; do
             git fetch --no-tags --depth=1 origin "$branch"
             CURRENT=$(git show FETCH_HEAD:package.json | jq -er .version)
-            if [[ "$CURRENT" != "$TAG_VERSION" ]]; then
+            if [[ "$CURRENT" == "$TAG_VERSION" ]]; then
+              echo "origin/$branch is at $TAG_VERSION"
+              ALIASES="$ALIASES $branch"
+            elif [[ "$TAG_VERSION" != *-* && "$branch" != main ]]; then
+              echo "origin/$branch holds $CURRENT; leaving :$branch alone"
+            else
               echo "::error::$GITHUB_REF_NAME is superseded -- origin/$branch is at $CURRENT. Release a new version instead of re-running this build."
               exit 1
             fi
-            echo "origin/$branch is at $TAG_VERSION"
+          done
+          for alias in alpha beta; do
+            if [[ " $ALIASES " == *" $alias "* ]]; then
+              echo "$alias=true" >> "$GITHUB_OUTPUT"
+            else
+              echo "$alias=false" >> "$GITHUB_OUTPUT"
+            fi
           done
 
       # https://docs.docker.com/build/ci/github-actions/manage-tags-labels/
@@ -88,10 +105,10 @@ jobs:
             type=sha
             # tag every build as a :prealpha build
             type=raw,value=prealpha
-            # unless this is a prealpha build, update the :alpha tag
-            type=raw,value=alpha,enable=${{ !contains(github.ref_name, 'prealpha') }}
-            # always update the beta tag unless it's an *alpha build, so people on :beta get the beta and stable builds:
-            type=raw,value=beta,enable=${{ !contains(github.ref_name, 'alpha') }}
+            # :alpha and :beta move only when their server branch was advanced to
+            # this version (see "Refuse to publish a superseded release"):
+            type=raw,value=alpha,enable=${{ steps.channels.outputs.alpha == 'true' }}
+            type=raw,value=beta,enable=${{ steps.channels.outputs.beta == 'true' }}
             # if it's not *alpha or beta, update :stable, :latest, and version tags.
             type=raw,value=stable,enable=${{ !contains(github.ref_name, 'alpha') && !contains(github.ref_name, 'beta') }}
             type=raw,value=latest,enable=${{ !contains(github.ref_name, 'alpha') && !contains(github.ref_name, 'beta') }}
@@ -99,12 +116,12 @@ jobs:
             type=semver,pattern=v{{major}}.{{minor}},enable=${{ !contains(github.ref_name, 'alpha') && !contains(github.ref_name, 'beta') }}
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@1f40c72289eff860ee54a304f1438e3cff362e0a # v4.3.0
+        uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4.4.0
         with:
           platforms: arm64
 
       - name: Set up Buildx
-        uses: docker/setup-buildx-action@37fe631027851001ddb9b187196cc803df7f5f0e # v4.3.0
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
 
       - name: Log in to Docker Hub
         if: github.event_name != 'pull_request'
@@ -123,7 +140,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
   
       - name: Build and push
-        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
           context: .
           platforms: linux/amd64,linux/arm64

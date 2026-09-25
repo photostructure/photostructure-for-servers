@@ -20,6 +20,7 @@ jobs:
     outputs:
       version: ${{ steps.identity.outputs.version }}
       npm_tag: ${{ steps.identity.outputs.npm_tag }}
+      npm_tags: ${{ steps.tags.outputs.npm_tags }}
     steps:
       - name: Checkout the tagged release
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -74,6 +75,35 @@ jobs:
           fi
 
           printf 'version=%s\nnpm_tag=%s\n' "$VERSION" "$NPM_TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Find the dist-tags this release moves
+        id: tags
+        env:
+          VERSION: ${{ steps.identity.outputs.version }}
+          NPM_TAG: ${{ steps.identity.outputs.npm_tag }}
+        run: |
+          set -euo pipefail
+          # npm tags follow the server branches, as Docker's aliases do: latest
+          # and stable follow main, beta and alpha their own branches. Each
+          # entry is tag:branch:commit for a branch publication advanced to
+          # this version. Approval and the follow-up may come after a later
+          # release moves a branch, so they act on a tag only while its branch
+          # is still at that commit.
+          TAGS=""
+          for entry in latest:main stable:main beta:beta alpha:alpha; do
+            tag=${entry%%:*}
+            branch=${entry#*:}
+            git fetch --no-tags --depth=1 origin "$branch"
+            BRANCH_VERSION="$(git show FETCH_HEAD:package.json | jq -er .version)"
+            if [[ "$BRANCH_VERSION" == "$VERSION" ]]; then
+              TAGS="$TAGS $tag:$branch:$(git rev-parse FETCH_HEAD)"
+            fi
+          done
+          if [[ " $TAGS " != *" $NPM_TAG:"* ]]; then
+            echo "::error::The server branch behind npm's $NPM_TAG has moved past $VERSION. Release a new version instead of re-running this workflow."
+            exit 1
+          fi
+          printf 'npm_tags=%s\n' "${TAGS# }" >> "$GITHUB_OUTPUT"
 
   pack:
     name: Pack exact tagged artifact
@@ -193,3 +223,42 @@ jobs:
             echo "::error::Unsupported npm dist-tag: $NPM_TAG"
             exit 1
           fi
+
+      - name: Show approval check and dist-tag follow-up
+        env:
+          RELEASE_VERSION: ${{ needs.validate.outputs.version }}
+          NPM_TAG: ${{ needs.validate.outputs.npm_tag }}
+          NPM_TAGS: ${{ needs.validate.outputs.npm_tags }}
+        run: |
+          set -euo pipefail
+          # Approval publishes the staged tag, and the stage-only OIDC job
+          # cannot add others, so the maintainer runs these. Both blocks act on
+          # a tag only while its server branch is still at this release's
+          # commit, and stop on any git or npm failure.
+          REPO_URL="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY"
+          MOVES=""
+          # Emit command substitutions for the maintainer's terminal.
+          # shellcheck disable=SC2016
+          {
+            printf '%s\n' '### Finish the npm release' ''
+            for entry in $NPM_TAGS; do
+              IFS=: read -r tag branch commit <<< "$entry"
+              if [[ "$tag" != "$NPM_TAG" ]]; then
+                MOVES="$MOVES"$'\n'"  move $tag $branch $commit"
+                continue
+              fi
+              printf 'Approving this stage publishes `%s`. Approve only if this reports OK; otherwise run `npm stage reject`:\n\n' "$tag"
+              printf '%s\n' '```sh' '( set -euo pipefail'
+              printf '  head=$(git ls-remote --exit-code %s refs/heads/%s | cut -f1)\n' "$REPO_URL" "$branch"
+              printf '  if [ "$head" = %s ]; then echo "OK: %s still holds %s"\n' "$commit" "$branch" "$RELEASE_VERSION"
+              printf '  else echo "Reject this stage: %s moved past %s"; exit 1; fi )\n' "$branch" "$RELEASE_VERSION"
+              printf '%s\n' '```' ''
+            done
+            if [[ -n "$MOVES" ]]; then
+              printf '%s\n' 'After approval, move the other tags:' '' '```sh' '( set -euo pipefail' '  move() {'
+              printf '    head=$(git ls-remote --exit-code %s "refs/heads/$2" | cut -f1)\n' "$REPO_URL"
+              printf '    if [ "$head" = "$3" ]; then npm dist-tag add photostructure@%s "$1"\n' "$RELEASE_VERSION"
+              printf '    else echo "Left $1 alone: server branch $2 moved past %s"; fi\n' "$RELEASE_VERSION"
+              printf '%s\n' "  }$MOVES" '  npm dist-tag ls photostructure )' '```'
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

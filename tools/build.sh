@@ -1,7 +1,7 @@
 #!/bin/bash -ex
 
-# This builds static binaries using the currently-oldest-supported version of
-# Ubuntu and copies them into place
+# Extract both Linux architectures from the pinned base-tools image, check
+# SQLite against Ubuntu 24.04 NSS compat, then replace the bundled binaries.
 
 # To get buildx to support arm64: `apt install qemu-user-static`
 
@@ -22,6 +22,10 @@ done
 
 # Wait for both builds to finish:
 wait
+
+# Catch static-libc/NSS incompatibilities before replacing bundled binaries.
+bash "$TOOLS_DIR/test-sqlite-nss.sh" "$TOOLS_DIR/dist/amd64/sqlite3" linux/amd64
+bash "$TOOLS_DIR/test-sqlite-nss.sh" "$TOOLS_DIR/dist/arm64/sqlite3" linux/arm64
 
 # Move the binaries into place. Note that node's `os.arch()` returns "x64" for
 # amd64, so we do the translation here.
