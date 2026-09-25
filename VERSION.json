@@ -1,10 +1,10 @@
 {
-  "version": "2026.9.5",
+  "version": "2026.9.6",
   "versionMajor": 2026,
   "versionMinor": 9,
-  "versionPatch": 5,
+  "versionPatch": 6,
   "versionPrerelease": [],
-  "release": "2026.9.5+20260920114032",
-  "gitSha": "f16bbcbe957570d0e69200a147e6af1fb5a24e5d",
-  "gitDate": "2026-09-20T18:40:32.000Z"
+  "release": "2026.9.6+20260925115726",
+  "gitSha": "c9f96e737d4283c66aed9e7d5a9ea0ef39f1752d",
+  "gitDate": "2026-09-25T18:57:26.000Z"
 }

@@ -34,6 +34,6 @@ Linux, macOS, and Windows:
 
 ## Building Linux tools
 
-All Linux static binaries (LibRaw, SQLite, jpegtran) are built by [base-tools-debian](https://github.com/photostructure/base-tools-debian). The `Dockerfile` here simply extracts them from that image. Run `./build.sh` to produce linux-x64 and linux-arm64 binaries.
+Linux LibRaw, SQLite, and jpegtran binaries come from the pinned [base-tools-debian](https://github.com/photostructure/base-tools-debian) image. Run `./build.sh` to extract linux-x64 and linux-arm64 binaries; it checks that both SQLite CLIs run under Ubuntu 24.04 with `passwd: compat` before replacing the bundled copies.
 
 Windows and macOS x64 binaries are from the official SQLite distribution. The macOS arm64 binary is built from source (see `mac-arm64/sqlite3-README.md`).
