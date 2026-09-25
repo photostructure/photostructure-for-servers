@@ -4,8 +4,8 @@
 # <https://photostructure.com/server/photostructure-for-docker/>
 
 # https://github.com/photostructure/base-tools-debian/pkgs/container/base-tools-debian
-# base-tools-debian c2c003c. Digest, not tag: bump per PREFLIGHT-DEPS.md.
-FROM photostructure/base-tools-debian@sha256:35dc01cb08e76bb563d81c2f67ae5403d5fe0179789870cf7093edfb4111076b AS builder
+# base-tools-debian 27a782e. Digest, not tag: bump per PREFLIGHT-DEPS.md.
+FROM photostructure/base-tools-debian@sha256:243a928f1b3d087f7943de8d1e12747fbe976cfc2c57912436235ed446f43760 AS builder
 
 # https://docs.docker.com/engine/reference/builder/#workdir
 WORKDIR /opt/photostructure
@@ -26,7 +26,6 @@ FROM node:24-trixie-slim
 
 # External tool runtime dependencies:
 # libjpeg-turbo-progs includes `jpegtran` for lossless rotation and JPEG file validation
-# libreadline8 is for the static sqlite3 CLI tool
 # passwd provides `usermod` and `groupmod` (used below and by the entrypoint)
 # perl is required for exiftool
 # procps provides a working `ps -o lstart`
@@ -38,7 +37,6 @@ RUN apt-get update \
   && apt-get install -y --no-install-recommends \
   ca-certificates \
   libjpeg-turbo-progs \
-  libreadline8t64 \
   locales-all \
   passwd \
   perl \
