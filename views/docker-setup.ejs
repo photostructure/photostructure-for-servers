@@ -31,6 +31,7 @@
             <% } %>
           </div>
 
+          <% if (locals.isEphemeral) { %>
           <h1 id="docker-setup-title">Give your library a permanent home</h1>
           <p class="docker-setup-intro">
             Bind-mount <code><%= locals.libraryDir %></code>, then recreate this
@@ -56,6 +57,36 @@
               Open the compose wizard
             </a>
           </div>
+          <% } else { %>
+          <h1 id="docker-setup-title">
+            PhotoStructure cannot write to its library
+          </h1>
+          <p class="docker-setup-intro">
+            <code><%= locals.libraryDir %></code> is mounted, but PhotoStructure
+            runs as user <%= locals.uid %> and group <%= locals.gid %>, which
+            cannot write to it. Give that user ownership of the folder behind
+            it, then reload this page.
+          </p>
+
+          <div class="docker-setup-actions">
+            <a
+              class="docker-setup-docs-link"
+              href="https://photostructure.com/server/photostructure-for-docker/#puid"
+              target="_blank"
+              rel="noopener"
+            >
+              Docker permission instructions
+            </a>
+            <a
+              class="btn docker-setup-cta"
+              href="https://photostructure.com/server/photostructure-for-truenas/#permissions"
+              target="_blank"
+              rel="noopener"
+            >
+              TrueNAS permission instructions
+            </a>
+          </div>
+          <% } %>
         </section>
       </div>
     </main>

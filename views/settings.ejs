@@ -166,12 +166,35 @@ const originalsDirCopyAfterValue =
                 <%= planSection.title %>
               </h2>
 
-              <% if (locals.subNetworkAccessDisabled && locals.subRenewalStatus
-              !== "current") { %>
+              <% if (locals.subBrowserRenewalUrl) { %>
+              <div
+                class="<%= locals.subRenewalStatus === 'current' ? 'info' : 'warn' %> message"
+                <%- locals.subRenewalStatus === 'current' ? '' : 'role="alert"' %>
+              >
+                <p>
+                  PhotoStructure&rsquo;s noNetwork setting keeps it from
+                  renewing your license on its own. <% if
+                  (locals.subRenewalDueAt) { %> Renewal is due <%=
+                  locals.subRenewalDueAt %>. <% } %> <% if
+                  (locals.subLicenseStopsAt) { %> Your license stops working <%=
+                  locals.subLicenseStopsAt %>. <% } %>
+                </p>
+                <p>
+                  <a href="<%= locals.subBrowserRenewalUrl %>"
+                    >Renew in your browser</a
+                  >
+                </p>
+                <p>
+                  Browser renewal needs a browser that can reach both this
+                  library and account.photostructure.com.
+                </p>
+              </div>
+              <% } else if (locals.subActivationDisabled &&
+              locals.subRenewalStatus !== "current") { %>
               <div class="warn message" role="alert">
                 <p>
-                  PhotoStructure is configured not to use the network, so your
-                  license can&rsquo;t renew or activate.
+                  PhotoStructure&rsquo;s optOut setting forbids contacting the
+                  account server, so your license can&rsquo;t renew or activate.
                 </p>
               </div>
               <% } %> <% if (locals.subRenewalStatus === "pending" &&
@@ -198,7 +221,7 @@ const originalsDirCopyAfterValue =
                   renewal. <% } %> <% } %>
                 </p>
               </div>
-              <% } else { %> <% if (!locals.subNetworkAccessDisabled &&
+              <% } else { %> <% if (!locals.subActivationDisabled &&
               locals.subRenewalStatus === "reactivation_required") { %>
               <div class="warn message" role="alert">
                 <p>Your saved license doesn&rsquo;t match this installation.</p>
@@ -224,32 +247,34 @@ const originalsDirCopyAfterValue =
                   renewal. <% } else { %> Re-enable automatic renewal. <% } %>
                 </p>
               </div>
-              <% } %> <% if (!locals.subNetworkAccessDisabled &&
+              <% } %> <% if (!locals.subActivationDisabled &&
               locals.subNeedsActivation) { %>
               <div class="info message">
                 <p>
                   <a href="/plans/activate?then=/settings"
                     >Activate this installation</a
                   >
-                  so your <span class="plus">plus</span> license can renew
-                  automatically.
+                  <% if (locals.subNetworkAccessDisabled) { %> so you can renew
+                  your <span class="plus">PLUS</span> license in your browser.
+                  <% } else { %> so your <span class="plus">PLUS</span> license
+                  can renew automatically. <% } %>
                 </p>
               </div>
               <% } %> <% if (locals.subTier === "lite") { %>
               <p>
                 You're using PhotoStructure
-                <span class="<%= locals.subTier %>"><%= locals.subTier %></span
+                <span class="lite">LITE</span
                 >.
               </p>
               <% if (locals.subRenewalStatus) { %>
               <p>
-                Your <span class="plus">plus</span> license isn&rsquo;t
+                Your <span class="plus">PLUS</span> license isn&rsquo;t
                 currently active.
               </p>
-              <% } else if (!locals.subNetworkAccessDisabled) { %>
+              <% } else if (!locals.subActivationDisabled) { %>
               <p>
                 PhotoStructure
-                <span class="plus">plus</span> keeps your photos safe by
+                <span class="plus">PLUS</span> keeps your photos safe by
                 validating and organizing them automatically, and helps fund
                 future development.
               </p>
@@ -257,7 +282,7 @@ const originalsDirCopyAfterValue =
                 <b
                   ><a href="/plans/pick?then=/settings"
                     >Start your 15 day free trial of
-                    <span class="plus">plus</span> today</a
+                    <span class="plus">PLUS</span> today</a
                   ></b
                 >
               </p>
@@ -271,11 +296,11 @@ const originalsDirCopyAfterValue =
               <% } %> <% } else if (locals.subLifetime) { %>
               <p>
                 Your PhotoStructure <span class="plus">Lifetime</span> plan
-                keeps this installation on <span class="plus">plus</span>.
+                keeps this installation on <span class="plus">PLUS</span>.
               </p>
               <% } else if (locals.subTrial) { %>
               <p>
-                <span class="plus">plus</span> trial<% if (locals.subExpiresAt)
+                <span class="plus">PLUS</span> trial<% if (locals.subExpiresAt)
                 { %> &mdash; expires <%= locals.subExpiresAt %><% } %>.
               </p>
               <p>
@@ -283,7 +308,7 @@ const originalsDirCopyAfterValue =
               </p>
               <% } else { %>
               <p>
-                Your <span class="plus">plus</span>
+                Your <span class="plus">PLUS</span>
                 subscription keeps PhotoStructure going!
               </p>
               <% if (locals.subExpiresAt) { %>
@@ -751,7 +776,7 @@ const originalsDirCopyAfterValue =
                 </ul>
                 <p>
                   If you don't have an active PhotoStructure
-                  <span class="plus">plus</span> subscription:
+                  <span class="plus">PLUS</span> subscription:
                 </p>
                 <ul>
                   <li>
@@ -767,7 +792,7 @@ const originalsDirCopyAfterValue =
               <p>
                 Copy my photos and videos into my PhotoStructure library when I
                 have an active
-                <span class="plus">plus</span> subscription.
+                <span class="plus">PLUS</span> subscription.
               </p>
 
               <%- include('_setting-override', { settingName: 'originalsDir',
@@ -904,8 +929,10 @@ const originalsDirCopyAfterValue =
 
               <h3>Error reports</h3>
               <p>
-                PhotoStructure's error reports help us detect, triage, and fix
-                issues.
+                Error reports are used only to find and fix problems in
+                PhotoStructure, and are never sold. A report can include the
+                path of the file involved, recent log messages, system details,
+                and your email address, but never your photos or videos.
                 <a
                   href="https://photostructure.com/guide/error-reports/"
                   target="_blank"
@@ -924,7 +951,8 @@ const originalsDirCopyAfterValue =
                     name="reportErrors"
                     type="radio"
                     value="true"
-                    <%= locals.reportErrors ? 'checked' : '' %>
+                    required
+                    <%= locals.reportErrors === true ? 'checked' : '' %>
                     <%= locals.settingOverrides.reportErrors != null ||
                     locals.externalRequestsDisabledSource != null ? 'disabled'
                     : '' %>
@@ -941,7 +969,8 @@ const originalsDirCopyAfterValue =
                     name="reportErrors"
                     type="radio"
                     value="false"
-                    <%= !locals.reportErrors ? 'checked' : '' %>
+                    required
+                    <%= locals.reportErrors === false ? 'checked' : '' %>
                     <%= locals.settingOverrides.reportErrors != null ||
                     locals.externalRequestsDisabledSource != null ? 'disabled'
                     : '' %>
