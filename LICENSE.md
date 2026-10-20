@@ -15,11 +15,11 @@ copies. This license covers your household's use and your own individual
 business work, but not shared use by an organization's staff. Your household
 includes people living with you and family away temporarily, such as at school.
 
-PhotoStructure Lite is free. Plus adds features and requires an active
-subscription, a Lifetime Plus license (no recurring payments), or a trial. One
-Plus license covers one household and multiple computers. Keep your Plus license
-and other credentials that activate or renew Plus within that household. When a
-subscription or trial ends, you can still open your library with Lite; Plus-only
+PhotoStructure LITE is free. PLUS adds features and requires an active
+subscription, a Lifetime PLUS license (no recurring payments), or a trial. One
+PLUS license covers one household and multiple computers. Keep your PLUS license
+and other credentials that activate or renew PLUS within that household. When a
+subscription or trial ends, you can still open your library with LITE; PLUS-only
 features may become unavailable. The
 [subscription terms](https://photostructure.com/legal/subscription-terms/)
 control billing, renewal, cancellation, and refunds; this agreement controls
@@ -46,7 +46,7 @@ rights.
 **PhotoStructure does not send your photos or videos to us.** Application error
 reporting is optional and controlled in Settings. Reports go to our
 error-tracking provider (currently Sentry) and may include system information,
-file paths, logs, error details, and your library-settings or Plus-account email
+file paths, logs, error details, and your library-settings or PLUS-account email
 address, but no photos or videos. See
 [report contents and controls](https://photostructure.com/guide/error-reports/)
 and our [privacy policy](https://photostructure.com/legal/privacy/).
@@ -88,8 +88,8 @@ this agreement is limited as follows:
 
 - **Subscriptions:** capped at the fees you paid for PhotoStructure in the 12
   months before the event giving rise to the claim.
-- **Lifetime Plus:** capped at what you paid for that license.
-- **Free use, including Lite and trials:** we exclude liability for damages.
+- **Lifetime PLUS:** capped at what you paid for that license.
+- **Free use, including LITE and trials:** we exclude liability for damages.
 
 For these calculations, include payments for PhotoStructure to us, Stripe, or
 another seller we authorize. If more than one cap applies, the highest applies.
@@ -111,7 +111,7 @@ the Software or license credentials may result in immediate termination.
 If we terminate, stop using and remove the Software; we will stop future
 subscription renewals. You keep your content, separate third-party license
 rights, and refund rights. An expired subscription does not, by itself, end this
-agreement or your right to use Lite. Ownership, warranty, and liability
+agreement or your right to use LITE. Ownership, warranty, and liability
 provisions survive for prior use.
 
 ## Changes and other terms
