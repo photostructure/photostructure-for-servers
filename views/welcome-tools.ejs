@@ -47,8 +47,9 @@
             </h2>
 
             <p><%- locals.intro %></p>
-            <% if (locals.installUnavailable && !locals.toolsCurrent) { %>
-            <div class="message warn">
+            <% if (locals.installUnavailable && (!locals.toolsCurrent ||
+            locals.noNetwork)) { %>
+            <div class="message <%= locals.toolsCurrent ? 'info' : 'warn' %>">
               <p><%= locals.installUnavailable %></p>
             </div>
             <% } %> <% if (locals.canAutoInstall) { %> <% if

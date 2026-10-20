@@ -52,9 +52,13 @@
     data-library-uuid="<%= locals.libraryUuid %>"
   >
     <div id="mount"></div>
+    <%# No cacheBuster here, unlike the stylesheet above. Lazy chunks import the
+    entry as ./app.js, and a browser keys ES modules by URL, so app.js?_=<ms>
+    ran the whole app a second time: two routers and two Pinias, and a cold
+    /asset/:id load that the first Escape could not close. %>
     <script
       type="module"
-      src="/app/<%= locals.page %>.js<%= locals.cacheBuster ? '?_=' + locals.cacheBuster : '' %>"
+      src="/app/<%= locals.page %>.js"
       nonce="<%= locals.nonce %>"
     ></script>
     <% if (locals.scripts) { for (const s of locals.scripts) { %>
