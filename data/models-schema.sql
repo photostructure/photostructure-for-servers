@@ -37,7 +37,6 @@ CREATE TABLE "AssetFile" (
   durationMs INTEGER,
   cameraId TEXT,
   lensId TEXT,
-  imageDataHash TEXT,
   imageId TEXT,
   metadataDate INTEGER,
   sha TEXT NOT NULL,
@@ -216,10 +215,6 @@ CREATE INDEX AssetFile_assetId_idx ON AssetFile (assetId, flags);
 CREATE INDEX AssetFile_basename_idx ON AssetFile (basename, assetId);
 
 CREATE INDEX AssetFile_dirUriId_generation_idx ON AssetFile (dirUriId, lastVisitedGeneration);
-
-CREATE INDEX AssetFile_imageDataHash_idx ON AssetFile (imageDataHash)
-WHERE
-  imageDataHash IS NOT NULL;
 
 CREATE UNIQUE INDEX AssetFile_primary_udx ON AssetFile (assetId, isPrimary)
 WHERE

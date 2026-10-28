@@ -1,4 +1,4 @@
-**Version: September 17, 2026.** Effective when you accept it. See "Changes and
+**Version: October 24, 2026.** Effective when you accept it. See "Changes and
 other terms" below for later revisions.
 
 This agreement is between you and PhotoStructure, Inc. ("we" or "us") for the
@@ -40,6 +40,13 @@ applicable law or included components' licenses. See the
 [third-party notices](https://photostructure.com/legal/3rd-party-licenses.txt)
 and notices with your installation for copying, modification, and redistribution
 rights.
+
+If you ask it to, PhotoStructure can install separate third-party tools, such
+as photo and video tools and the package manager that installs them. Those
+tools are not part of the Software: we do not distribute, warrant, or support them, and their
+own licenses apply. Some may require patent
+licenses depending on where and how you use them, and you are responsible for
+any you need.
 
 ## Privacy and updates
 
