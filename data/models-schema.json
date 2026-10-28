@@ -203,12 +203,6 @@
           "pk": false
         },
         {
-          "name": "imageDataHash",
-          "type": "TEXT",
-          "notnull": false,
-          "pk": false
-        },
-        {
           "name": "imageId",
           "type": "TEXT",
           "notnull": false,
