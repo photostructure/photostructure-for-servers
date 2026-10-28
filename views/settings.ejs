@@ -189,14 +189,6 @@ const originalsDirCopyAfterValue =
                   library and account.photostructure.com.
                 </p>
               </div>
-              <% } else if (locals.subActivationDisabled &&
-              locals.subRenewalStatus !== "current") { %>
-              <div class="warn message" role="alert">
-                <p>
-                  PhotoStructure&rsquo;s optOut setting forbids contacting the
-                  account server, so your license can&rsquo;t renew or activate.
-                </p>
-              </div>
               <% } %> <% if (locals.subRenewalStatus === "pending" &&
               locals.subRenewalPaymentRequired) { %>
               <div class="warn message" role="alert">
@@ -221,8 +213,8 @@ const originalsDirCopyAfterValue =
                   renewal. <% } %> <% } %>
                 </p>
               </div>
-              <% } else { %> <% if (!locals.subActivationDisabled &&
-              locals.subRenewalStatus === "reactivation_required") { %>
+              <% } else { %> <% if (locals.subRenewalStatus ===
+              "reactivation_required") { %>
               <div class="warn message" role="alert">
                 <p>Your saved license doesn&rsquo;t match this installation.</p>
                 <p>
@@ -247,8 +239,7 @@ const originalsDirCopyAfterValue =
                   renewal. <% } else { %> Re-enable automatic renewal. <% } %>
                 </p>
               </div>
-              <% } %> <% if (!locals.subActivationDisabled &&
-              locals.subNeedsActivation) { %>
+              <% } %> <% if (locals.subNeedsActivation) { %>
               <div class="info message">
                 <p>
                   <a href="/plans/activate?then=/settings"
@@ -271,7 +262,7 @@ const originalsDirCopyAfterValue =
                 Your <span class="plus">PLUS</span> license isn&rsquo;t
                 currently active.
               </p>
-              <% } else if (!locals.subActivationDisabled) { %>
+              <% } else { %>
               <p>
                 PhotoStructure
                 <span class="plus">PLUS</span> keeps your photos safe by
@@ -1495,9 +1486,8 @@ const originalsDirCopyAfterValue =
                     type="radio"
                     value="true"
                     <%= locals.autoUpdateCheck === true ? 'checked' : '' %>
-                    <%= locals.settingOverrides.autoUpdateCheck != null ||
-                    locals.externalRequestsDisabledSource != null ? 'disabled'
-                    : '' %>
+                    <%= locals.settingOverrides.autoUpdateCheck != null ?
+                    'disabled' : '' %>
                   />
                   <i class="emj thumbs-up"></i>
                   <b>Yes,</b> PhotoStructure may check for updates automatically
@@ -1512,9 +1502,8 @@ const originalsDirCopyAfterValue =
                     type="radio"
                     value="false"
                     <%= locals.autoUpdateCheck === false ? 'checked' : '' %>
-                    <%= locals.settingOverrides.autoUpdateCheck != null ||
-                    locals.externalRequestsDisabledSource != null ? 'disabled'
-                    : '' %>
+                    <%= locals.settingOverrides.autoUpdateCheck != null ?
+                    'disabled' : '' %>
                   />
                   <i class="emj thumbs-down"></i>
                   <b>No thanks,</b> do not check for updates automatically

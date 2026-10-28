@@ -46,7 +46,7 @@ RUN apt-get update \
   tzdata \
   wget \
   && rm -rf /var/lib/apt/lists/* \
-  && npm install --force --location=global --min-release-age=3 npm \
+  && npm install --force --location=global --min-release-age=2.5 npm \
   && groupmod --new-name photostructure node \
   && usermod --login photostructure \
   --home /home/photostructure --move-home node \
